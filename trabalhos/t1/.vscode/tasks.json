@@ -1,0 +1,32 @@
+{
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "Build",
+            "command": "g++",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-fexceptions",
+                "-std=c++11",
+                "-Wall",
+                "-g",
+                "-I${workspaceFolder}\\include",
+                "${workspaceFolder}\\YAP\\src\\*.cpp",
+                "-L${workspaceFolder}\\lib",
+                "-lfreeglut32",
+                "-lopengl32",
+                "-lglu32",
+                "-o",
+                "${workspaceFolder}\\YAP.exe"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ],
+    "version": "2.0.0"
+}
