@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ColorRGBA.h"
+#include "ColorRGB.h"
 
 namespace yap
 {
@@ -9,7 +9,6 @@ namespace yap
         const float R;
         const float G;
         const float B;
-        const float A;
     };
 
     struct FillRectangleRenderingCommandArguments
@@ -21,10 +20,19 @@ namespace yap
         const int Height;
     };
 
+    struct AddPolygonVertexRenderingCommandArguments
+    {
+        const int X;
+        const int Y;
+    };
+
     enum class RenderingCommandKind
     {
         Color,
-        FillRectangle
+        FillRectangle,
+        BeginPolygon,
+        AddPolygonVertex,
+        FillPolygon
     };
 
     class RenderingCommand
@@ -40,6 +48,7 @@ namespace yap
     public:
         RenderingCommand(const ColorRenderingCommandArguments& args) : 
             m_Kind(RenderingCommandKind::Color), m_ColorArgs(args) {}
+
         RenderingCommand(const FillRectangleRenderingCommandArguments& args) :
             m_Kind(RenderingCommandKind::FillRectangle), m_FillRectangleArgs(args) {}
 

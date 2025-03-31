@@ -3,7 +3,7 @@
 #include "Axis.h"
 #include "SizingRule.h"
 #include "PositioningRule.h"
-#include "ColorRGBA.h"
+#include "ColorRGB.h"
 
 #include "RenderingContext.h"
 
@@ -19,7 +19,7 @@ namespace yap
 
         PositioningRule Position = PositioningRule::Static();
 
-        ColorRGBA Background = ColorRGBA(0.0f, 0.0f, 0.0f, 0.0f);
+        ColorRGB Background = ColorRGB();
 
         int ViewportWidth = 0;
         int ViewportHeight = 0;

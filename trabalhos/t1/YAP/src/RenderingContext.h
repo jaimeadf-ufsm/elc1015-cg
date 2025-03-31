@@ -13,15 +13,13 @@ namespace yap
     
     public:
         RenderingContext() {}
-        ~RenderingContext() {}
 
-        void Color(const ColorRGBA& color)
+        void Color(const ColorRGB& color)
         {
             ColorRenderingCommandArguments args = {
                 color.R,
                 color.G,
-                color.B,
-                color.A
+                color.B
             };
 
             m_Commands.emplace_back(args);

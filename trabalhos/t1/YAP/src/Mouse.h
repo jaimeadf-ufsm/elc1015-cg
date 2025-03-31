@@ -1,0 +1,7 @@
+namespace yap
+{
+    class Mouse
+    {
+    
+    };
+}

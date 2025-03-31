@@ -176,7 +176,7 @@ namespace yap
             Axis secondaryAxis = GetDirectionSecondaryAxis();
 
             int primaryOffset = GetViewportPositionAlongAxis(primaryAxis);
-            int primaryContentSize = 0;
+            int primaryContentSize = ChildrenGap * (m_Children.size() - 1);
 
             for (const auto& child : m_Children)
             {
@@ -191,7 +191,10 @@ namespace yap
                 case BoxAlignmentRule::Center:
                     primaryOffset += std::max(
                         Padding.GetStartPaddingAlongAxis(primaryAxis),
-                        primaryContentSize / 2
+                        (
+                            GetViewportSizeAlongAxis(primaryAxis) -
+                            primaryContentSize
+                        ) / 2
                     );
                     break;
                 case BoxAlignmentRule::End:
@@ -211,7 +214,10 @@ namespace yap
                     secondaryOffset += Padding.GetStartPaddingAlongAxis(secondaryAxis);
                     break;
                 case BoxAlignmentRule::Center:
-                    secondaryOffset += child->GetViewportSizeAlongAxis(secondaryAxis) / 2;
+                    secondaryOffset += (
+                        GetViewportSizeAlongAxis(secondaryAxis) -
+                        child->GetViewportSizeAlongAxis(secondaryAxis)
+                    ) / 2;
                     break;
                 case BoxAlignmentRule::End:
                     secondaryOffset += GetViewportSizeAlongAxis(secondaryAxis);

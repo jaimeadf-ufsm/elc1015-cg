@@ -53,14 +53,13 @@ void render()
       case yap::RenderingCommandKind::Color:
          {
             const auto& args = command.GetColorArgs();
-            CV::color(args.R, args.G, args.B, args.A);
+            CV::color(args.R, args.G, args.B);
 
             printf(
-               "Color(R = %.2f, G = %.2f, B = %.2f, A = %.2f)\n",
+               "Color(R = %.2f, G = %.2f, B = %.2f)\n",
                args.R,
                args.G,
-               args.B,
-               args.A
+               args.B
             );
          }
 
@@ -69,16 +68,7 @@ void render()
          {
             const auto& args = command.GetFillRectangleArgs();
             
-            for (int x = args.X; x < args.X + args.Width; x++)
-            {
-               for (int y = args.Y; y < args.Y + args.Height; y++)
-               {
-                  CV::color(1.0f, 0.0f, 0.0f, 1.0f);
-                  CV::point((float)x, (float)y);
-               }
-            }
-
-            // CV::rectFill(args.X, args.Y, args.X + args.Width, args.Y + args.Height);
+            CV::rectFill(args.X, args.Y, args.X + args.Width, args.Y + args.Height);
 
             printf(
                "FillRectangle(X = %d, Y = %d, Width = %d, Height = %d)\n",
@@ -117,29 +107,33 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
 
 int main(void)
 {
-   root->Width = yap::SizingRule::Fixed(500);
+   root->Width = yap::SizingRule::Fixed(1000);
    root->Height = yap::SizingRule::Fit();
    root->Direction = yap::BoxDirection::Row;
+   root->HorizontalAlignment = yap::BoxAlignmentRule::Center;
+   root->VerticalAlignment = yap::BoxAlignmentRule::Center;
    root->Position = yap::PositioningRule::Float(200, 200);
+   root->Padding = yap::BoxPadding(10);
+   root->ChildrenGap = 10;
 
-   root->Background = yap::ColorRGBA(0.5f, 0.5f, 0.5f, 1.0f);
+   root->Background = yap::ColorRGB(0.5f, 0.5f, 0.5f);
 
-   child1->Width = yap::SizingRule::Fixed(200);
+   child1->Width = yap::SizingRule::Fill();
    child1->Height = yap::SizingRule::Fixed(200);
-   child1->Background = yap::ColorRGBA(1.0f, 0.0f, 0.0f, 1.0f);
+   child1->Background = yap::ColorRGB(1.0f, 0.0f, 0.0f);
 
-   child2->Width = yap::SizingRule::Fill();
+   child2->Width = yap::SizingRule::Fixed(100);
    child2->Height = yap::SizingRule::Fixed(100);
-   child2->Background = yap::ColorRGBA(0.0f, 1.0f, 0.0f, 1.0f);
+   child2->Background = yap::ColorRGB(0.0f, 1.0f, 0.0f);
 
-   child3->Width = yap::SizingRule::Fill();
-   child3->Height = yap::SizingRule::Fixed(100);
-   child3->Background = yap::ColorRGBA(0.0f, 1.0f, 1.0f, 0.5f);
+   child3->Width = yap::SizingRule::Fixed(100);
+   child3->Height = yap::SizingRule::Fixed(200);
+   child3->Background = yap::ColorRGB(0.0f, 1.0f, 1.0f);
 
    root->AddChild(child1);
    root->AddChild(child2);
    root->AddChild(child3);
 
-   CV::init(screenWidth, screenHeight, "YAP - Yet Another Paint (Jaime Antonio Daniel Filho)");
+   CV::init(&screenWidth, &screenHeight, "YAP - Yet Another Paint (Jaime Antonio Daniel Filho)");
    CV::run();
 }
