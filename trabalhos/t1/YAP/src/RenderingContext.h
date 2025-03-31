@@ -1,0 +1,52 @@
+#pragma once
+
+#include <vector>
+
+#include "RenderingCommand.h"
+
+namespace yap
+{
+    class RenderingContext
+    {
+    private:
+        std::vector<RenderingCommand> m_Commands;
+    
+    public:
+        RenderingContext() {}
+        ~RenderingContext() {}
+
+        void Color(const ColorRGBA& color)
+        {
+            ColorRenderingCommandArguments args = {
+                color.R,
+                color.G,
+                color.B,
+                color.A
+            };
+
+            m_Commands.emplace_back(args);
+        }
+
+        void FillRectangle(int x, int y, int width, int height)
+        {
+            FillRectangleRenderingCommandArguments args = {
+                x,
+                y,
+                width,
+                height
+            };
+
+            m_Commands.emplace_back(args);
+        }
+
+        const std::vector<RenderingCommand>& GetCommands() const
+        {
+            return m_Commands;
+        }
+
+        void ClearCommands()
+        {
+            m_Commands.clear();
+        }
+    };
+}

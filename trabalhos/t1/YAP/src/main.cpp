@@ -22,12 +22,45 @@
 
 #include "gl_canvas2d.h"
 
+#include "RenderingContext.h"
+#include "Box.h"
+
 
 int screenWidth = 500, screenHeight = 500;
 int mouseX, mouseY;
 
+yap::RenderingContext context;
+yap::Box root;
+
 void render()
 {
+   context.ClearCommands();
+
+   const std::vector<yap::RenderingCommand>& commands = context.GetCommands();
+
+   for (const auto& command : commands)
+   {
+      switch (command.Kind)
+      {
+      case yap::RenderingCommandKind::Color:
+         {
+            const auto& args = command.ColorArgs;
+            CV::color(args.R, args.G, args.B, args.A);
+         }
+         break;
+      case yap::RenderingCommandKind::FillRectangle:
+         {
+            const auto& args = command.FillRectangleArgs;
+            CV::rectFill(args.X, args.Y, args.X + args.Width, args.Y + args.Height);
+         }
+         break;
+      default:
+         break;
+      }
+   }
+
+   
+
    Sleep(10);
 }
 
@@ -51,6 +84,14 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
 
 int main(void)
 {
-   CV::init(&screenWidth, &screenHeight, "YAP - Yet Another Paint");
+   auto a = yap::AxisSizingRule::Fixed(200);
+   a = yap::AxisSizingRule::Fit();
+
+   yap::SizingRule t = yap::SizingRule(yap::AxisSizingRule::Fixed(200), yap::AxisSizingRule::Fixed(200));
+   t = yap::SizingRule(yap::AxisSizingRule::Fill(), yap::AxisSizingRule::Fill());
+
+   root.Background = yap::ColorRGBA(0.5f, 0.5f, 0.5f, 1.0f);
+
+   CV::init(&screenWidth, &screenHeight, "YAP - Yet Another Paint (Jaime Antonio Daniel Filho)");
    CV::run();
 }
