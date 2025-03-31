@@ -29,15 +29,30 @@ namespace yap
 
     class RenderingCommand
     {
-    public:
-        const RenderingCommandKind Kind;
+    private:
+        RenderingCommandKind m_Kind;
         const union 
         {
-            ColorRenderingCommandArguments ColorArgs;
-            FillRectangleRenderingCommandArguments FillRectangleArgs;
+            ColorRenderingCommandArguments m_ColorArgs;
+            FillRectangleRenderingCommandArguments m_FillRectangleArgs;
         };
 
-        RenderingCommand(const ColorRenderingCommandArguments& args) : Kind(RenderingCommandKind::Color), ColorArgs(args) {}
-        RenderingCommand(const FillRectangleRenderingCommandArguments& args) : Kind(RenderingCommandKind::FillRectangle), FillRectangleArgs(args) {}
+    public:
+        RenderingCommand(const ColorRenderingCommandArguments& args) : 
+            m_Kind(RenderingCommandKind::Color), m_ColorArgs(args) {}
+        RenderingCommand(const FillRectangleRenderingCommandArguments& args) :
+            m_Kind(RenderingCommandKind::FillRectangle), m_FillRectangleArgs(args) {}
+
+        RenderingCommandKind GetKind() const {
+            return m_Kind;
+        }
+
+        const ColorRenderingCommandArguments& GetColorArgs() const {
+            return m_ColorArgs;
+        }
+
+        const FillRectangleRenderingCommandArguments& GetFillRectangleArgs() const {
+            return m_FillRectangleArgs;
+        }
     };
 }

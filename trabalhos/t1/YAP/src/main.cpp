@@ -26,11 +26,14 @@
 #include "Box.h"
 
 
-int screenWidth = 500, screenHeight = 500;
+int screenWidth = 1280, screenHeight = 720;
 int mouseX, mouseY;
 
 yap::RenderingContext context;
-yap::Box root;
+std::shared_ptr<yap::Box> root = std::make_shared<yap::Box>();
+std::shared_ptr<yap::Box> child1 = std::make_shared<yap::Box>();
+std::shared_ptr<yap::Box> child2 = std::make_shared<yap::Box>();
+std::shared_ptr<yap::Box> child3 = std::make_shared<yap::Box>();
 
 void render()
 {
@@ -38,28 +41,58 @@ void render()
 
    const std::vector<yap::RenderingCommand>& commands = context.GetCommands();
 
+   root->ComputeIndependentDimensions();
+   root->ComputeResponsiveDimensions();
+   root->ComputePosition();
+   root->Draw(context);
+
    for (const auto& command : commands)
    {
-      switch (command.Kind)
+      switch (command.GetKind())
       {
       case yap::RenderingCommandKind::Color:
          {
-            const auto& args = command.ColorArgs;
+            const auto& args = command.GetColorArgs();
             CV::color(args.R, args.G, args.B, args.A);
+
+            printf(
+               "Color(R = %.2f, G = %.2f, B = %.2f, A = %.2f)\n",
+               args.R,
+               args.G,
+               args.B,
+               args.A
+            );
          }
+
          break;
       case yap::RenderingCommandKind::FillRectangle:
          {
-            const auto& args = command.FillRectangleArgs;
-            CV::rectFill(args.X, args.Y, args.X + args.Width, args.Y + args.Height);
+            const auto& args = command.GetFillRectangleArgs();
+            
+            for (int x = args.X; x < args.X + args.Width; x++)
+            {
+               for (int y = args.Y; y < args.Y + args.Height; y++)
+               {
+                  CV::color(1.0f, 0.0f, 0.0f, 1.0f);
+                  CV::point((float)x, (float)y);
+               }
+            }
+
+            // CV::rectFill(args.X, args.Y, args.X + args.Width, args.Y + args.Height);
+
+            printf(
+               "FillRectangle(X = %d, Y = %d, Width = %d, Height = %d)\n",
+               args.X,
+               args.Y,
+               args.Width,
+               args.Height
+            );
          }
          break;
       default:
          break;
       }
    }
-
-   
 
    Sleep(10);
 }
@@ -84,14 +117,29 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
 
 int main(void)
 {
-   auto a = yap::AxisSizingRule::Fixed(200);
-   a = yap::AxisSizingRule::Fit();
+   root->Width = yap::SizingRule::Fixed(500);
+   root->Height = yap::SizingRule::Fit();
+   root->Direction = yap::BoxDirection::Row;
+   root->Position = yap::PositioningRule::Float(200, 200);
 
-   yap::SizingRule t = yap::SizingRule(yap::AxisSizingRule::Fixed(200), yap::AxisSizingRule::Fixed(200));
-   t = yap::SizingRule(yap::AxisSizingRule::Fill(), yap::AxisSizingRule::Fill());
+   root->Background = yap::ColorRGBA(0.5f, 0.5f, 0.5f, 1.0f);
 
-   root.Background = yap::ColorRGBA(0.5f, 0.5f, 0.5f, 1.0f);
+   child1->Width = yap::SizingRule::Fixed(200);
+   child1->Height = yap::SizingRule::Fixed(200);
+   child1->Background = yap::ColorRGBA(1.0f, 0.0f, 0.0f, 1.0f);
 
-   CV::init(&screenWidth, &screenHeight, "YAP - Yet Another Paint (Jaime Antonio Daniel Filho)");
+   child2->Width = yap::SizingRule::Fill();
+   child2->Height = yap::SizingRule::Fixed(100);
+   child2->Background = yap::ColorRGBA(0.0f, 1.0f, 0.0f, 1.0f);
+
+   child3->Width = yap::SizingRule::Fill();
+   child3->Height = yap::SizingRule::Fixed(100);
+   child3->Background = yap::ColorRGBA(0.0f, 1.0f, 1.0f, 0.5f);
+
+   root->AddChild(child1);
+   root->AddChild(child2);
+   root->AddChild(child3);
+
+   CV::init(screenWidth, screenHeight, "YAP - Yet Another Paint (Jaime Antonio Daniel Filho)");
    CV::run();
 }

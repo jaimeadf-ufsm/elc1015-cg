@@ -10,25 +10,15 @@ namespace yap
 {
     enum class BoxDirection
     {
-        Horizontal,
-        Vertical
+        Row,
+        Column
     };
 
-    enum class BoxAxisAlignmentRule
+    enum class BoxAlignmentRule
     {
         Start,
         Center,
         End
-    };
-
-    class BoxAlignmentRule
-    {
-    public:
-        BoxAxisAlignmentRule X;
-        BoxAxisAlignmentRule Y;
-
-        BoxAlignmentRule() : X(BoxAxisAlignmentRule::Start), Y(BoxAxisAlignmentRule::Start) {}
-        BoxAlignmentRule(BoxAxisAlignmentRule x, BoxAxisAlignmentRule y) : X(x), Y(y) {}
     };
 
     class BoxPadding
@@ -39,10 +29,32 @@ namespace yap
         int Top;
         int Bottom;
 
-        BoxPadding() : Left(0), Right(0), Top(0), Bottom(0) {}
-        BoxPadding(int all) : Left(all), Right(all), Top(all), Bottom(all) {}
-        BoxPadding(int horizontal, int vertical) : Left(horizontal), Right(horizontal), Top(vertical), Bottom(vertical) {}
-        BoxPadding(int left, int right, int top, int bottom) : Left(left), Right(right), Top(top), Bottom(bottom) {}
+        BoxPadding()
+            : Left(0), Right(0), Top(0), Bottom(0) {}
+
+        BoxPadding(int all)
+            : Left(all), Right(all), Top(all), Bottom(all) {}
+
+        BoxPadding(int horizontal, int vertical) : 
+            Left(horizontal), Right(horizontal), Top(vertical), Bottom(vertical) {}
+
+        BoxPadding(int left, int right, int top, int bottom) :
+            Left(left), Right(right), Top(top), Bottom(bottom) {}
+    
+        int GetTotalPaddingAlongAxis(Axis axis) const
+        {
+            return (axis == Axis::X) ? Left + Right : Top + Bottom;
+        }
+
+        int GetStartPaddingAlongAxis(Axis axis) const
+        {
+            return (axis == Axis::X) ? Left : Top;
+        }
+
+        int GetEndPaddingAlongAxis(Axis axis) const
+        {
+            return (axis == Axis::X) ? Right : Bottom;
+        }
     };
 
     class Box : public Element
@@ -51,88 +63,86 @@ namespace yap
         std::vector<std::shared_ptr<Element>> m_Children;
 
     public:
-        BoxDirection Direction;
-        BoxPadding Padding;
+        BoxDirection Direction = BoxDirection::Row;
+        BoxPadding Padding = BoxPadding(0);
 
-        BoxAlignmentRule ChildrenAlignment;
-        int ChildrenGap;
+        BoxAlignmentRule HorizontalAlignment = BoxAlignmentRule::Start;
+        BoxAlignmentRule VerticalAlignment = BoxAlignmentRule::Start;
+
+        int ChildrenGap = 0;
 
         Box()
         {
         }
 
-        void ComputeFixedDimensions() override
+        void ComputeIndependentDimensions() override
         {
-            if (Direction != BoxDirection::Horizontal)
-            {
-                return;
-            }
+            Element::ComputeIndependentDimensions();
 
-            Element::ComputeFixedDimensions();
+            Axis primaryAxis = GetDirectionPrimaryAxis();
+            Axis secondaryAxis = GetDirectionSecondaryAxis();
 
-            int totalWidth = 0;
-            int totalHeight = 0;
-
-            int maxHeight = 0;
+            int contentPrimarySize = 0;
+            int contentSecondarySize = 0;
 
             for (const auto& child : m_Children)
             {
-                child->ComputeFixedDimensions();
+                child->ComputeIndependentDimensions();
 
-                switch (child->Size.Width.Mode)
+                if (child->GetSizeAlongAxis(primaryAxis).IsIndependent())
                 {
-                case AxisSizingMode::Fixed:
-                case AxisSizingMode::Fit:
-                    totalWidth += child->ViewportWidth;
-                    break;
-                case AxisSizingMode::Fill:
-                    break;
+                    contentPrimarySize += child->GetViewportSizeAlongAxis(primaryAxis);
                 }
 
-                switch (child->Size.Height.Mode)
+                if (child->Height.IsIndependent())
                 {
-                case AxisSizingMode::Fixed:
-                case AxisSizingMode::Fit:
-                    maxHeight = std::max(maxHeight, child->ViewportHeight);
-                    break;
-                case AxisSizingMode::Fill:
-                    break;
+                    contentSecondarySize = std::max(
+                        contentSecondarySize,
+                        child->GetViewportSizeAlongAxis(secondaryAxis)
+                    );
                 }
             }
 
-            if (Size.Width.Mode == AxisSizingMode::Fit)
+            if (GetSizeAlongAxis(primaryAxis).IsFit())
             {
-                ViewportWidth = totalWidth + Padding.Left + Padding.Right + (m_Children.size() - 1) * ChildrenGap;
+                int viewportPrimarySize = contentPrimarySize;
+                viewportPrimarySize += Padding.GetTotalPaddingAlongAxis(primaryAxis);
+                viewportPrimarySize += (m_Children.size() - 1) * ChildrenGap;
+
+                SetViewportSizeAlongAxis(primaryAxis, viewportPrimarySize);
             }
 
-            if (Size.Height.Mode == AxisSizingMode::Fit)
+            if (GetSizeAlongAxis(secondaryAxis).IsFit())
             {
-                ViewportHeight = maxHeight + Padding.Top + Padding.Bottom;
+                int viewportSecondarySize = contentSecondarySize;
+                viewportSecondarySize += Padding.GetTotalPaddingAlongAxis(secondaryAxis);
+
+                SetViewportSizeAlongAxis(secondaryAxis, viewportSecondarySize);
             }
         }
 
         void ComputeResponsiveDimensions() override
         {
-            if (Direction != BoxDirection::Horizontal)
-            {
-                return;
-            }
+            Element::ComputeResponsiveDimensions();
 
-            int remainingWidth = ViewportWidth;
-            int remainingHeight = ViewportHeight;
+            Axis primaryAxis = GetDirectionPrimaryAxis();
+            Axis secondaryAxis = GetDirectionSecondaryAxis();
 
-            remainingWidth -= Padding.Left + Padding.Right;
-            remainingHeight -= Padding.Top + Padding.Bottom;
+            int remainingPrimarySize = GetViewportSizeAlongAxis(primaryAxis);
+            int remainingSecondarySize = GetViewportSizeAlongAxis(secondaryAxis);
 
-            remainingWidth -= (m_Children.size() - 1) * ChildrenGap;
+            remainingPrimarySize -= Padding.GetTotalPaddingAlongAxis(primaryAxis);
+            remainingSecondarySize -= Padding.GetTotalPaddingAlongAxis(secondaryAxis);
+
+            remainingPrimarySize -= (m_Children.size() - 1) * ChildrenGap;
 
             int fillableChildrenCount = 0;
 
             for (auto& child : m_Children)
             {
-                remainingWidth -= child->ViewportWidth;
+                remainingPrimarySize -= child->ViewportWidth;
 
-                if (child->Size.Width.Mode == AxisSizingMode::Fill)
+                if (child->GetSizeAlongAxis(primaryAxis).IsFill())
                 {
                     fillableChildrenCount++;
                 }
@@ -140,57 +150,82 @@ namespace yap
 
             for (auto& child : m_Children)
             {
-                if (child->Size.Height.Mode == AxisSizingMode::Fill)
+                if (child->GetSizeAlongAxis(primaryAxis).IsFill())
                 {
-                    child->ViewportHeight = remainingHeight;
+                    child->SetViewportSizeAlongAxis(
+                        primaryAxis,
+                        remainingPrimarySize / fillableChildrenCount
+                    );
                 }
 
-                if (child->Size.Width.Mode == AxisSizingMode::Fill)
+                if (child->GetSizeAlongAxis(secondaryAxis).IsFill())
                 {
-                    child->ViewportWidth = remainingWidth / fillableChildrenCount;
+                    child->SetViewportSizeAlongAxis(
+                        secondaryAxis,
+                        remainingSecondarySize
+                    );
                 }
             }
         }
 
         void ComputePosition() override
         {
-            int offsetX = ViewportX + Padding.Left;
-            int offsetY = ViewportY + Padding.Top;
+            Element::ComputePosition();
+
+            Axis primaryAxis = GetDirectionPrimaryAxis();
+            Axis secondaryAxis = GetDirectionSecondaryAxis();
+
+            int primaryOffset = GetViewportPositionAlongAxis(primaryAxis);
+            int primaryContentSize = 0;
+
+            for (const auto& child : m_Children)
+            {
+                primaryContentSize += child->GetViewportSizeAlongAxis(primaryAxis);
+            }
+
+            switch (GetAlignmentAlongAxis(primaryAxis))
+            {
+                case BoxAlignmentRule::Start:
+                    primaryOffset += Padding.GetStartPaddingAlongAxis(primaryAxis);
+                    break;
+                case BoxAlignmentRule::Center:
+                    primaryOffset += std::max(
+                        Padding.GetStartPaddingAlongAxis(primaryAxis),
+                        primaryContentSize / 2
+                    );
+                    break;
+                case BoxAlignmentRule::End:
+                    primaryOffset += GetViewportSizeAlongAxis(primaryAxis);
+                    primaryOffset -= primaryContentSize;
+                    primaryOffset -= Padding.GetEndPaddingAlongAxis(primaryAxis);
+                    break;
+            }
 
             for (auto& child : m_Children)
             {
-                child->ComputePosition();
+                int secondaryOffset = GetViewportPositionAlongAxis(secondaryAxis);
 
-                switch (ChildrenAlignment.X)
+                switch (GetAlignmentAlongAxis(secondaryAxis))
                 {
-                case BoxAxisAlignmentRule::Start:
-                    child->ViewportX = offsetX;
+                case BoxAlignmentRule::Start:
+                    secondaryOffset += Padding.GetStartPaddingAlongAxis(secondaryAxis);
                     break;
-                case BoxAxisAlignmentRule::Center:
-                    child->ViewportX = offsetX + (ViewportWidth - child->ViewportWidth) / 2;
+                case BoxAlignmentRule::Center:
+                    secondaryOffset += child->GetViewportSizeAlongAxis(secondaryAxis) / 2;
                     break;
-                case BoxAxisAlignmentRule::End:
-                    child->ViewportX = offsetX + ViewportWidth - child->ViewportWidth;
+                case BoxAlignmentRule::End:
+                    secondaryOffset += GetViewportSizeAlongAxis(secondaryAxis);
+                    secondaryOffset -= Padding.GetEndPaddingAlongAxis(secondaryAxis);
+                    secondaryOffset -= child->GetViewportSizeAlongAxis(secondaryAxis);
                     break;
                 }
 
-                switch (ChildrenAlignment.Y)
-                {
-                case BoxAxisAlignmentRule::Start:
-                    child->ViewportY = offsetY;
-                    break;
-                case BoxAxisAlignmentRule::Center:
-                    child->ViewportY = offsetY + (ViewportHeight - child->ViewportHeight) / 2;
-                    break;
-                case BoxAxisAlignmentRule::End:
-                    child->ViewportY = offsetY + ViewportHeight - child->ViewportHeight;
-                    break;
-                }
+                child->SetViewportPositionAlongAxis(primaryAxis, primaryOffset);
+                child->SetViewportPositionAlongAxis(secondaryAxis, secondaryOffset);
 
-                offsetX += child->ViewportWidth + ChildrenGap;
+                primaryOffset += child->GetViewportSizeAlongAxis(primaryAxis);
+                primaryOffset += ChildrenGap;
             }
-
-            offsetY += Padding.Top + Padding.Bottom;
         }
 
         void Draw(RenderingContext& context) override
@@ -210,12 +245,31 @@ namespace yap
 
         void RemoveChild(std::shared_ptr<Element> child)
         {
-            m_Children.erase(std::remove(m_Children.begin(), m_Children.end(), child), m_Children.end());
+            m_Children.erase(
+                std::remove(m_Children.begin(), m_Children.end(), child),
+                m_Children.end()
+            );
         }
 
         const std::vector<std::shared_ptr<Element>>& GetChildren() const
         {
             return m_Children;
+        }
+
+        BoxAlignmentRule GetAlignmentAlongAxis(Axis axis)
+        {
+            return (axis == Axis::X ? HorizontalAlignment : VerticalAlignment);
+        }
+    
+    private:
+        Axis GetDirectionPrimaryAxis()
+        {
+            return (Direction == BoxDirection::Row ? Axis::X : Axis::Y);
+        }
+
+        Axis GetDirectionSecondaryAxis()
+        {
+            return GetAxisComplement(GetDirectionPrimaryAxis());
         }
     };
 }

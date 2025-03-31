@@ -2,49 +2,69 @@
 
 namespace yap
 {
-    enum class AxisSizingMode
+    enum class SizingMode
     {
         Fixed,
         Fit,
         Fill
     };
 
-    class AxisSizingRule
+    class SizingRule
     {
+    private:
+        SizingMode m_Mode;
+        int m_Value;
+
     public:
-        const AxisSizingMode Mode;
-        const int Value;
+        SizingRule() : m_Mode(SizingMode::Fit), m_Value(0) {}
+        SizingRule(const SizingRule& other) : m_Mode(other.m_Mode), m_Value(other.m_Value) {}
 
-        AxisSizingRule() : Mode(AxisSizingMode::Fit), Value(0) {}
-        AxisSizingRule(AxisSizingMode kind, int value) : Mode(kind), Value(value) {}
-        AxisSizingRule(const AxisSizingRule& other) : Mode(other.Mode), Value(other.Value) {}
-
-        static const AxisSizingRule Fit()
+        bool IsIndependent() const
         {
-            return AxisSizingRule(AxisSizingMode::Fit, 0);
+            return m_Mode == SizingMode::Fixed || m_Mode == SizingMode::Fit;
         }
 
-        static const AxisSizingRule Fixed(int value)
+        bool IsFixed() const
         {
-            return AxisSizingRule(AxisSizingMode::Fixed, value);
+            return m_Mode == SizingMode::Fixed;
         }
 
-        static const AxisSizingRule Fill()
+        bool IsFit() const
         {
-            return AxisSizingRule(AxisSizingMode::Fill, 0);
+            return m_Mode == SizingMode::Fit;
+        }
+
+        bool IsFill() const
+        {
+            return m_Mode == SizingMode::Fill;
+        }
+
+        SizingMode GetMode() const
+        {
+            return m_Mode;
+        }
+
+        int GetValue() const
+        {
+            return m_Value;
+        }
+
+        static SizingRule Fit()
+        {
+            return SizingRule(SizingMode::Fit, 0);
+        }
+
+        static SizingRule Fixed(int value)
+        {
+            return SizingRule(SizingMode::Fixed, value);
+        }
+
+        static SizingRule Fill()
+        {
+            return SizingRule(SizingMode::Fill, 0);
         }
 
     private:
-    };
-
-    class SizingRule
-    {
-    public:
-        const AxisSizingRule Width;
-        const AxisSizingRule Height;
-
-        SizingRule() : Width(AxisSizingRule::Fit()), Height(AxisSizingRule::Fit()) {}
-        SizingRule(AxisSizingRule width, AxisSizingRule height) : Width(width), Height(height) {}
-        SizingRule(const SizingRule& other) : Width(other.Width), Height(other.Height) {}
+        SizingRule(SizingMode kind, int value) : m_Mode(kind), m_Value(value) {}
     };
 }
