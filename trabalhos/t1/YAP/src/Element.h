@@ -1,9 +1,15 @@
 #pragma once
 
+#include <functional>
+
 #include "Axis.h"
 #include "SizingRule.h"
 #include "PositioningRule.h"
 #include "ColorRGB.h"
+#include "Vec2.h"
+
+#include "Mouse.h"
+#include "Keyboard.h"
 
 #include "RenderingContext.h"
 
@@ -11,126 +17,134 @@ namespace yap
 {
     class Element
     {
+    private:
+        bool m_Hovered = false;
+        bool m_Pressed = false;
     public:
         int ZIndex = 0;
 
-        SizingRule Width = SizingRule::Fit();
-        SizingRule Height = SizingRule::Fit();
-
+        SizingRule Size = SizingRule();
         PositioningRule Position = PositioningRule::Static();
 
         ColorRGB Background = ColorRGB();
 
-        int ViewportWidth = 0;
-        int ViewportHeight = 0;
+        Vec2 ViewportSize = Vec2();
+        Vec2 ViewportPosition = Vec2();
 
-        int ViewportX = 0;
-        int ViewportY = 0;
+        std::function<void(Element&)> OnPress = nullptr;
+        std::function<void(Element&)> OnRelease = nullptr;
+        std::function<void(Element&, Vec2)> OnMouseMove = nullptr;
+        std::function<void(Element&)> OnMouseEnter = nullptr;
+        std::function<void(Element&)> OnMouseLeave = nullptr;
+
+        virtual void ProcessMouseMove(Mouse &mouse) 
+        {
+            if (Intersects(mouse.Position))
+            {
+                if (OnMouseMove)
+                {
+                    OnMouseMove(*this, mouse.Position - ViewportPosition);
+                }
+
+                if (!m_Hovered)
+                {
+                    m_Hovered = true;
+
+                    if (OnMouseEnter)
+                    {
+                        OnMouseEnter(*this);
+                    }
+                }
+            }
+            else
+            {
+                if (m_Hovered)
+                {
+                    m_Hovered = false;
+
+                    if (OnMouseLeave)
+                    {
+                        OnMouseLeave(*this);
+                    }
+                }
+            }
+        }
+
+        virtual void ProcessMouseDown(Mouse &mouse, MouseButton button) 
+        {
+            if (m_Hovered)
+            {
+                m_Pressed = true;
+
+                if (OnPress)
+                {
+                    OnPress(*this);
+                }
+            }
+        }
+
+        virtual void ProcessMouseUp(Mouse &mouse, MouseButton button)
+        {
+            if (m_Pressed)
+            {
+                m_Pressed = false;
+
+                if (OnRelease)
+                {
+                    OnRelease(*this);
+                }
+            }
+        }
+
+        virtual void ProcessMouseScroll(Mouse &mouse, MouseScrollDirection direction) {}
+        virtual void ProcessKeyboardDown(Keyboard &keyboard, KeyboardKey key) {}
+        virtual void ProcessKeyboardUp(Keyboard &keyboard, KeyboardKey key) {}
 
         virtual void ComputeIndependentDimensions()
         {
-            switch (Width.GetMode())
+            if (Size.Width.IsFixed())
             {
-                case SizingMode::Fixed:
-                    ViewportWidth = Width.GetValue();
-                    break;
-                case SizingMode::Fit:
-                    ViewportWidth = 0; // To be computed later by implementing element
-                    break;
-                case SizingMode::Fill:
-                    ViewportWidth = 0; // To be computed later by parent element
-                    break;
+                ViewportSize.X = Size.Width.GetValue();
             }
 
-            switch (Height.GetMode())
+            if (Size.Height.IsFixed())
             {
-                case SizingMode::Fixed:
-                    ViewportHeight = Height.GetValue();
-                    break;
-                case SizingMode::Fit:
-                    ViewportHeight = 0; // To be computed later by implementing element
-                    break;
-                case SizingMode::Fill:
-                    ViewportHeight = 0; // To be computed later by parent element
-                    break;
+                ViewportSize.Y = Size.Height.GetValue();
             }
         }
 
         virtual void ComputeResponsiveDimensions()
         {
-            return;
         }
 
         virtual void ComputePosition()
         {
-            switch (Position.GetMode())
+            if (Position.IsAbsolute())
             {
-                case PositioningMode::Static:
-                    ViewportX = 0;
-                    ViewportY = 0;
-                    break;
-                case PositioningMode::Float:
-                    ViewportX = Position.GetX();
-                    ViewportY = Position.GetY();
-                    break;
+                ViewportPosition = Position.GetOffset();
             }
         }
+
+        virtual void Animate() {}
 
         virtual void Draw(RenderingContext& context)
         {
             context.Color(Background);
-            context.FillRectangle(ViewportX, ViewportY, ViewportWidth, ViewportHeight);
+            context.FillRectangle(ViewportPosition.X, ViewportPosition.Y, ViewportSize.X, ViewportSize.Y);
         }
 
-        void SetSizeAlongAxis(Axis axis, SizingRule size)
+        bool Intersects(const Vec2& point) const
         {
-            if (axis == Axis::X)
-            {
-                Width = size;
-            }
-            else
-            {
-                Height = size;
-            }
+            return (point.X >= ViewportPosition.X && point.X <= ViewportPosition.X + ViewportSize.X &&
+                    point.Y >= ViewportPosition.Y && point.Y <= ViewportPosition.Y + ViewportSize.Y);
         }
 
-        SizingRule GetSizeAlongAxis(Axis axis) const
-        {
-            return (axis == Axis::X) ? Width : Height;
+        bool IsHovered() const { 
+            return m_Hovered; 
         }
 
-        void SetViewportSizeAlongAxis(Axis axis, int size)
-        {
-            if (axis == Axis::X)
-            {
-                ViewportWidth = size;
-            }
-            else
-            {
-                ViewportHeight = size;
-            }
-        }
-
-        int GetViewportSizeAlongAxis(Axis axis) const
-        {
-            return (axis == Axis::X) ? ViewportWidth : ViewportHeight;
-        }
-
-        void SetViewportPositionAlongAxis(Axis axis, int position)
-        {
-            if (axis == Axis::X)
-            {
-                ViewportX = position;
-            }
-            else
-            {
-                ViewportY = position;
-            }
-        }
-
-        int GetViewportPositionAlongAxis(Axis axis) const
-        {
-            return (axis == Axis::X) ? ViewportX : ViewportY;
+        bool IsPressed() const {
+            return m_Pressed;
         }
     };
 }

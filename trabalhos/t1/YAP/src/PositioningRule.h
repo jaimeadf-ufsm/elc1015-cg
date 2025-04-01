@@ -1,50 +1,67 @@
 #pragma once
 
+#include "Vec2.h"
+
 namespace yap
 {
     enum class PositioningMode
     {
         Static,
-        Float
+        Relative,
+        Absolute
     };
 
     class PositioningRule
     {
     public:
-        PositioningMode m_Kind;
-        int m_X;
-        int m_Y;
+        PositioningMode m_Mode;
+        Vec2 m_Offset;
 
     public:
 
-        PositioningRule() : m_Kind(PositioningMode::Static), m_X(0), m_Y(0) {}
+        PositioningRule() : m_Mode(PositioningMode::Static), m_Offset() {}
 
         PositioningMode GetMode() const
         {
-            return m_Kind;
+            return m_Mode;
         }
 
-        int GetX() const
+        const Vec2& GetOffset() const
         {
-            return m_X;
+            return m_Offset;
         }
 
-        int GetY() const
+        bool IsStatic()
         {
-            return m_Y;
+            return m_Mode == PositioningMode::Static;
+        }
+
+        bool IsRelative()
+        {
+            return m_Mode == PositioningMode::Relative;
+        }
+
+        bool IsAbsolute()
+        {
+            return m_Mode == PositioningMode::Absolute;
         }
 
         static PositioningRule Static()
         {
-            return PositioningRule(PositioningMode::Static, 0, 0);
+            return PositioningRule(PositioningMode::Static, Vec2());
         }
 
-        static PositioningRule Float(int x, int y)
+        static PositioningRule Relative(const Vec2& offset)
         {
-            return PositioningRule(PositioningMode::Float, x, y);
+            return PositioningRule(PositioningMode::Relative, offset);
         }
 
+        static PositioningRule Absolute(const Vec2& offset)
+        {
+            return PositioningRule(PositioningMode::Absolute, offset);
+        }
     private:
-        PositioningRule(PositioningMode kind, int x, int y) : m_Kind(kind), m_X(x), m_Y(y) {}
+        PositioningRule(PositioningMode kind, const Vec2& offset) :
+            m_Mode(kind), m_Offset(offset) {}
     };
 }

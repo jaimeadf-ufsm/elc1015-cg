@@ -25,7 +25,7 @@ namespace yap
             m_Commands.emplace_back(args);
         }
 
-        void FillRectangle(int x, int y, int width, int height)
+        void FillRectangle(float x, float y, float width, float height)
         {
             FillRectangleRenderingCommandArguments args = {
                 x,

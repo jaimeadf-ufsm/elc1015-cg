@@ -6,33 +6,23 @@ namespace yap
 {
     struct ColorRenderingCommandArguments
     {
-        const float R;
-        const float G;
-        const float B;
+        float R;
+        float G;
+        float B;
     };
 
     struct FillRectangleRenderingCommandArguments
     {
-        const int X;
-        const int Y;
-
-        const int Width;
-        const int Height;
-    };
-
-    struct AddPolygonVertexRenderingCommandArguments
-    {
-        const int X;
-        const int Y;
+        float X;
+        float Y;
+        float Width;
+        float Height;
     };
 
     enum class RenderingCommandKind
     {
         Color,
-        FillRectangle,
-        BeginPolygon,
-        AddPolygonVertex,
-        FillPolygon
+        FillRectangle
     };
 
     class RenderingCommand

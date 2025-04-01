@@ -23,66 +23,25 @@
 #include "gl_canvas2d.h"
 
 #include "RenderingContext.h"
-#include "Box.h"
+#include "RenderingEngine.h"
+#include "Screen.h"
 
+yap::Screen screen;
 
-int screenWidth = 1280, screenHeight = 720;
-int mouseX, mouseY;
+yap::RenderingContext renderingContext;
+yap::RenderingEngine renderingEngine;
 
-yap::RenderingContext context;
-std::shared_ptr<yap::Box> root = std::make_shared<yap::Box>();
-std::shared_ptr<yap::Box> child1 = std::make_shared<yap::Box>();
-std::shared_ptr<yap::Box> child2 = std::make_shared<yap::Box>();
-std::shared_ptr<yap::Box> child3 = std::make_shared<yap::Box>();
+int windowWidth = 800;
+int windowHeight = 600;
 
 void render()
 {
-   context.ClearCommands();
+   renderingContext.ClearCommands();
 
-   const std::vector<yap::RenderingCommand>& commands = context.GetCommands();
+   screen.Resize(windowWidth, windowHeight);
+   screen.Render(renderingContext);
 
-   root->ComputeIndependentDimensions();
-   root->ComputeResponsiveDimensions();
-   root->ComputePosition();
-   root->Draw(context);
-
-   for (const auto& command : commands)
-   {
-      switch (command.GetKind())
-      {
-      case yap::RenderingCommandKind::Color:
-         {
-            const auto& args = command.GetColorArgs();
-            CV::color(args.R, args.G, args.B);
-
-            printf(
-               "Color(R = %.2f, G = %.2f, B = %.2f)\n",
-               args.R,
-               args.G,
-               args.B
-            );
-         }
-
-         break;
-      case yap::RenderingCommandKind::FillRectangle:
-         {
-            const auto& args = command.GetFillRectangleArgs();
-            
-            CV::rectFill(args.X, args.Y, args.X + args.Width, args.Y + args.Height);
-
-            printf(
-               "FillRectangle(X = %d, Y = %d, Width = %d, Height = %d)\n",
-               args.X,
-               args.Y,
-               args.Width,
-               args.Height
-            );
-         }
-         break;
-      default:
-         break;
-      }
-   }
+   renderingEngine.ProcessCommands(renderingContext.GetCommands());
 
    Sleep(10);
 }
@@ -90,50 +49,93 @@ void render()
 void keyboard(int key)
 {
    printf("\nTecla: %d" , key);
+   screen.ProcessKeyboardDown(key);
 }
 
 void keyboardUp(int key)
 {
    printf("\nLiberou: %d" , key);
+   screen.ProcessKeyboardUp(key);
 }
 
 void mouse(int button, int state, int wheel, int direction, int x, int y)
 {
-   mouseX = x;
-   mouseY = y;
+   if (button == -2 && state == -2 && wheel == -2 && direction == -2)
+   {
+      screen.ProcessMouseMove(x, y);
+   }
+   else if (button != -2)
+   {
+      if (state == 0)
+      {
+         screen.ProcessMouseDown((yap::MouseButton)button);
+      }
+      else
+      {
+         screen.ProcessMouseUp((yap::MouseButton)button);
+      }
+   }
+   else if (wheel != -2 && direction != -2)
+   {
+      screen.ProcessMouseScroll((yap::MouseScrollDirection)direction);
+   }
 
    printf("\nmouse %d %d %d %d %d %d", button, state, wheel, direction,  x, y);
 }
 
+void OnMouseMove(yap::Element &element, yap::Vec2 position)
+{
+   printf("Mouse moved to (%f, %f)\n", position.X, position.Y);
+}
+
+void OnMouseEnter(yap::Element &element)
+{
+   element.Background = yap::ColorRGB(0.0f, 1.0f, 0.0f);
+   printf("Mouse entered\n");
+}
+
+void OnMouseLeave(yap::Element &element)
+{
+   element.Background = yap::ColorRGB(1.0f, 0.0f, 0.0f);
+   printf("Mouse left\n");
+}
+
+void OnPress(yap::Element &element)
+{
+   element.Background = yap::ColorRGB(0.0f, 0.0f, 1.0f);
+   printf("Mouse pressed\n");
+}
+
+void OnRelease(yap::Element &element)
+{
+   element.Background = yap::ColorRGB(1.0f, 0.0f, 1.0f);
+   printf("Mouse released\n");
+}
+
 int main(void)
 {
-   root->Width = yap::SizingRule::Fixed(1000);
-   root->Height = yap::SizingRule::Fit();
-   root->Direction = yap::BoxDirection::Row;
-   root->HorizontalAlignment = yap::BoxAlignmentRule::Center;
-   root->VerticalAlignment = yap::BoxAlignmentRule::Center;
-   root->Position = yap::PositioningRule::Float(200, 200);
-   root->Padding = yap::BoxPadding(10);
-   root->ChildrenGap = 10;
+   yap::Box &root = screen.GetRoot();
+   root.Padding = yap::BoxPadding(16);
+   root.Direction = yap::BoxDirection::Column;
 
-   root->Background = yap::ColorRGB(0.5f, 0.5f, 0.5f);
+   for (int i = 0; i < 3; i++)
+   {
+      std::shared_ptr<yap::Box> box = std::make_shared<yap::Box>();
+      box->Position = i == 1 ? yap::PositioningRule::Relative(yap::Vec2(50, 50)) : yap::PositioningRule::Static();
+      box->Size.Width = i == 1 ? yap::AxisSizingRule::Fill() : yap::AxisSizingRule::Fixed(200);
+      box->Size.Height = yap::AxisSizingRule::Fixed(200);
 
-   child1->Width = yap::SizingRule::Fill();
-   child1->Height = yap::SizingRule::Fixed(200);
-   child1->Background = yap::ColorRGB(1.0f, 0.0f, 0.0f);
+      box->Background = yap::ColorRGB(1.0, 0.0, 0.0);
 
-   child2->Width = yap::SizingRule::Fixed(100);
-   child2->Height = yap::SizingRule::Fixed(100);
-   child2->Background = yap::ColorRGB(0.0f, 1.0f, 0.0f);
+      box->OnMouseMove = OnMouseMove;
+      box->OnMouseEnter = OnMouseEnter;
+      box->OnMouseLeave = OnMouseLeave;
+      box->OnPress = OnPress;
+      box->OnRelease = OnRelease;
 
-   child3->Width = yap::SizingRule::Fixed(100);
-   child3->Height = yap::SizingRule::Fixed(200);
-   child3->Background = yap::ColorRGB(0.0f, 1.0f, 1.0f);
+      root.AddChild(box);
+   }
 
-   root->AddChild(child1);
-   root->AddChild(child2);
-   root->AddChild(child3);
-
-   CV::init(&screenWidth, &screenHeight, "YAP - Yet Another Paint (Jaime Antonio Daniel Filho)");
+   CV::init(&windowWidth, &windowHeight, "YAP - Yet Another Paint (Jaime Antonio Daniel Filho)");
    CV::run();
 }

@@ -55,12 +55,12 @@ void CV::point(float x, float y)
    glEnd();
 }
 
-void CV::point(Vector2 p)
-{
-   glBegin(GL_POINTS);
-      glVertex2d(p.x, p.y);
-   glEnd();
-}
+// void CV::point(Vector2 p)
+// {
+//    glBegin(GL_POINTS);
+//       glVertex2d(p.x, p.y);
+//    glEnd();
+// }
 
 void CV::line( float x1, float y1, float x2, float y2 )
 {
@@ -89,15 +89,15 @@ void CV::rectFill( float x1, float y1, float x2, float y2 )
       glVertex2d(x2, y1);
    glEnd();
 }
-void CV::rectFill( Vector2 p1, Vector2 p2 )
-{
-   glBegin(GL_QUADS);
-      glVertex2d(p1.x, p1.y);
-      glVertex2d(p1.x, p2.y);
-      glVertex2d(p2.x, p2.y);
-      glVertex2d(p2.x, p1.y);
-   glEnd();
-}
+// void CV::rectFill( Vector2 p1, Vector2 p2 )
+// {
+//    glBegin(GL_QUADS);
+//       glVertex2d(p1.x, p1.y);
+//       glVertex2d(p1.x, p2.y);
+//       glVertex2d(p2.x, p2.y);
+//       glVertex2d(p2.x, p1.y);
+//    glEnd();
+// }
 
 void CV::polygon(float vx[], float vy[], int elems)
 {
@@ -184,12 +184,12 @@ void CV::translate(float offsetX, float offsetY)
    glTranslated(offsetX, offsetY, 0);
 }
 
-void CV::translate(Vector2 offset)
-{
-   glMatrixMode(GL_MODELVIEW);
-   glLoadIdentity();
-   glTranslated(offset.x, offset.y, 0);
-}
+// void CV::translate(Vector2 offset)
+// {
+//    glMatrixMode(GL_MODELVIEW);
+//    glLoadIdentity();
+//    glTranslated(offset.x, offset.y, 0);
+// }
 
 void CV::color(float r, float g, float b)
 {

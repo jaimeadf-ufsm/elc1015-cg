@@ -14,44 +14,61 @@ namespace yap
         Column
     };
 
-    enum class BoxAlignmentRule
+    enum class BoxAxisAlignment
     {
         Start,
         Center,
         End
     };
 
+    struct BoxAlignment
+    {
+        BoxAxisAlignment Horizontal;
+        BoxAxisAlignment Vertical;
+
+        BoxAlignment() :
+            Horizontal(BoxAxisAlignment::Start), Vertical(BoxAxisAlignment::Start) {}
+
+        BoxAlignment(BoxAxisAlignment horizontal, BoxAxisAlignment vertical) :
+            Horizontal(horizontal), Vertical(vertical) {}
+
+        BoxAxisAlignment GetAlignmentAlongAxis(Axis axis)
+        {
+            return (axis == Axis::X ? Horizontal : Vertical);
+        }
+    };
+
     class BoxPadding
     {
     public:
-        int Left;
-        int Right;
-        int Top;
-        int Bottom;
+        float Left;
+        float Right;
+        float Top;
+        float Bottom;
 
         BoxPadding()
             : Left(0), Right(0), Top(0), Bottom(0) {}
 
-        BoxPadding(int all)
+        BoxPadding(float all)
             : Left(all), Right(all), Top(all), Bottom(all) {}
 
-        BoxPadding(int horizontal, int vertical) : 
+        BoxPadding(float horizontal, float vertical) : 
             Left(horizontal), Right(horizontal), Top(vertical), Bottom(vertical) {}
 
-        BoxPadding(int left, int right, int top, int bottom) :
+        BoxPadding(float left, float right, float top, float bottom) :
             Left(left), Right(right), Top(top), Bottom(bottom) {}
     
-        int GetTotalPaddingAlongAxis(Axis axis) const
+        float GetTotalPaddingAlongAxis(Axis axis) const
         {
             return (axis == Axis::X) ? Left + Right : Top + Bottom;
         }
 
-        int GetStartPaddingAlongAxis(Axis axis) const
+        float GetStartPaddingAlongAxis(Axis axis) const
         {
             return (axis == Axis::X) ? Left : Top;
         }
 
-        int GetEndPaddingAlongAxis(Axis axis) const
+        float GetEndPaddingAlongAxis(Axis axis) const
         {
             return (axis == Axis::X) ? Right : Bottom;
         }
@@ -60,19 +77,89 @@ namespace yap
     class Box : public Element
     {
     private:
-        std::vector<std::shared_ptr<Element>> m_Children;
 
     public:
         BoxDirection Direction = BoxDirection::Row;
-        BoxPadding Padding = BoxPadding(0);
+        BoxAlignment Alignment = BoxAlignment();
 
-        BoxAlignmentRule HorizontalAlignment = BoxAlignmentRule::Start;
-        BoxAlignmentRule VerticalAlignment = BoxAlignmentRule::Start;
+        BoxPadding Padding = BoxPadding();
 
-        int ChildrenGap = 0;
+        float ChildrenGap = 0;
+
+        std::vector<std::shared_ptr<Element>> Children;
 
         Box()
         {
+        }
+
+        void ProcessMouseMove(Mouse& mouse) override
+        {
+            Element::ProcessMouseMove(mouse);
+
+            for (const auto& child : Children)
+            {
+                child->ProcessMouseMove(mouse);
+            }
+        }
+
+        void ProcessMouseUp(Mouse& mouse, MouseButton button) override
+        {
+            Element::ProcessMouseUp(mouse, button);
+
+            for (const auto& child : Children)
+            {
+                child->ProcessMouseUp(mouse, button);
+            }
+        }
+
+        void ProcessMouseDown(Mouse& mouse, MouseButton button) override
+        {
+            Element::ProcessMouseDown(mouse, button);
+
+            for (const auto& child : Children)
+            {
+                child->ProcessMouseDown(mouse, button);
+            }
+        }
+
+        void ProcessMouseScroll(Mouse& mouse, MouseScrollDirection direction) override
+        {
+            Element::ProcessMouseScroll(mouse, direction);
+
+            for (const auto& child : Children)
+            {
+                child->ProcessMouseScroll(mouse, direction);
+            }
+        }
+
+        void ProcessKeyboardDown(Keyboard& keyboard, KeyboardKey key) override
+        {
+            Element::ProcessKeyboardDown(keyboard, key);
+
+            for (const auto& child : Children)
+            {
+                child->ProcessKeyboardDown(keyboard, key);
+            }
+        }
+
+        void ProcessKeyboardUp(Keyboard& keyboard, KeyboardKey key) override
+        {
+            Element::ProcessKeyboardUp(keyboard, key);
+
+            for (auto& child : Children)
+            {
+                child->ProcessKeyboardUp(keyboard, key);
+            }
+        }
+
+        void Animate() override
+        {
+            Element::Animate();
+
+            for (const auto& child : Children)
+            {
+                child->Animate();
+            }
         }
 
         void ComputeIndependentDimensions() override
@@ -82,42 +169,47 @@ namespace yap
             Axis primaryAxis = GetDirectionPrimaryAxis();
             Axis secondaryAxis = GetDirectionSecondaryAxis();
 
-            int contentPrimarySize = 0;
-            int contentSecondarySize = 0;
+            float contentPrimarySize = 0;
+            float contentSecondarySize = 0;
 
-            for (const auto& child : m_Children)
+            for (const auto& child : Children)
             {
                 child->ComputeIndependentDimensions();
 
-                if (child->GetSizeAlongAxis(primaryAxis).IsIndependent())
+                if (!child->Position.IsStatic())
                 {
-                    contentPrimarySize += child->GetViewportSizeAlongAxis(primaryAxis);
+                    continue;
                 }
 
-                if (child->Height.IsIndependent())
+                if (child->Size.GetSizeAlongAxis(primaryAxis).IsIndependent())
+                {
+                    contentPrimarySize += child->ViewportSize.GetValueAlongAxis(primaryAxis);
+                }
+
+                if (child->Size.GetSizeAlongAxis(secondaryAxis).IsIndependent())
                 {
                     contentSecondarySize = std::max(
                         contentSecondarySize,
-                        child->GetViewportSizeAlongAxis(secondaryAxis)
+                        child->ViewportSize.GetValueAlongAxis(secondaryAxis)
                     );
                 }
             }
 
-            if (GetSizeAlongAxis(primaryAxis).IsFit())
+            if (Size.GetSizeAlongAxis(primaryAxis).IsFit())
             {
-                int viewportPrimarySize = contentPrimarySize;
+                float viewportPrimarySize = contentPrimarySize;
                 viewportPrimarySize += Padding.GetTotalPaddingAlongAxis(primaryAxis);
-                viewportPrimarySize += (m_Children.size() - 1) * ChildrenGap;
+                viewportPrimarySize += (Children.size() - 1) * ChildrenGap;
 
-                SetViewportSizeAlongAxis(primaryAxis, viewportPrimarySize);
+                ViewportSize.SetValueAlongAxis(primaryAxis, viewportPrimarySize);
             }
 
-            if (GetSizeAlongAxis(secondaryAxis).IsFit())
+            if (Size.GetSizeAlongAxis(secondaryAxis).IsFit())
             {
-                int viewportSecondarySize = contentSecondarySize;
+                float viewportSecondarySize = contentSecondarySize;
                 viewportSecondarySize += Padding.GetTotalPaddingAlongAxis(secondaryAxis);
 
-                SetViewportSizeAlongAxis(secondaryAxis, viewportSecondarySize);
+                ViewportSize.SetValueAlongAxis(secondaryAxis, viewportSecondarySize);
             }
         }
 
@@ -128,42 +220,61 @@ namespace yap
             Axis primaryAxis = GetDirectionPrimaryAxis();
             Axis secondaryAxis = GetDirectionSecondaryAxis();
 
-            int remainingPrimarySize = GetViewportSizeAlongAxis(primaryAxis);
-            int remainingSecondarySize = GetViewportSizeAlongAxis(secondaryAxis);
+            float remainingPrimarySize = ViewportSize.GetValueAlongAxis(primaryAxis);
+            float remainingSecondarySize = ViewportSize.GetValueAlongAxis(secondaryAxis);
 
             remainingPrimarySize -= Padding.GetTotalPaddingAlongAxis(primaryAxis);
             remainingSecondarySize -= Padding.GetTotalPaddingAlongAxis(secondaryAxis);
 
-            remainingPrimarySize -= (m_Children.size() - 1) * ChildrenGap;
+            int staticFillableChildrenCount = 0;
 
-            int fillableChildrenCount = 0;
-
-            for (auto& child : m_Children)
+            for (const auto& child : Children)
             {
-                remainingPrimarySize -= child->ViewportWidth;
-
-                if (child->GetSizeAlongAxis(primaryAxis).IsFill())
+                if (!child->Position.IsStatic())
                 {
-                    fillableChildrenCount++;
+                    continue;
+                }
+
+                remainingPrimarySize -= child->ViewportSize.GetValueAlongAxis(primaryAxis);
+                remainingPrimarySize -= ChildrenGap;
+
+                if (child->Size.GetSizeAlongAxis(primaryAxis).IsFill())
+                {
+                    staticFillableChildrenCount++;
                 }
             }
 
-            for (auto& child : m_Children)
+            for (auto& child : Children)
             {
-                if (child->GetSizeAlongAxis(primaryAxis).IsFill())
+                if (child->Position.IsStatic())
                 {
-                    child->SetViewportSizeAlongAxis(
-                        primaryAxis,
-                        remainingPrimarySize / fillableChildrenCount
-                    );
-                }
+                    if (child->Size.GetSizeAlongAxis(primaryAxis).IsFill())
+                    {
+                        child->ViewportSize.SetValueAlongAxis(
+                            primaryAxis,
+                            remainingPrimarySize / staticFillableChildrenCount
+                        );
+                    }
 
-                if (child->GetSizeAlongAxis(secondaryAxis).IsFill())
+                    if (child->Size.GetSizeAlongAxis(secondaryAxis).IsFill())
+                    {
+                        child->ViewportSize.SetValueAlongAxis(
+                            secondaryAxis,
+                            remainingSecondarySize
+                        );
+                    }
+                }
+                else
                 {
-                    child->SetViewportSizeAlongAxis(
-                        secondaryAxis,
-                        remainingSecondarySize
-                    );
+                    if (child->Size.Width.IsFill())
+                    {
+                        child->ViewportSize.X = ViewportSize.X;
+                    }
+
+                    if (child->Size.Height.IsFill())
+                    {
+                        child->ViewportSize.Y = ViewportSize.Y;
+                    }
                 }
             }
         }
@@ -175,62 +286,80 @@ namespace yap
             Axis primaryAxis = GetDirectionPrimaryAxis();
             Axis secondaryAxis = GetDirectionSecondaryAxis();
 
-            int primaryOffset = GetViewportPositionAlongAxis(primaryAxis);
-            int primaryContentSize = ChildrenGap * (m_Children.size() - 1);
+            float primaryOffset = ViewportPosition.GetValueAlongAxis(primaryAxis);
+            float primaryContentSize = 0;
 
-            for (const auto& child : m_Children)
+            for (const auto& child : Children)
             {
-                primaryContentSize += child->GetViewportSizeAlongAxis(primaryAxis);
+                if (!child->Position.IsStatic())
+                {
+                    continue;
+                }
+
+                primaryContentSize += child->ViewportSize.GetValueAlongAxis(primaryAxis);
+                primaryContentSize += ChildrenGap;
             }
 
-            switch (GetAlignmentAlongAxis(primaryAxis))
+            switch (Alignment.GetAlignmentAlongAxis(primaryAxis))
             {
-                case BoxAlignmentRule::Start:
+                case BoxAxisAlignment::Start:
                     primaryOffset += Padding.GetStartPaddingAlongAxis(primaryAxis);
                     break;
-                case BoxAlignmentRule::Center:
+                case BoxAxisAlignment::Center:
                     primaryOffset += std::max(
                         Padding.GetStartPaddingAlongAxis(primaryAxis),
                         (
-                            GetViewportSizeAlongAxis(primaryAxis) -
+                            ViewportSize.GetValueAlongAxis(primaryAxis) -
                             primaryContentSize
                         ) / 2
                     );
                     break;
-                case BoxAlignmentRule::End:
-                    primaryOffset += GetViewportSizeAlongAxis(primaryAxis);
+                case BoxAxisAlignment::End:
+                    primaryOffset += ViewportSize.GetValueAlongAxis(primaryAxis);
                     primaryOffset -= primaryContentSize;
                     primaryOffset -= Padding.GetEndPaddingAlongAxis(primaryAxis);
                     break;
             }
 
-            for (auto& child : m_Children)
+            for (auto& child : Children)
             {
-                int secondaryOffset = GetViewportPositionAlongAxis(secondaryAxis);
+                float secondaryOffset = ViewportPosition.GetValueAlongAxis(secondaryAxis);
 
-                switch (GetAlignmentAlongAxis(secondaryAxis))
+                switch (Alignment.GetAlignmentAlongAxis(secondaryAxis))
                 {
-                case BoxAlignmentRule::Start:
+                case BoxAxisAlignment::Start:
                     secondaryOffset += Padding.GetStartPaddingAlongAxis(secondaryAxis);
                     break;
-                case BoxAlignmentRule::Center:
+                case BoxAxisAlignment::Center:
                     secondaryOffset += (
-                        GetViewportSizeAlongAxis(secondaryAxis) -
-                        child->GetViewportSizeAlongAxis(secondaryAxis)
+                        ViewportSize.GetValueAlongAxis(secondaryAxis) -
+                        child->ViewportSize.GetValueAlongAxis(secondaryAxis)
                     ) / 2;
                     break;
-                case BoxAlignmentRule::End:
-                    secondaryOffset += GetViewportSizeAlongAxis(secondaryAxis);
+                case BoxAxisAlignment::End:
+                    secondaryOffset += ViewportSize.GetValueAlongAxis(secondaryAxis);
                     secondaryOffset -= Padding.GetEndPaddingAlongAxis(secondaryAxis);
-                    secondaryOffset -= child->GetViewportSizeAlongAxis(secondaryAxis);
+                    secondaryOffset -= child->ViewportSize.GetValueAlongAxis(secondaryAxis);
                     break;
                 }
 
-                child->SetViewportPositionAlongAxis(primaryAxis, primaryOffset);
-                child->SetViewportPositionAlongAxis(secondaryAxis, secondaryOffset);
+                switch (child->Position.GetMode())
+                {
+                    case PositioningMode::Static:
+                        child->ViewportPosition.SetValueAlongAxis(primaryAxis, primaryOffset);
+                        child->ViewportPosition.SetValueAlongAxis(secondaryAxis, secondaryOffset);
 
-                primaryOffset += child->GetViewportSizeAlongAxis(primaryAxis);
-                primaryOffset += ChildrenGap;
+                        primaryOffset += child->ViewportSize.GetValueAlongAxis(primaryAxis);
+                        primaryOffset += ChildrenGap;
+                        break;
+                    case PositioningMode::Relative:
+                        child->ViewportPosition = ViewportPosition + child->Position.GetOffset();
+                        break;
+                    default:
+                        break;
+                }
+
+                child->ComputePosition();
             }
         }
 
@@ -238,7 +367,7 @@ namespace yap
         {
             Element::Draw(context);
 
-            for (const auto& child : m_Children)
+            for (const auto& child : Children)
             {
                 child->Draw(context);
             }
@@ -246,25 +375,20 @@ namespace yap
 
         void AddChild(std::shared_ptr<Element> child)
         {
-            m_Children.push_back(child);
+            Children.push_back(child);
         }
 
         void RemoveChild(std::shared_ptr<Element> child)
         {
-            m_Children.erase(
-                std::remove(m_Children.begin(), m_Children.end(), child),
-                m_Children.end()
+            Children.erase(
+                std::remove(Children.begin(), Children.end(), child),
+                Children.end()
             );
         }
 
         const std::vector<std::shared_ptr<Element>>& GetChildren() const
         {
-            return m_Children;
-        }
-
-        BoxAlignmentRule GetAlignmentAlongAxis(Axis axis)
-        {
-            return (axis == Axis::X ? HorizontalAlignment : VerticalAlignment);
+            return Children;
         }
     
     private:
@@ -275,7 +399,7 @@ namespace yap
 
         Axis GetDirectionSecondaryAxis()
         {
-            return GetAxisComplement(GetDirectionPrimaryAxis());
+            return GetComplementAxis(GetDirectionPrimaryAxis());
         }
     };
 }

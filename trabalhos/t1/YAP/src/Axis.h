@@ -1,3 +1,5 @@
+#pragma once
+
 namespace yap
 {
     enum class Axis
@@ -6,7 +8,7 @@ namespace yap
         Y
     };
 
-    Axis GetAxisComplement(Axis axis)
+    Axis GetComplementAxis(Axis axis)
     {
         return (axis == Axis::X) ? Axis::Y : Axis::X;
     }

@@ -2,44 +2,24 @@
 
 namespace yap
 {
-    enum class SizingMode
+    enum class AxisSizingMode
     {
         Fixed,
         Fit,
         Fill
     };
 
-    class SizingRule
+    class AxisSizingRule
     {
     private:
-        SizingMode m_Mode;
+        AxisSizingMode m_Mode;
         int m_Value;
 
     public:
-        SizingRule() : m_Mode(SizingMode::Fit), m_Value(0) {}
-        SizingRule(const SizingRule& other) : m_Mode(other.m_Mode), m_Value(other.m_Value) {}
+        AxisSizingRule() : m_Mode(AxisSizingMode::Fit), m_Value(0) {}
+        AxisSizingRule(const AxisSizingRule& other) : m_Mode(other.m_Mode), m_Value(other.m_Value) {}
 
-        bool IsIndependent() const
-        {
-            return m_Mode == SizingMode::Fixed || m_Mode == SizingMode::Fit;
-        }
-
-        bool IsFixed() const
-        {
-            return m_Mode == SizingMode::Fixed;
-        }
-
-        bool IsFit() const
-        {
-            return m_Mode == SizingMode::Fit;
-        }
-
-        bool IsFill() const
-        {
-            return m_Mode == SizingMode::Fill;
-        }
-
-        SizingMode GetMode() const
+        AxisSizingMode GetMode() const
         {
             return m_Mode;
         }
@@ -49,22 +29,65 @@ namespace yap
             return m_Value;
         }
 
-        static SizingRule Fit()
+        bool IsIndependent() const
         {
-            return SizingRule(SizingMode::Fit, 0);
+            return m_Mode == AxisSizingMode::Fixed || m_Mode == AxisSizingMode::Fit;
         }
 
-        static SizingRule Fixed(int value)
+        bool IsFixed() const
         {
-            return SizingRule(SizingMode::Fixed, value);
+            return m_Mode == AxisSizingMode::Fixed;
         }
 
-        static SizingRule Fill()
+        bool IsFit() const
         {
-            return SizingRule(SizingMode::Fill, 0);
+            return m_Mode == AxisSizingMode::Fit;
+        }
+
+        bool IsFill() const
+        {
+            return m_Mode == AxisSizingMode::Fill;
+        }
+
+        static AxisSizingRule Fit()
+        {
+            return AxisSizingRule(AxisSizingMode::Fit, 0);
+        }
+
+        static AxisSizingRule Fixed(int value)
+        {
+            return AxisSizingRule(AxisSizingMode::Fixed, value);
+        }
+
+        static AxisSizingRule Fill()
+        {
+            return AxisSizingRule(AxisSizingMode::Fill, 0);
         }
 
     private:
-        SizingRule(SizingMode kind, int value) : m_Mode(kind), m_Value(value) {}
+        AxisSizingRule(AxisSizingMode kind, int value) : m_Mode(kind), m_Value(value) {}
+    };
+
+    struct SizingRule
+    {
+        AxisSizingRule Width;
+        AxisSizingRule Height;
+
+        void SetSizeAlongAxis(Axis axis, AxisSizingRule size)
+        {
+            if (axis == Axis::X)
+            {
+                Width = size;
+            }
+            else
+            {
+                Height = size;
+            }
+        }
+
+        AxisSizingRule GetSizeAlongAxis(Axis axis)
+        {
+            return (axis == Axis::X ? Width : Height);
+        }
     };
 }
