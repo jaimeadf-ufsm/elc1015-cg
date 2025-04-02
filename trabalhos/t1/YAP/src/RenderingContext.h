@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "Vec2.h"
 #include "RenderingCommand.h"
 
 namespace yap
@@ -17,21 +18,31 @@ namespace yap
         void Color(const ColorRGB& color)
         {
             ColorRenderingCommandArguments args = {
-                color.R,
-                color.G,
-                color.B
+                .R = color.R,
+                .G = color.G,
+                .B = color.B
             };
 
             m_Commands.emplace_back(args);
         }
 
-        void FillRectangle(float x, float y, float width, float height)
+        void FillPoint(const Vec2 &point)
+        {
+            FillPointRenderingCommandArguments args = {
+                .X = point.X,
+                .Y = point.Y
+            };
+
+            m_Commands.emplace_back(args);
+        }
+
+        void FillRectangle(const Vec2 &position, const Vec2 &size)
         {
             FillRectangleRenderingCommandArguments args = {
-                x,
-                y,
-                width,
-                height
+                .X = position.X,
+                .Y = position.Y,
+                .Width = size.X,
+                .Height = size.Y
             };
 
             m_Commands.emplace_back(args);

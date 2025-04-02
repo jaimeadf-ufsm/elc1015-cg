@@ -5,7 +5,7 @@
 #include "Axis.h"
 #include "SizingRule.h"
 #include "PositioningRule.h"
-#include "ColorRGB.h"
+#include "Color.h"
 #include "Vec2.h"
 
 #include "Mouse.h"
@@ -20,13 +20,12 @@ namespace yap
     private:
         bool m_Hovered = false;
         bool m_Pressed = false;
+
     public:
         int ZIndex = 0;
 
         SizingRule Size = SizingRule();
         PositioningRule Position = PositioningRule::Static();
-
-        ColorRGB Background = ColorRGB();
 
         Vec2 ViewportSize = Vec2();
         Vec2 ViewportPosition = Vec2();
@@ -127,16 +126,14 @@ namespace yap
 
         virtual void Animate() {}
 
-        virtual void Draw(RenderingContext& context)
-        {
-            context.Color(Background);
-            context.FillRectangle(ViewportPosition.X, ViewportPosition.Y, ViewportSize.X, ViewportSize.Y);
-        }
+        virtual void Draw(RenderingContext& context) = 0;
 
         bool Intersects(const Vec2& point) const
         {
-            return (point.X >= ViewportPosition.X && point.X <= ViewportPosition.X + ViewportSize.X &&
-                    point.Y >= ViewportPosition.Y && point.Y <= ViewportPosition.Y + ViewportSize.Y);
+            return (
+                point.X >= ViewportPosition.X && point.X <= ViewportPosition.X + ViewportSize.X &&
+                point.Y >= ViewportPosition.Y && point.Y <= ViewportPosition.Y + ViewportSize.Y
+            );
         }
 
         bool IsHovered() const { 

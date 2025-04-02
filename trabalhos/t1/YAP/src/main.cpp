@@ -22,9 +22,14 @@
 
 #include "gl_canvas2d.h"
 
+#include "BMP.h"
+#include "Bitmap.h"
+
 #include "RenderingContext.h"
 #include "RenderingEngine.h"
 #include "Screen.h"
+
+#include "Image.h"
 
 yap::Screen screen;
 
@@ -48,18 +53,20 @@ void render()
 
 void keyboard(int key)
 {
-   printf("\nTecla: %d" , key);
+   // printf("\nTecla: %d" , key);
    screen.ProcessKeyboardDown(key);
 }
 
 void keyboardUp(int key)
 {
-   printf("\nLiberou: %d" , key);
+   // printf("\nLiberou: %d" , key);
    screen.ProcessKeyboardUp(key);
 }
 
 void mouse(int button, int state, int wheel, int direction, int x, int y)
 {
+   // printf("\nmouse %d %d %d %d %d %d", button, state, wheel, direction,  x, y);
+
    if (button == -2 && state == -2 && wheel == -2 && direction == -2)
    {
       screen.ProcessMouseMove(x, y);
@@ -79,62 +86,24 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
    {
       screen.ProcessMouseScroll((yap::MouseScrollDirection)direction);
    }
-
-   printf("\nmouse %d %d %d %d %d %d", button, state, wheel, direction,  x, y);
-}
-
-void OnMouseMove(yap::Element &element, yap::Vec2 position)
-{
-   printf("Mouse moved to (%f, %f)\n", position.X, position.Y);
-}
-
-void OnMouseEnter(yap::Element &element)
-{
-   element.Background = yap::ColorRGB(0.0f, 1.0f, 0.0f);
-   printf("Mouse entered\n");
-}
-
-void OnMouseLeave(yap::Element &element)
-{
-   element.Background = yap::ColorRGB(1.0f, 0.0f, 0.0f);
-   printf("Mouse left\n");
-}
-
-void OnPress(yap::Element &element)
-{
-   element.Background = yap::ColorRGB(0.0f, 0.0f, 1.0f);
-   printf("Mouse pressed\n");
-}
-
-void OnRelease(yap::Element &element)
-{
-   element.Background = yap::ColorRGB(1.0f, 0.0f, 1.0f);
-   printf("Mouse released\n");
 }
 
 int main(void)
 {
+   std::shared_ptr<yap::Bitmap> a = std::make_shared<yap::Bitmap>(std::move(yap::BMP::Load("YAP/images/a.bmp")));
+
+   yap::BMP::Save("YAP/images/b.bmp", *a);
+
    yap::Box &root = screen.GetRoot();
    root.Padding = yap::BoxPadding(16);
-   root.Direction = yap::BoxDirection::Column;
+   root.Background = yap::ColorRGB(1.0f, 1.0f, 1.0f);
+   root.Alignment.Horizontal = yap::BoxAxisAlignment::Center;
+   root.Alignment.Vertical = yap::BoxAxisAlignment::Center;
 
-   for (int i = 0; i < 3; i++)
-   {
-      std::shared_ptr<yap::Box> box = std::make_shared<yap::Box>();
-      box->Position = i == 1 ? yap::PositioningRule::Relative(yap::Vec2(50, 50)) : yap::PositioningRule::Static();
-      box->Size.Width = i == 1 ? yap::AxisSizingRule::Fill() : yap::AxisSizingRule::Fixed(200);
-      box->Size.Height = yap::AxisSizingRule::Fixed(200);
+   std::shared_ptr<yap::Image> image = std::make_shared<yap::Image>();
+   image->Source = a;
 
-      box->Background = yap::ColorRGB(1.0, 0.0, 0.0);
-
-      box->OnMouseMove = OnMouseMove;
-      box->OnMouseEnter = OnMouseEnter;
-      box->OnMouseLeave = OnMouseLeave;
-      box->OnPress = OnPress;
-      box->OnRelease = OnRelease;
-
-      root.AddChild(box);
-   }
+   root.AddChild(image);
 
    CV::init(&windowWidth, &windowHeight, "YAP - Yet Another Paint (Jaime Antonio Daniel Filho)");
    CV::run();

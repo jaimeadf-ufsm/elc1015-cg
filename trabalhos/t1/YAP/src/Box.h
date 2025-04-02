@@ -83,8 +83,9 @@ namespace yap
         BoxAlignment Alignment = BoxAlignment();
 
         BoxPadding Padding = BoxPadding();
+        float Gap = 0;
 
-        float ChildrenGap = 0;
+        ColorRGB Background = ColorRGB();
 
         std::vector<std::shared_ptr<Element>> Children;
 
@@ -172,6 +173,7 @@ namespace yap
             float contentPrimarySize = 0;
             float contentSecondarySize = 0;
 
+
             for (const auto& child : Children)
             {
                 child->ComputeIndependentDimensions();
@@ -193,13 +195,14 @@ namespace yap
                         child->ViewportSize.GetValueAlongAxis(secondaryAxis)
                     );
                 }
+
+                contentPrimarySize += Gap;
             }
 
             if (Size.GetSizeAlongAxis(primaryAxis).IsFit())
             {
                 float viewportPrimarySize = contentPrimarySize;
                 viewportPrimarySize += Padding.GetTotalPaddingAlongAxis(primaryAxis);
-                viewportPrimarySize += (Children.size() - 1) * ChildrenGap;
 
                 ViewportSize.SetValueAlongAxis(primaryAxis, viewportPrimarySize);
             }
@@ -226,7 +229,7 @@ namespace yap
             remainingPrimarySize -= Padding.GetTotalPaddingAlongAxis(primaryAxis);
             remainingSecondarySize -= Padding.GetTotalPaddingAlongAxis(secondaryAxis);
 
-            int staticFillableChildrenCount = 0;
+            int staticFillableChildrenCount = 0.0f;
 
             for (const auto& child : Children)
             {
@@ -236,7 +239,7 @@ namespace yap
                 }
 
                 remainingPrimarySize -= child->ViewportSize.GetValueAlongAxis(primaryAxis);
-                remainingPrimarySize -= ChildrenGap;
+                remainingPrimarySize -= Gap;
 
                 if (child->Size.GetSizeAlongAxis(primaryAxis).IsFill())
                 {
@@ -287,7 +290,7 @@ namespace yap
             Axis secondaryAxis = GetDirectionSecondaryAxis();
 
             float primaryOffset = ViewportPosition.GetValueAlongAxis(primaryAxis);
-            float primaryContentSize = 0;
+            float primaryContentSize = 0.0f;
 
             for (const auto& child : Children)
             {
@@ -297,7 +300,7 @@ namespace yap
                 }
 
                 primaryContentSize += child->ViewportSize.GetValueAlongAxis(primaryAxis);
-                primaryContentSize += ChildrenGap;
+                primaryContentSize += Gap;
             }
 
             switch (Alignment.GetAlignmentAlongAxis(primaryAxis))
@@ -311,7 +314,7 @@ namespace yap
                         (
                             ViewportSize.GetValueAlongAxis(primaryAxis) -
                             primaryContentSize
-                        ) / 2
+                        ) / 2.0f
                     );
                     break;
                 case BoxAxisAlignment::End:
@@ -334,7 +337,7 @@ namespace yap
                     secondaryOffset += (
                         ViewportSize.GetValueAlongAxis(secondaryAxis) -
                         child->ViewportSize.GetValueAlongAxis(secondaryAxis)
-                    ) / 2;
+                    ) / 2.0f;
                     break;
                 case BoxAxisAlignment::End:
                     secondaryOffset += ViewportSize.GetValueAlongAxis(secondaryAxis);
@@ -350,7 +353,7 @@ namespace yap
                         child->ViewportPosition.SetValueAlongAxis(secondaryAxis, secondaryOffset);
 
                         primaryOffset += child->ViewportSize.GetValueAlongAxis(primaryAxis);
-                        primaryOffset += ChildrenGap;
+                        primaryOffset += Gap;
                         break;
                     case PositioningMode::Relative:
                         child->ViewportPosition = ViewportPosition + child->Position.GetOffset();
@@ -365,7 +368,8 @@ namespace yap
 
         void Draw(RenderingContext& context) override
         {
-            Element::Draw(context);
+            context.Color(Background);
+            context.FillRectangle(ViewportPosition, ViewportSize);
 
             for (const auto& child : Children)
             {

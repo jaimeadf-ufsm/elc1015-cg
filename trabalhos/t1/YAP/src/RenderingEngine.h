@@ -26,6 +26,9 @@ namespace yap
                 case RenderingCommandKind::Color:
                     ProcessColorCommand(command.GetColorArgs());
                     break;
+                case RenderingCommandKind::FillPoint:
+                    ProcessFillPointCommand(command.GetFillPointArgs());
+                    break;
                 case RenderingCommandKind::FillRectangle:
                     ProcessFillRectangleCommand(command.GetFillRectangleArgs());
                     break;
@@ -41,6 +44,17 @@ namespace yap
             //    args.R,
             //    args.G,
             //    args.B
+            // );
+        }
+
+        void ProcessFillPointCommand(const FillPointRenderingCommandArguments& args)
+        {
+            CV::point(args.X, args.Y);
+
+            // printf(
+            //    "FillPoint(X = %f, Y = %f)\n",
+            //    args.X,
+            //    args.Y
             // );
         }
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ColorRGB.h"
+#include "Color.h"
 
 namespace yap
 {
@@ -9,6 +9,12 @@ namespace yap
         float R;
         float G;
         float B;
+    };
+
+    struct FillPointRenderingCommandArguments
+    {
+        float X;
+        float Y;
     };
 
     struct FillRectangleRenderingCommandArguments
@@ -22,6 +28,7 @@ namespace yap
     enum class RenderingCommandKind
     {
         Color,
+        FillPoint,
         FillRectangle
     };
 
@@ -32,12 +39,16 @@ namespace yap
         const union 
         {
             ColorRenderingCommandArguments m_ColorArgs;
+            FillPointRenderingCommandArguments m_FillPointArgs;
             FillRectangleRenderingCommandArguments m_FillRectangleArgs;
         };
 
     public:
         RenderingCommand(const ColorRenderingCommandArguments& args) : 
             m_Kind(RenderingCommandKind::Color), m_ColorArgs(args) {}
+        
+        RenderingCommand(const FillPointRenderingCommandArguments& args) :
+            m_Kind(RenderingCommandKind::FillPoint), m_FillPointArgs(args) {}
 
         RenderingCommand(const FillRectangleRenderingCommandArguments& args) :
             m_Kind(RenderingCommandKind::FillRectangle), m_FillRectangleArgs(args) {}
@@ -48,6 +59,10 @@ namespace yap
 
         const ColorRenderingCommandArguments& GetColorArgs() const {
             return m_ColorArgs;
+        }
+
+        const FillPointRenderingCommandArguments& GetFillPointArgs() const {
+            return m_FillPointArgs;
         }
 
         const FillRectangleRenderingCommandArguments& GetFillRectangleArgs() const {
