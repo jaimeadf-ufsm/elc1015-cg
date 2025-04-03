@@ -29,8 +29,6 @@
 #include "RenderingEngine.h"
 #include "Screen.h"
 
-#include "Image.h"
-
 yap::Screen screen;
 
 yap::RenderingContext renderingContext;
@@ -95,12 +93,12 @@ int main(void)
    yap::BMP::Save("YAP/images/b.bmp", *a);
 
    yap::Box &root = screen.GetRoot();
-   root.Padding = yap::BoxPadding(16);
+   root.Padding = yap::LayoutPadding(16);
    root.Background = yap::ColorRGB(1.0f, 1.0f, 1.0f);
-   root.Alignment.Horizontal = yap::BoxAxisAlignment::Center;
-   root.Alignment.Vertical = yap::BoxAxisAlignment::Center;
+   root.Alignment.Horizontal = yap::LayoutAxisAlignment::Center;
+   root.Alignment.Vertical = yap::LayoutAxisAlignment::Center;
 
-   std::shared_ptr<yap::Image> image = std::make_shared<yap::Image>();
+   std::shared_ptr<yap::Bitmap> image = std::make_shared<yap::Bitmap>();
    image->Source = a;
 
    root.AddChild(image);

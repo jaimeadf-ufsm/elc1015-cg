@@ -60,6 +60,7 @@ namespace yap
         {
             return PositioningRule(PositioningMode::Absolute, offset);
         }
+    
     private:
         PositioningRule(PositioningMode kind, const Vec2& offset) :
             m_Mode(kind), m_Offset(offset) {}

@@ -25,6 +25,15 @@ namespace yap
         ColorRGBA(const ColorRGB& rgb) : R(rgb.R), G(rgb.G), B(rgb.B), A(1.0f) {}
         ColorRGBA(const ColorRGB& rgb, float a) : R(rgb.R), G(rgb.G), B(rgb.B), A(a) {}
 
+        ColorRGB Blend(const ColorRGB& other) const
+        {
+            return ColorRGB(
+                R * (1 - A) + other.R * A,
+                G * (1 - A) + other.G * A,
+                B * (1 - A) + other.B * A
+            );
+        }
+
         ColorRGB ToRGB() const
         {
             return ColorRGB(R, G, B);
