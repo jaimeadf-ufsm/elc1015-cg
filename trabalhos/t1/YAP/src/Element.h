@@ -1,12 +1,11 @@
 #pragma once
 
 #include <functional>
+#include <unordered_set>
+#include <string>
 
-#include "Axis.h"
-#include "SizingRule.h"
-#include "PositioningRule.h"
-#include "Color.h"
 #include "Vec2.h"
+#include "StyleSheet.h"
 
 #include "Mouse.h"
 #include "Keyboard.h"
@@ -15,56 +14,60 @@
 
 namespace yap
 {
+    class Screen;
+
     class Element
     {
     private:
+        bool m_Focused = false;
         bool m_Hovered = false;
         bool m_Pressed = false;
 
+        std::shared_ptr<Screen> m_Screen;
+
+        std::vector<std::pair<std::string, StyleSheet>> m_Styles;
+        std::unordered_set<std::string> m_Traits;
+
     public:
-        int ZIndex = 0;
+        Vec2 Size = Vec2();
+        Vec2 Position = Vec2();
 
-        SizingRule Size = SizingRule();
-        PositioningRule Position = PositioningRule::Static();
+        ComputedStyleSheet ComputedStyle;
 
-        Vec2 ViewportSize = Vec2();
-        Vec2 ViewportPosition = Vec2();
-
-        std::function<void(Element&)> OnPress = nullptr;
-        std::function<void(Element&)> OnRelease = nullptr;
-        std::function<void(Element&, Vec2)> OnMouseMove = nullptr;
+        std::function<void(Element&)> OnMount = nullptr;
+        std::function<void(Element&)> OnUnmount = nullptr;
+        std::function<void(Element&)> OnAnimate = nullptr;
+        std::function<void(Element&)> OnMouseMove = nullptr;
         std::function<void(Element&)> OnMouseEnter = nullptr;
         std::function<void(Element&)> OnMouseLeave = nullptr;
+        std::function<void(Element&)> OnMousePress = nullptr;
+        std::function<void(Element&)> OnMouseRelease = nullptr;
+        std::function<void(Element&)> OnMouseDrag = nullptr;
+        std::function<void(Element&)> OnMouseClick = nullptr;
 
         virtual void ProcessMouseMove(Mouse &mouse) 
         {
             if (Intersects(mouse.Position))
             {
-                if (OnMouseMove)
-                {
-                    OnMouseMove(*this, mouse.Position - ViewportPosition);
-                }
-
                 if (!m_Hovered)
                 {
                     m_Hovered = true;
-
-                    if (OnMouseEnter)
-                    {
-                        OnMouseEnter(*this);
-                    }
+                    HandleMouseEnter(mouse);
                 }
+
+                HandleMouseMove(mouse);
             }
             else
             {
+                if (m_Pressed)
+                {
+                    HandleMouseMove(mouse);
+                }
+
                 if (m_Hovered)
                 {
                     m_Hovered = false;
-
-                    if (OnMouseLeave)
-                    {
-                        OnMouseLeave(*this);
-                    }
+                    HandleMouseLeave(mouse);
                 }
             }
         }
@@ -73,24 +76,30 @@ namespace yap
         {
             if (m_Hovered)
             {
-                m_Pressed = true;
+                m_Focused = true;
 
-                if (OnPress)
+                if (button == MouseButton::Left)
                 {
-                    OnPress(*this);
+                    m_Pressed = true;
+                    HandleMousePress(mouse);
                 }
+            }
+            else
+            {
+                m_Focused = false;
             }
         }
 
         virtual void ProcessMouseUp(Mouse &mouse, MouseButton button)
         {
-            if (m_Pressed)
+            if (m_Pressed && button == MouseButton::Left)
             {
                 m_Pressed = false;
+                HandleMouseRelease(mouse);
 
-                if (OnRelease)
+                if (Intersects(mouse.Position))
                 {
-                    OnRelease(*this);
+                    HandleMouseClick(mouse);
                 }
             }
         }
@@ -99,16 +108,95 @@ namespace yap
         virtual void ProcessKeyboardDown(Keyboard &keyboard, KeyboardKey key) {}
         virtual void ProcessKeyboardUp(Keyboard &keyboard, KeyboardKey key) {}
 
-        virtual void ComputeIndependentDimensions()
+        virtual void Mount(const std::shared_ptr<Screen>& screen)
         {
-            if (Size.Width.IsFixed())
+            m_Screen = screen;
+
+            if (OnMount)
             {
-                ViewportSize.X = Size.Width.GetValue();
+                OnMount(*this);
+            }
+        }
+
+        virtual void Unmount()
+        {
+            if (OnUnmount)
+            {
+                OnUnmount(*this);
             }
 
-            if (Size.Height.IsFixed())
+            m_Screen.reset();
+        }
+
+        virtual void Animate()
+        {
+            if (OnAnimate)
             {
-                ViewportSize.Y = Size.Height.GetValue();
+                OnAnimate(*this);
+            }
+        }
+
+        virtual void ComputeStyle(const ComputedStyleSheet& parentStyle)
+        {
+            ComputedStyle.Reset();
+            ComputedStyle.Inherit(parentStyle);
+
+            for (const auto& entry : m_Styles)
+            {
+                const std::string& selector = entry.first;
+                const StyleSheet& style = entry.second;
+
+                size_t colonPosition = selector.find(':');
+                std::string trait = selector.substr(0, colonPosition);
+                std::string state;
+
+                if (colonPosition != std::string::npos)
+                {
+                    state = selector.substr(colonPosition + 1);
+                }
+
+                if (!HasTrait(trait))
+                {
+                    continue;
+                }
+
+                if (state == "")
+                {
+                    ComputedStyle.Override(style);
+                }
+                else if (state == "hover" && m_Hovered)
+                {
+                    ComputedStyle.Override(style);
+                }
+                else if (state == "active" && m_Pressed)
+                {
+                    ComputedStyle.Override(style);
+                }
+                else if (state == "focus" && m_Focused)
+                {
+                    ComputedStyle.Override(style);
+                }
+            }
+        }
+
+        virtual void ComputeIndependentDimensions()
+        {
+            if (ComputedStyle.Size.Width.IsFixed())
+            {
+                Size.X = ComputedStyle.Size.Width.GetValue();
+            }
+            else
+            {
+                Size.X = 0;
+            }
+
+            if (ComputedStyle.Size.Height.IsFixed())
+            {
+                Size.Y = ComputedStyle.Size.Height.GetValue();
+            }
+            else
+            {
+                Size.Y = 0;
             }
         }
 
@@ -118,30 +206,150 @@ namespace yap
 
         virtual void ComputePosition()
         {
-            if (Position.IsAbsolute())
+            if (ComputedStyle.Position.IsAbsolute())
             {
-                ViewportPosition = Position.GetOffset();
+                Position = ComputedStyle.Position.GetOffset();
             }
         }
-
-        virtual void Animate() {}
 
         virtual void Draw(RenderingContext& context) = 0;
 
         bool Intersects(const Vec2& point) const
         {
             return (
-                point.X >= ViewportPosition.X && point.X <= ViewportPosition.X + ViewportSize.X &&
-                point.Y >= ViewportPosition.Y && point.Y <= ViewportPosition.Y + ViewportSize.Y
+                point.X >= Position.X && point.X <= Position.X + Size.X &&
+                point.Y >= Position.Y && point.Y <= Position.Y + Size.Y
             );
         }
 
-        bool IsHovered() const { 
+        bool IsHovered() const
+        { 
             return m_Hovered; 
         }
 
-        bool IsPressed() const {
+        bool IsPressed() const
+        {
             return m_Pressed;
+        }
+
+        void ToggleTrait(const std::string& trait, bool enable = false)
+        {
+            if (enable)
+            {
+                EnableTrait(trait);
+            }
+            else
+            {
+                DisableTrait(trait);
+            }
+        }
+
+        void EnableTrait(const std::string& trait)
+        {
+            m_Traits.insert(trait);
+        }
+
+        void DisableTrait(const std::string& trait)
+        {
+            m_Traits.erase(trait);
+        }
+
+        bool HasTrait(const std::string& trait) const
+        {
+            if (trait.empty())
+            {
+                return true;
+            }
+
+            return m_Traits.find(trait) != m_Traits.end();
+        }
+
+        void SetStyle(const StyleSheet& style)
+        {
+            SetStyle("", style);
+        }
+    
+        void SetStyle(const std::string& target, const StyleSheet& style)
+        {
+            for (auto& entry : m_Styles)
+            {
+                if (entry.first == target)
+                {
+                    entry.second = style;
+                    return;
+                }
+            }
+
+            m_Styles.push_back(std::make_pair(target, style));
+        }
+
+        StyleSheet GetStyle(const std::string& target = "") const
+        {
+            for (const auto& entry : m_Styles)
+            {
+                const std::string& selector = entry.first;
+
+                if (selector == target)
+                {
+                    return entry.second;
+                }
+            }
+
+            return StyleSheet();
+        }
+
+        const std::shared_ptr<Screen>& GetScreen() const
+        {
+            return m_Screen;
+        }
+    
+    protected:
+        virtual void HandleMouseMove(Mouse &mouse)
+        {
+            if (OnMouseMove)
+            {
+                OnMouseMove(*this);
+            }
+        }
+
+        virtual void HandleMouseEnter(Mouse &mouse)
+        {
+            if (OnMouseEnter)
+            {
+                OnMouseEnter(*this);
+            }
+        }
+
+        virtual void HandleMouseLeave(Mouse &mouse)
+        {
+            if (OnMouseLeave)
+            {
+                OnMouseLeave(*this);
+            }
+        }
+
+        virtual void HandleMousePress(Mouse &mouse)
+        {
+            if (OnMousePress)
+            {
+                OnMousePress(*this);
+            }
+        }
+
+        virtual void HandleMouseRelease(Mouse &mouse)
+        {
+            if (OnMouseRelease)
+            {
+                OnMouseRelease(*this);
+            }
+        }
+
+        virtual void HandleMouseClick(Mouse &mouse)
+        {
+            if (OnMouseClick)
+            {
+                OnMouseClick(*this);
+            }
         }
     };
 }

@@ -7,22 +7,22 @@ namespace yap
     class BoxPadding
     {
     public:
-        float Left;
-        float Right;
         float Top;
+        float Right;
         float Bottom;
+        float Left;
 
         BoxPadding()
-            : Left(0), Right(0), Top(0), Bottom(0) {}
+            : Top(0), Right(0), Bottom(0), Left(0) {}
 
-        BoxPadding(float all)
-            : Left(all), Right(all), Top(all), Bottom(all) {}
+        BoxPadding(float all) :
+            Top(all), Right(all), Bottom(all), Left(all) {}
 
         BoxPadding(float horizontal, float vertical) : 
-            Left(horizontal), Right(horizontal), Top(vertical), Bottom(vertical) {}
-
-        BoxPadding(float left, float right, float top, float bottom) :
-            Left(left), Right(right), Top(top), Bottom(bottom) {}
+            Top(vertical), Right(horizontal), Bottom(vertical), Left(horizontal) {}
+        
+        BoxPadding(float top, float right, float bottom, float left) :
+            Top(top), Right(right), Bottom(bottom), Left(left) {}
     
         float GetTotalPaddingAlongAxis(Axis axis) const
         {

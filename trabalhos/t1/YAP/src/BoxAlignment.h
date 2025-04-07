@@ -4,8 +4,7 @@
 
 namespace yap
 {
-
-    enum class LayoutAxisAlignment
+    enum class BoxAxisAlignment
     {
         Start,
         Center,
@@ -14,16 +13,16 @@ namespace yap
 
     struct BoxAlignment
     {
-        LayoutAxisAlignment Horizontal;
-        LayoutAxisAlignment Vertical;
+        BoxAxisAlignment Horizontal;
+        BoxAxisAlignment Vertical;
 
         BoxAlignment() :
-            Horizontal(LayoutAxisAlignment::Start), Vertical(LayoutAxisAlignment::Start) {}
+            Horizontal(BoxAxisAlignment::Start), Vertical(BoxAxisAlignment::Start) {}
 
-        BoxAlignment(LayoutAxisAlignment horizontal, LayoutAxisAlignment vertical) :
+        BoxAlignment(BoxAxisAlignment horizontal, BoxAxisAlignment vertical) :
             Horizontal(horizontal), Vertical(vertical) {}
 
-        LayoutAxisAlignment GetAlignmentAlongAxis(Axis axis)
+        BoxAxisAlignment GetAlignmentAlongAxis(Axis axis)
         {
             return (axis == Axis::X ? Horizontal : Vertical);
         }

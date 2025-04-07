@@ -14,6 +14,11 @@ namespace yap
         {
             std::ifstream file(fileName, std::ios::binary);
 
+            if (!file)
+            {
+                throw std::runtime_error("Unable to open BMP file");
+            }
+
             Header header;
             InfoHeader infoHeader;
 
@@ -40,14 +45,9 @@ namespace yap
             file.read(reinterpret_cast<char*>(&infoHeader.ColorUsed), sizeof(infoHeader.ColorUsed));
             file.read(reinterpret_cast<char*>(&infoHeader.ColorImportant), sizeof(infoHeader.ColorImportant));
 
-            if (infoHeader.BitsPerPixel != 24)
+            if (infoHeader.BitsPerPixel != 24 && infoHeader.BitsPerPixel != 32)
             {
-                throw std::runtime_error("Only 24-bit BMP files are supported");
-            }
-
-            if (infoHeader.Compression != 0)
-            {
-                throw std::runtime_error("Compressed BMP files are not supported");
+                throw std::runtime_error("Only 24-bit and 32-bit BMP files are supported");
             }
 
             if (infoHeader.Planes != 1)
@@ -59,6 +59,33 @@ namespace yap
             {
                 throw std::runtime_error("Invalid BMP dimensions");
             }
+
+            if (infoHeader.BitsPerPixel == 24 && infoHeader.Compression != 0)
+            {
+                throw std::runtime_error("24-bit compressed BMP files are not supported");
+            }
+
+            if (infoHeader.BitsPerPixel == 32 && infoHeader.Compression != 0)
+            {
+                if (infoHeader.Compression == 3)
+                {
+                    file.read(reinterpret_cast<char*>(&infoHeader.RedMask), sizeof(infoHeader.RedMask));
+                    file.read(reinterpret_cast<char*>(&infoHeader.GreenMask), sizeof(infoHeader.GreenMask));
+                    file.read(reinterpret_cast<char*>(&infoHeader.BlueMask), sizeof(infoHeader.BlueMask));
+                    file.read(reinterpret_cast<char*>(&infoHeader.AlphaMask), sizeof(infoHeader.AlphaMask));
+
+                    if (infoHeader.RedMask != 0x00FF0000 || infoHeader.GreenMask != 0x0000FF00 || infoHeader.BlueMask != 0x000000FF || infoHeader.AlphaMask != 0xFF000000)
+                    {
+                        throw std::runtime_error("Unsupported BMP masks for 32-bit BMP file compressed with BI_BITFIELDS");
+                    }
+                }
+                else
+                {
+                    throw std::runtime_error("32-bit compressed BMP files are not supported");
+                }
+            }
+
+            uint32_t channels = infoHeader.BitsPerPixel / 8;
 
             uint32_t rowSize = infoHeader.BitsPerPixel * infoHeader.Width + 31;
             rowSize /= 32;
@@ -76,11 +103,17 @@ namespace yap
 
                 for (int x = 0; x < infoHeader.Width; ++x)
                 {
-                    uint8_t b = row[x * 3];
-                    uint8_t g = row[x * 3 + 1];
-                    uint8_t r = row[x * 3 + 2];
+                    uint8_t b = row[x * channels];
+                    uint8_t g = row[x * channels + 1];
+                    uint8_t r = row[x * channels + 2];
+                    uint8_t a = 255;
 
-                    bitmap.SetPixel(x, infoHeader.Height - y - 1, ColorRGBA(r, g, b));
+                    if (infoHeader.BitsPerPixel == 32)
+                    {
+                        a = row[x * channels + 3];
+                    }
+
+                    bitmap.SetPixel(x, infoHeader.Height - y - 1, ColorRGBA(r, g, b, a));
                 }
             }
 
@@ -182,6 +215,10 @@ namespace yap
             int32_t YPixelsPerMeter;
             uint32_t ColorUsed;
             uint32_t ColorImportant;
+            uint32_t RedMask;
+            uint32_t GreenMask;
+            uint32_t BlueMask;
+            uint32_t AlphaMask;
         };
     };
 }

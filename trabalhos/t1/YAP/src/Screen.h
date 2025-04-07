@@ -1,3 +1,5 @@
+#pragma once
+
 #include <memory>
 
 #include "Element.h"
@@ -7,41 +9,53 @@
 
 namespace yap
 {
-    class Screen
+    class Screen : public std::enable_shared_from_this<Screen>
     {
     private:
         Mouse m_Mouse;
         Keyboard m_Keyboard;
 
-        Box Root;
-
     public:
+        std::shared_ptr<Box> Root;
+
+        Screen() : Root(std::make_shared<Box>())
+        {
+            Root->SetStyle(StyleSheet().WithZIndex(0));
+        }
+
+        void Init()
+        {
+            Root->Mount(shared_from_this());
+        }
+
         void Resize(float width, float height)
         {
-            Root.Size.Width = AxisSizingRule::Fixed(width);
-            Root.Size.Height = AxisSizingRule::Fixed(height);
+            StyleSheet style = Root->GetStyle();
+            style.Size = SizingRule(AxisSizingRule::Fixed(width), AxisSizingRule::Fixed(height));
+
+            Root->SetStyle(style);
         }
 
         void ProcessMouseMove(float x, float y)
         {
             m_Mouse.Position.X = x;
             m_Mouse.Position.Y = y;
-            Root.ProcessMouseMove(m_Mouse);
+            Root->ProcessMouseMove(m_Mouse);
         }
 
         void ProcessMouseUp(MouseButton button)
         {
-            Root.ProcessMouseUp(m_Mouse, button);
+            Root->ProcessMouseUp(m_Mouse, button);
         }
 
         void ProcessMouseDown(MouseButton button)
         {
-            Root.ProcessMouseDown(m_Mouse, button);
+            Root->ProcessMouseDown(m_Mouse, button);
         }
 
         void ProcessMouseScroll(MouseScrollDirection direction)
         {
-            Root.ProcessMouseScroll(m_Mouse, direction);
+            Root->ProcessMouseScroll(m_Mouse, direction);
         }
 
         void ProcessKeyboardDown(KeyboardKey key)
@@ -59,7 +73,7 @@ namespace yap
                     break;
             }
 
-            Root.ProcessKeyboardDown(m_Keyboard, key);
+            Root->ProcessKeyboardDown(m_Keyboard, key);
         }
 
         void ProcessKeyboardUp(KeyboardKey key)
@@ -67,31 +81,27 @@ namespace yap
             switch (key)
             {
                 case 212:
-                    m_Keyboard.EnableModifier(KeyboardModifier::Shift);
+                    m_Keyboard.DisableModifier(KeyboardModifier::Shift);
                     break;
                 case 214:
-                    m_Keyboard.EnableModifier(KeyboardModifier::Control);
+                    m_Keyboard.DisableModifier(KeyboardModifier::Control);
                     break;
                 case 216:
-                    m_Keyboard.EnableModifier(KeyboardModifier::Alt);
+                    m_Keyboard.DisableModifier(KeyboardModifier::Alt);
                     break;
             }
 
-            Root.ProcessKeyboardUp(m_Keyboard, key);
+            Root->ProcessKeyboardUp(m_Keyboard, key);
         }
 
         void Render(RenderingContext& context)
         {
-            Root.ComputeIndependentDimensions();
-            Root.ComputeResponsiveDimensions();
-            Root.ComputePosition();
-            Root.Animate();
-            Root.Draw(context);
-        }
-
-        Box &GetRoot()
-        {
-            return Root;
+            Root->Animate();
+            Root->ComputeStyle(ComputedStyleSheet());
+            Root->ComputeIndependentDimensions();
+            Root->ComputeResponsiveDimensions();
+            Root->ComputePosition();
+            Root->Draw(context);
         }
 
         const Mouse& GetMouse() const

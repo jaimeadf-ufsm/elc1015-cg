@@ -9,6 +9,7 @@
                 "-fexceptions",
                 "-std=c++11",
                 "-Wall",
+                "-O2",
                 "-g",
                 "-I${workspaceFolder}\\include",
                 "${workspaceFolder}\\YAP\\src\\*.cpp",

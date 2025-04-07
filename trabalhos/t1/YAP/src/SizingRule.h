@@ -74,6 +74,7 @@ namespace yap
         AxisSizingRule Height;
 
         SizingRule() : Width(AxisSizingRule::Fit()), Height(AxisSizingRule::Fit()) {}
+        SizingRule(AxisSizingRule width, AxisSizingRule height) : Width(width), Height(height) {}
 
         void SetSizeAlongAxis(Axis axis, AxisSizingRule size)
         {

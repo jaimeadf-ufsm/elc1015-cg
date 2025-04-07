@@ -13,6 +13,8 @@
 //	  Para alterar a animacao, digite numeros entre 1 e 3
 // *********************************************************************/
 
+#include <chrono>
+
 #include <GL/glut.h>
 #include <GL/freeglut_ext.h>
 
@@ -22,6 +24,8 @@
 
 #include "gl_canvas2d.h"
 
+#include "Benchmark.h"
+
 #include "BMP.h"
 #include "Bitmap.h"
 
@@ -29,36 +33,61 @@
 #include "RenderingEngine.h"
 #include "Screen.h"
 
-yap::Screen screen;
+#include "Workspace.h"
+
+std::shared_ptr<yap::Screen> screen;
 
 yap::RenderingContext renderingContext;
 yap::RenderingEngine renderingEngine;
 
-int windowWidth = 800;
-int windowHeight = 600;
+yap::Benchmark frameBenchmark;
+yap::Benchmark processBenchmark;
+yap::Benchmark renderBenchmark;
+
+int windowWidth = 1280;
+int windowHeight = 720;
 
 void render()
 {
+   frameBenchmark.Stop();
+   frameBenchmark.Start();
+
    renderingContext.ClearCommands();
 
-   screen.Resize(windowWidth, windowHeight);
-   screen.Render(renderingContext);
+   renderBenchmark.Start();
+   screen->Resize(windowWidth, windowHeight);
+   screen->Render(renderingContext);
+   renderBenchmark.Stop();
 
+   processBenchmark.Start();
    renderingEngine.ProcessCommands(renderingContext.GetCommands());
+   processBenchmark.Stop();
 
-   Sleep(10);
+   if (frameBenchmark.GetSamples() % 100 == 0)
+   {
+      printf(
+         "FPS: %.2lf (Render: %.2lfms, Process: %.2lfms)\n",
+         1.0 / frameBenchmark.GetAverageTime(),
+         renderBenchmark.GetAverageTime() * 1000.0,
+         processBenchmark.GetAverageTime() * 1000.0
+      );
+
+      frameBenchmark.Reset();
+      renderBenchmark.Reset();
+      processBenchmark.Reset();
+   }
 }
 
 void keyboard(int key)
 {
    // printf("\nTecla: %d" , key);
-   screen.ProcessKeyboardDown(key);
+   screen->ProcessKeyboardDown(key);
 }
 
 void keyboardUp(int key)
 {
    // printf("\nLiberou: %d" , key);
-   screen.ProcessKeyboardUp(key);
+   screen->ProcessKeyboardUp(key);
 }
 
 void mouse(int button, int state, int wheel, int direction, int x, int y)
@@ -67,41 +96,31 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
 
    if (button == -2 && state == -2 && wheel == -2 && direction == -2)
    {
-      screen.ProcessMouseMove(x, y);
+      screen->ProcessMouseMove(x, y);
    }
    else if (button != -2)
    {
       if (state == 0)
       {
-         screen.ProcessMouseDown((yap::MouseButton)button);
+         screen->ProcessMouseDown((yap::MouseButton)button);
       }
       else
       {
-         screen.ProcessMouseUp((yap::MouseButton)button);
+         screen->ProcessMouseUp((yap::MouseButton)button);
       }
    }
    else if (wheel != -2 && direction != -2)
    {
-      screen.ProcessMouseScroll((yap::MouseScrollDirection)direction);
+      screen->ProcessMouseScroll((yap::MouseScrollDirection)direction);
    }
 }
 
 int main(void)
 {
-   std::shared_ptr<yap::Bitmap> a = std::make_shared<yap::Bitmap>(std::move(yap::BMP::Load("YAP/images/a.bmp")));
+   screen = std::make_shared<yap::Screen>();
 
-   yap::BMP::Save("YAP/images/b.bmp", *a);
-
-   yap::Box &root = screen.GetRoot();
-   root.Padding = yap::LayoutPadding(16);
-   root.Background = yap::ColorRGB(1.0f, 1.0f, 1.0f);
-   root.Alignment.Horizontal = yap::LayoutAxisAlignment::Center;
-   root.Alignment.Vertical = yap::LayoutAxisAlignment::Center;
-
-   std::shared_ptr<yap::Bitmap> image = std::make_shared<yap::Bitmap>();
-   image->Source = a;
-
-   root.AddChild(image);
+   screen->Init();
+   screen->Root->AddChild(std::make_shared<yap::Workspace>());
 
    CV::init(&windowWidth, &windowHeight, "YAP - Yet Another Paint (Jaime Antonio Daniel Filho)");
    CV::run();
