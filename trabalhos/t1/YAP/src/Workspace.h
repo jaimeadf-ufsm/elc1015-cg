@@ -5,6 +5,7 @@
 #include "ColorSection.h"
 #include "LayerSection.h"
 #include "Tool.h"
+#include "Slider.h"
 
 namespace yap
 {
@@ -70,6 +71,8 @@ namespace yap
             {
                 m_Project->CreateLayer();
             }
+
+            AddChild(std::make_shared<Slider>());
         }
 
         void Animate() override
