@@ -47,33 +47,57 @@ namespace yap
 
         virtual void ProcessMouseMove(Mouse &mouse) 
         {
+            if (ComputedStyle.Events == PointerEvents::None)
+            {
+                return;
+            }
+
             if (Intersects(mouse.Position))
             {
                 if (!m_Hovered)
                 {
                     m_Hovered = true;
-                    HandleMouseEnter(mouse);
+
+                    if (OnMouseEnter)
+                    {
+                        OnMouseEnter(*this);
+                    }
                 }
 
-                HandleMouseMove(mouse);
+                if (OnMouseMove)
+                {
+                    OnMouseMove(*this);
+                }
             }
             else
             {
                 if (m_Pressed)
                 {
-                    HandleMouseMove(mouse);
+                    if (OnMouseMove)
+                    {
+                        OnMouseMove(*this);
+                    }
                 }
 
                 if (m_Hovered)
                 {
                     m_Hovered = false;
-                    HandleMouseLeave(mouse);
+
+                    if (OnMouseLeave)
+                    {
+                        OnMouseLeave(*this);
+                    }
                 }
             }
         }
 
         virtual void ProcessMouseDown(Mouse &mouse, MouseButton button) 
         {
+            if (ComputedStyle.Events == PointerEvents::None)
+            {
+                return;
+            }
+
             if (m_Hovered)
             {
                 m_Focused = true;
@@ -81,7 +105,11 @@ namespace yap
                 if (button == MouseButton::Left)
                 {
                     m_Pressed = true;
-                    HandleMousePress(mouse);
+
+                    if (OnMousePress)
+                    {
+                        OnMousePress(*this);
+                    }
                 }
             }
             else
@@ -92,14 +120,18 @@ namespace yap
 
         virtual void ProcessMouseUp(Mouse &mouse, MouseButton button)
         {
+            if (ComputedStyle.Events == PointerEvents::None)
+            {
+                return;
+            }
+
             if (m_Pressed && button == MouseButton::Left)
             {
                 m_Pressed = false;
-                HandleMouseRelease(mouse);
-
-                if (Intersects(mouse.Position))
+                
+                if (OnMouseRelease)
                 {
-                    HandleMouseClick(mouse);
+                    OnMouseRelease(*this);
                 }
             }
         }
@@ -175,6 +207,29 @@ namespace yap
                 else if (state == "focus" && m_Focused)
                 {
                     ComputedStyle.Override(style);
+                }
+            }
+            
+            if (ComputedStyle.Events == PointerEvents::None)
+            {
+                if (m_Hovered)
+                {
+                    m_Hovered = false;
+
+                    if (OnMouseLeave)
+                    {
+                        OnMouseLeave(*this);
+                    }
+                }
+
+                if (m_Pressed)
+                {
+                    m_Pressed = false;
+
+                    if (OnMouseRelease)
+                    {
+                        OnMouseRelease(*this);
+                    }
                 }
             }
         }
@@ -301,55 +356,6 @@ namespace yap
         const std::shared_ptr<Screen>& GetScreen() const
         {
             return m_Screen;
-        }
-    
-    protected:
-        virtual void HandleMouseMove(Mouse &mouse)
-        {
-            if (OnMouseMove)
-            {
-                OnMouseMove(*this);
-            }
-        }
-
-        virtual void HandleMouseEnter(Mouse &mouse)
-        {
-            if (OnMouseEnter)
-            {
-                OnMouseEnter(*this);
-            }
-        }
-
-        virtual void HandleMouseLeave(Mouse &mouse)
-        {
-            if (OnMouseLeave)
-            {
-                OnMouseLeave(*this);
-            }
-        }
-
-        virtual void HandleMousePress(Mouse &mouse)
-        {
-            if (OnMousePress)
-            {
-                OnMousePress(*this);
-            }
-        }
-
-        virtual void HandleMouseRelease(Mouse &mouse)
-        {
-            if (OnMouseRelease)
-            {
-                OnMouseRelease(*this);
-            }
-        }
-
-        virtual void HandleMouseClick(Mouse &mouse)
-        {
-            if (OnMouseClick)
-            {
-                OnMouseClick(*this);
-            }
         }
     };
 }

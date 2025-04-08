@@ -46,7 +46,7 @@ namespace yap
                     {
                         if (layer->IsVisible())
                         {
-                            canvasColor = layer->GetPixelColor(x, y).CompositeOver(canvasColor);
+                            canvasColor = layer->GetPixel(x, y).CompositeOver(canvasColor);
                         }
                     }
 

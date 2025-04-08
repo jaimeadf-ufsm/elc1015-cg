@@ -29,6 +29,28 @@ namespace yap
         {
         }
 
+        void FlipHorizontally()
+        {
+            for (int y = 0; y < m_Height; ++y)
+            {
+                for (int x = 0; x < m_Width / 2; ++x)
+                {
+                    std::swap(m_Pixels[y * m_Width + x], m_Pixels[y * m_Width + (m_Width - 1 - x)]);
+                }
+            }
+        }
+
+        void FlipVertically()
+        {
+            for (int y = 0; y < m_Height / 2; ++y)
+            {
+                for (int x = 0; x < m_Width; ++x)
+                {
+                    std::swap(m_Pixels[y * m_Width + x], m_Pixels[(m_Height - 1 - y) * m_Width + x]);
+                }
+            }
+        }
+
         void Clear(const ColorRGBA& color = ColorRGBA(0, 0, 0, 0))
         {
             std::fill(m_Pixels.begin(), m_Pixels.end(), color);

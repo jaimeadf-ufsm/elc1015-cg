@@ -20,7 +20,6 @@ namespace yap
 
         Screen() : Root(std::make_shared<Box>())
         {
-            Root->SetStyle(StyleSheet().WithZIndex(0));
         }
 
         void Init()

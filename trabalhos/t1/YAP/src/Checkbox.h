@@ -18,20 +18,6 @@ namespace yap
         {
             m_Checkmark = std::make_shared<Box>();
 
-            SetStyle(
-                StyleSheet()
-                    .WithSize(AxisSizingRule::Fixed(16), AxisSizingRule::Fixed(16))
-                    .WithAlignment(BoxAlignment(BoxAxisAlignment::Center, BoxAxisAlignment::Center))
-                    .WithBackground(BoxBackground::Solid(ColorRGB(30, 30, 30)))
-                    .WithBorder(BoxBorder::Solid(ColorRGB(68, 68, 68)))
-            );
-
-            SetStyle(
-                ":hover",
-                StyleSheet()
-                    .WithBackground(BoxBackground::Solid(ColorRGB(50, 50, 50)))
-            );
-
             m_Checkmark->SetStyle(
                 StyleSheet()
                     .WithVisibility(false)
@@ -46,6 +32,29 @@ namespace yap
                     .WithVisibility(true)
             );
 
+            SetStyle(
+                StyleSheet()
+                    .WithSize(AxisSizingRule::Fixed(16), AxisSizingRule::Fixed(16))
+                    .WithAlignment(BoxAlignment(BoxAxisAlignment::Center, BoxAxisAlignment::Center))
+                    .WithBackground(BoxBackground::Solid(ColorRGB(30, 30, 30)))
+                    .WithBorder(BoxBorder::Solid(ColorRGB(68, 68, 68)))
+            );
+
+            SetStyle(
+                ":hover",
+                StyleSheet()
+                    .WithBackground(BoxBackground::Solid(ColorRGB(50, 50, 50)))
+            );
+
+            OnMousePress = [this](Element& element) {
+                SetChecked(!m_Checked);
+
+                if (OnChange)
+                {
+                    OnChange(*this, m_Checked);
+                }
+            };
+
             AddChild(m_Checkmark);
         }
 
@@ -58,18 +67,6 @@ namespace yap
         bool IsChecked() const
         {
             return m_Checked;
-        }
-    
-    protected:
-        void HandleMousePress(Mouse &mouse) override
-        {
-            Element::HandleMousePress(mouse);
-            SetChecked(!m_Checked);
-
-            if (OnChange)
-            {
-                OnChange(*this, m_Checked);
-            }
         }
     };
 }

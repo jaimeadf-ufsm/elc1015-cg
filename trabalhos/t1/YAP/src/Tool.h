@@ -5,9 +5,10 @@
 #include "ColorPalette.h"
 #include "Brush.h"
 
+#include "Screen.h"
+#include "Text.h"
 #include "Slider.h"
 
-#include "Screen.h"
 #include "LayerBoundary.h"
 
 namespace yap
@@ -487,10 +488,15 @@ namespace yap
                 {
                     const Mouse& mouse = element.GetScreen()->GetMouse();
 
-                    m_Brush->Apply(
-                        m_Project->GetActiveLayer(),
-                        m_ViewportSpace->ConvertScreenToCanvasCoordinates(mouse.Position)
-                    );
+                    std::shared_ptr<Layer> activeLayer = m_Project->GetActiveLayer();
+
+                    if (activeLayer)
+                    {
+                        m_Brush->Apply(
+                            activeLayer,
+                            m_ViewportSpace->ConvertScreenToCanvasCoordinates(mouse.Position)
+                        );
+                    }
 
                     m_LastMousePosition = mouse.Position;
                 };
@@ -499,6 +505,7 @@ namespace yap
                 {
                     const Mouse& mouse = element.GetScreen()->GetMouse();
 
+
                     if (element.IsPressed())
                     {
                         Vec2 currentMousePosition = mouse.Position;
@@ -506,7 +513,12 @@ namespace yap
                         Vec2 startCanvasPosition = m_ViewportSpace->ConvertScreenToCanvasCoordinates(m_LastMousePosition);
                         Vec2 endCanvasPosition = m_ViewportSpace->ConvertScreenToCanvasCoordinates(currentMousePosition);
 
-                        m_Brush->Stroke(m_Project->GetActiveLayer(), startCanvasPosition, endCanvasPosition);
+                        std::shared_ptr<Layer> activeLayer = m_Project->GetActiveLayer();
+
+                        if (activeLayer)
+                        {
+                            m_Brush->Stroke(activeLayer, startCanvasPosition, endCanvasPosition);
+                        }
 
                         m_LastMousePosition = currentMousePosition;
                     }

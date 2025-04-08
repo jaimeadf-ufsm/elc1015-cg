@@ -2,10 +2,12 @@
 
 #include "Project.h"
 
+#include "ModalStack.h"
+
+#include "Tool.h"
+#include "EffectModal.h"
 #include "ColorSection.h"
 #include "LayerSection.h"
-#include "Tool.h"
-#include "Slider.h"
 
 namespace yap
 {
@@ -15,6 +17,11 @@ namespace yap
         std::shared_ptr<Project> m_Project;
         std::shared_ptr<ColorPalette> m_ColorPalette;
         std::shared_ptr<ViewportSpace> m_ViewportSpace;
+
+        std::shared_ptr<ModalStack> m_ModalStack;
+
+        std::shared_ptr<Box> m_MainContent;
+        std::shared_ptr<Box> m_ModalContent;
 
         std::shared_ptr<Box> m_Area;
 
@@ -26,6 +33,7 @@ namespace yap
 
         std::shared_ptr<Box> m_ToolBar;
         std::shared_ptr<Box> m_ToolBarTools;
+        std::shared_ptr<Box> m_ToolBarActions;
 
         std::shared_ptr<Box> m_SideBar;
     
@@ -34,6 +42,10 @@ namespace yap
         {
             m_Project = std::make_shared<Project>(300, 300);
             m_ColorPalette = std::make_shared<ColorPalette>(ColorRGBA(255, 0, 0, 255));
+            m_ModalStack = std::make_shared<ModalStack>();
+
+            m_MainContent = std::make_shared<Box>();
+            m_ModalContent = std::make_shared<Box>();
 
             m_Area = std::make_shared<Box>();
             m_OptionsBar = std::make_shared<Box>();
@@ -42,6 +54,7 @@ namespace yap
             m_ViewportOverlay = std::make_shared<Box>();
             m_ToolBar = std::make_shared<Box>();
             m_ToolBarTools = std::make_shared<Box>();
+            m_ToolBarActions = std::make_shared<Box>();
             m_SideBar = std::make_shared<Box>();
 
             m_ViewportSpace = std::make_shared<ViewportSpace>(m_Project, m_ViewportPreview);
@@ -53,44 +66,100 @@ namespace yap
             InitOptionsBar();
             InitViewport();
 
-            PencilBrush brush(m_ColorPalette);
-
-            BrushTool tool(m_Project, m_ViewportSpace, std::make_shared<PencilBrush>(m_ColorPalette));
-
-            InitToolButton(
+            InitTool(
                 std::make_shared<Bitmap>(BMP::Load("YAP/assets/move.bmp")),
                 std::make_shared<MoveTool>(m_Project, m_ViewportSpace)
             );
 
-            InitToolButton(
+            InitTool(
                 std::make_shared<Bitmap>(BMP::Load("YAP/assets/transform.bmp")),
                 std::make_shared<TransformTool>(m_Project, m_ViewportSpace)
             );
 
-            InitToolButton(
+            InitTool(
                 std::make_shared<Bitmap>(BMP::Load("YAP/assets/brush.bmp")),
                 std::make_shared<BrushTool>(m_Project, m_ViewportSpace, std::make_shared<PencilBrush>(m_ColorPalette))
             );
 
-            InitToolButton(
+            InitTool(
                 std::make_shared<Bitmap>(BMP::Load("YAP/assets/eraser.bmp")),
                 std::make_shared<BrushTool>(m_Project, m_ViewportSpace, std::make_shared<PencilBrush>(std::make_shared<ColorPalette>(ColorRGBA(0, 0, 0, 0))))
             );
 
-            SetStyle(
+            InitAction(
+                std::make_shared<Bitmap>(BMP::Load("YAP/assets/horizontal-flip.bmp")),
+                [this]()
+                {
+                    std::shared_ptr<Layer> layer = m_Project->GetActiveLayer();
+
+                    if (layer)
+                    {
+                        layer->FlipHorizontally();
+                    }
+                }
+            );
+
+            InitAction(
+                std::make_shared<Bitmap>(BMP::Load("YAP/assets/vertical-flip.bmp")),
+                [this]()
+                {
+                    std::shared_ptr<Layer> layer = m_Project->GetActiveLayer();
+
+                    if (layer)
+                    {
+                        layer->FlipVertically();
+                    }
+                }
+            );
+
+            InitAction(
+                std::make_shared<Bitmap>(BMP::Load("YAP/assets/effects.bmp")),
+                [this]()
+                {
+                    m_ModalStack->PushModal(std::make_shared<EffectModal>());
+                }
+            );
+
+            m_MainContent->SetStyle(
                 StyleSheet()
                     .WithSize(AxisSizingRule::Fill(), AxisSizingRule::Fill())
                     .WithBackground(BoxBackground::Solid(ColorRGB(70, 70, 70)))
+                    .WithGap(1)
             );
 
-            AddChild(m_ToolBar);
-            AddChild(m_Area);
-            AddChild(m_SideBar);
+            m_MainContent->AddChild(m_ToolBar);
+            m_MainContent->AddChild(m_Area);
+            m_MainContent->AddChild(m_SideBar);
 
-            for (int i = 0; i < 10; ++i)
+            m_ModalContent->SetStyle(
+                StyleSheet()
+                    .WithSize(AxisSizingRule::Fill(), AxisSizingRule::Fill())
+                    .WithPosition(PositioningRule::Relative(Vec2(0.0f, 0.0f)))
+                    .WithAlignment(BoxAxisAlignment::Center, BoxAxisAlignment::Center)
+            );
+
+            m_ModalStack->m_OnModal = [this](ModalStack& stack, const std::shared_ptr<Modal>& modal)
             {
-                m_Project->CreateLayer();
-            }
+                m_ModalContent->ClearChildren();
+
+                m_MainContent->SetStyle(
+                    m_MainContent->GetStyle()
+                        .WithEvents(modal ? PointerEvents::None : PointerEvents::Auto)
+                );
+
+                if (modal)
+                {
+                    m_ModalContent->AddChild(modal);
+                }
+            };
+
+            SetStyle(
+                StyleSheet()
+                    .WithSize(AxisSizingRule::Fill(), AxisSizingRule::Fill())
+            );
+
+            AddChild(m_MainContent);
+            AddChild(m_ModalContent);
         }
 
         void Animate() override
@@ -126,7 +195,6 @@ namespace yap
                 StyleSheet()
                     .WithSize(AxisSizingRule::Fixed(320), AxisSizingRule::Fill())
                     .WithDirection(BoxDirection::Column)
-                    .WithPadding(BoxPadding(0, 0, 0, 1))
                     .WithGap(1)
             );
 
@@ -177,12 +245,11 @@ namespace yap
 
         void InitToolBar()
         {
-            m_ToolBarTools = std::make_shared<Box>();
-            auto toolbarDivider = std::make_shared<Box>();
-
             m_ToolBar->SetStyle(
                 StyleSheet()
                     .WithSize(AxisSizingRule::Fit(), AxisSizingRule::Fill())
+                    .WithDirection(BoxDirection::Column)
+                    .WithBackground(BoxBackground::Solid(ColorRGB(44, 44, 44)))
             );
 
             m_ToolBarTools->SetStyle(
@@ -190,22 +257,24 @@ namespace yap
                     .WithSize(AxisSizingRule::Fit(), AxisSizingRule::Fill())
                     .WithDirection(BoxDirection::Column)
                     .WithAlignment(BoxAxisAlignment::Center, BoxAxisAlignment::Start)
-                    .WithBackground(BoxBackground::Solid(ColorRGB(44, 44, 44)))
                     .WithPadding(BoxPadding(8))
                     .WithGap(8)
             );
 
-            toolbarDivider->SetStyle(
+            m_ToolBarActions->SetStyle(
                 StyleSheet()
-                    .WithSize(AxisSizingRule::Fixed(1), AxisSizingRule::Fill())
-                    .WithBackground(BoxBackground::Solid(ColorRGB(70, 70, 70)))
+                    .WithSize(AxisSizingRule::Fit(), AxisSizingRule::Fill())
+                    .WithDirection(BoxDirection::Column)
+                    .WithAlignment(BoxAxisAlignment::Center, BoxAxisAlignment::End)
+                    .WithPadding(BoxPadding(8))
+                    .WithGap(8)
             );
 
             m_ToolBar->AddChild(m_ToolBarTools);
-            m_ToolBar->AddChild(toolbarDivider);
+            m_ToolBar->AddChild(m_ToolBarActions);
         }
 
-        void InitToolButton(const std::shared_ptr<Bitmap>& icon, const std::shared_ptr<Tool>& tool)
+        void InitTool(const std::shared_ptr<Bitmap>& icon, const std::shared_ptr<Tool>& tool)
         {
             auto button = std::make_shared<Box>();
 
@@ -246,6 +315,32 @@ namespace yap
             };
 
             m_ToolBarTools->AddChild(button);
+        }
+
+        void InitAction(const std::shared_ptr<Bitmap>& icon, const std::function<void()>& action)
+        {
+            auto button = std::make_shared<Box>();
+
+            button->SetStyle(
+                StyleSheet()
+                    .WithSize(AxisSizingRule::Fixed(40), AxisSizingRule::Fixed(40))
+                    .WithBackground(BoxBackground::Image(icon))
+                    .WithBackgroundReference(BoxBackgroundTransparencyReference::Static(ColorRGB(44, 44, 44)))
+                    .WithPadding(BoxPadding(8))
+            );
+
+            button->SetStyle(
+                ":hover",
+                StyleSheet()
+                    .WithBackgroundReference(BoxBackgroundTransparencyReference::Static(ColorRGB(56, 56, 56)))
+            );
+
+            button->OnMousePress = [action](Element& element)
+            {
+                action();
+            };
+
+            m_ToolBarActions->AddChild(button);
         }
     };
 }

@@ -57,7 +57,7 @@ namespace yap
                 {
                     if (x * x + y * y <= radius * radius)
                     {
-                        layer->SetPixelColor(position.X + x, position.Y + y, color);
+                        layer->SetPixel(position.X + x, position.Y + y, color);
                     }
                 }
             }

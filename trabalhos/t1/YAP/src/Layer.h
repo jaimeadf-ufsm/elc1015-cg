@@ -31,7 +31,7 @@ namespace yap
             return m_Id;
         }
 
-        void SetPixelColor(int x, int y, const ColorRGBA& color)
+        void SetPixel(int x, int y, const ColorRGBA& color)
         {
             int bitmapX = x - m_X;
             int bitmapY = y - m_Y;
@@ -42,7 +42,7 @@ namespace yap
             }
         }
 
-        ColorRGBA GetPixelColor(int x, int y) const
+        ColorRGBA GetPixel(int x, int y) const
         {
             int bitmapX = x - m_X;
             int bitmapY = y - m_Y;
@@ -64,6 +64,16 @@ namespace yap
         Vec2 GetPosition() const
         {
             return Vec2(m_X, m_Y);
+        }
+
+        void FlipHorizontally()
+        {
+            m_Bitmap->FlipHorizontally();
+        }
+
+        void FlipVertically()
+        {
+            m_Bitmap->FlipVertically();
         }
 
         void Scale(const Vec2& newSize, ScalingMethod method = ScalingMethod::NearestNeighbor)
@@ -93,6 +103,11 @@ namespace yap
         bool IsVisible() const
         {
             return m_Visible;
+        }
+
+        void SetBitmap(const Bitmap& bitmap)
+        {
+            m_Bitmap = std::make_shared<Bitmap>(bitmap);
         }
 
         std::shared_ptr<const Bitmap> GetBitmap() const

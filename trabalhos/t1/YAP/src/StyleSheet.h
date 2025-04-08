@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Option.h"
+#include "PointerEvents.h"
 #include "SizingRule.h"
 #include "PositioningRule.h"
 #include "BoxBackground.h"
@@ -11,19 +12,11 @@
 
 namespace yap
 {
-    enum class StyleTarget
-    {
-        Default,
-        Focused,
-        Hovered,
-        Pressed
-    };
-
     struct StyleSheet
     {
-        Option<int> ZIndex;
-
         Option<bool> Visibility;
+
+        Option<PointerEvents> Events;
 
         Option<SizingRule> Size;
         Option<PositioningRule> Position;
@@ -41,16 +34,16 @@ namespace yap
         Option<BoxAlignment> Alignment;
         Option<BoxPadding> Padding;
         Option<float> Gap;
-        
-        StyleSheet &WithZIndex(int zIndex)
-        {
-            ZIndex = zIndex;
-            return *this;
-        }
 
         StyleSheet &WithVisibility(bool visible)
         {
             Visibility = visible;
+            return *this;
+        }
+
+        StyleSheet &WithEvents(PointerEvents pointerEvents)
+        {
+            Events = pointerEvents;
             return *this;
         }
 
@@ -141,9 +134,9 @@ namespace yap
 
     struct ComputedStyleSheet
     {
-        int ZIndex = 0;
-
         bool Visibility = true;
+
+        PointerEvents Events = PointerEvents::Auto;
 
         SizingRule Size;
         PositioningRule Position;
@@ -169,7 +162,7 @@ namespace yap
 
         void Inherit(const ComputedStyleSheet& style)
         {
-            ZIndex = style.ZIndex;
+            Events = style.Events;
             Visibility = style.Visibility;
             Foreground = style.Foreground;
         }
@@ -181,9 +174,9 @@ namespace yap
                 Visibility = *style.Visibility;
             }
 
-            if (style.ZIndex)
+            if (style.Events)
             {
-                ZIndex = *style.ZIndex;
+                Events = *style.Events;
             }
 
             if (style.Size)
@@ -249,7 +242,8 @@ namespace yap
 
         void Reset()
         {
-            ZIndex = 0;
+            Visibility = true;
+            Events = PointerEvents::Auto;
             Size = SizingRule();
             Position = PositioningRule();
             Alignment = BoxAlignment();
