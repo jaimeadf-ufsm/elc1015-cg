@@ -5,6 +5,8 @@
 #include "ColorPalette.h"
 #include "Brush.h"
 
+#include "Slider.h"
+
 #include "Screen.h"
 #include "LayerBoundary.h"
 
@@ -295,7 +297,7 @@ namespace yap
                     if (layer)
                     {
                         layer->SetPosition(m_TargetCanvasPosition);
-                        layer->Scale(m_TargetCanvasSize, ScalingMethod::Bilinear);
+                        layer->Scale(m_TargetCanvasSize, ScalingMethod::NearestNeighbor);
                     }
 
                     m_Scaling = false;
@@ -458,7 +460,7 @@ namespace yap
 
         std::shared_ptr<Element> CreateOptions() override
         {
-            return std::make_shared<Box>();
+            return std::make_shared<BrushToolOptions>(m_Brush);
         }
    
     private:
@@ -515,6 +517,46 @@ namespace yap
         };
 
         class BrushToolOptions : public Box
-        {};
+        {
+        public:
+            BrushToolOptions(std::shared_ptr<Brush> brush)
+            {
+                auto sizeLabel = std::make_shared<Text>();
+                auto sizeSlider = std::make_shared<Slider>();
+                auto sizeValue = std::make_shared<Text>();
+
+                sizeLabel->Content = "Brush Size:";
+                sizeValue->Content = std::to_string(static_cast<int>(brush->GetSize())) + " px";
+                
+                sizeSlider->MinValue = 1.0f;
+                sizeSlider->MaxValue = 100.0f;
+                sizeSlider->Step = 1.0f;
+
+                sizeSlider->SetStyle(
+                    sizeSlider->GetStyle()
+                        .WithSize(AxisSizingRule::Fixed(127), AxisSizingRule::Fixed(16))
+                );
+
+                sizeSlider->OnChange = [this, brush, sizeValue](Slider& slider, float value)
+                {
+                    int size = static_cast<int>(value);
+
+                    brush->SetSize(size);
+                    sizeValue->Content = std::to_string(size) + " px";
+                };
+
+                SetStyle(
+                    StyleSheet()
+                        .WithSize(AxisSizingRule::Fill(), AxisSizingRule::Fill())
+                        .WithAlignment(BoxAxisAlignment::Start, BoxAxisAlignment::Center)
+                        .WithForeground(ColorRGB(255, 255, 255))
+                        .WithGap(8)
+                );
+
+                AddChild(sizeLabel);
+                AddChild(sizeSlider);
+                AddChild(sizeValue);
+            }
+        };
     };
 }

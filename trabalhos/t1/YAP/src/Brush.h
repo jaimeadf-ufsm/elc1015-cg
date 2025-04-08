@@ -12,7 +12,7 @@ namespace yap
     private:
         std::shared_ptr<ColorPalette> m_ColorPalette;
         
-        int m_Size = 8;
+        float m_Size = 8;
 
     public:
         Brush(const std::shared_ptr<ColorPalette>& colorPalette) : m_ColorPalette(colorPalette)
@@ -22,12 +22,12 @@ namespace yap
         virtual void Apply(std::shared_ptr<Layer> layer, const Vec2& position) = 0;
         virtual void Stroke(std::shared_ptr<Layer> layer, const Vec2& start, const Vec2& end) = 0;
 
-        void SetSize(int size)
+        void SetSize(float size)
         {
             m_Size = size;
         }
 
-        int GetSize() const
+        float GetSize() const
         {
             return m_Size;
         }
@@ -49,16 +49,15 @@ namespace yap
         {
             ColorRGBA color = GetColorPalette()->GetGlobalColor();
 
-            for (int x = -GetSize(); x <= GetSize(); ++x)
-            {
-                for (int y = -GetSize(); y <= GetSize(); ++y)
-                {
-                    if (x * x + y * y <= GetSize() * GetSize())
-                    {
-                        int pixelX = position.X + x;
-                        int pixelY = position.Y + y;
+            int radius = static_cast<int>(GetSize() / 2.0f);
 
-                        layer->SetPixelColor(pixelX, pixelY, color);
+            for (int y = -radius; y <= radius; ++y)
+            {
+                for (int x = -radius; x <= radius; ++x)
+                {
+                    if (x * x + y * y <= radius * radius)
+                    {
+                        layer->SetPixelColor(position.X + x, position.Y + y, color);
                     }
                 }
             }

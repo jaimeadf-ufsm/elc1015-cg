@@ -115,6 +115,7 @@ namespace yap
             container->SetStyle(
                 StyleSheet()
                     .WithDirection(BoxDirection::Column)
+                    .WithGap(4)
                     .WithForeground(ColorRGB(255, 255, 255))
             );
 

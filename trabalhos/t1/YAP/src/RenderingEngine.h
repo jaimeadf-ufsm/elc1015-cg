@@ -83,13 +83,11 @@ namespace yap
 
         void ProcessStrokeRectangleCommand(const StrokeRectangleRenderingCommandArguments& args)
         {
+            // CV::rect(args.X, args.Y, args.X + args.Width, args.Y + args.Height);
             CV::rectFill(args.X, args.Y, args.X + args.Width, args.Y + args.StrokeWidth);
             CV::rectFill(args.X, args.Y + args.Height - args.StrokeWidth, args.X + args.Width, args.Y + args.Height);
             CV::rectFill(args.X, args.Y, args.X + args.StrokeWidth, args.Y + args.Height);
             CV::rectFill(args.X + args.Width - args.StrokeWidth, args.Y, args.X + args.Width, args.Y + args.Height);
-
-
-            // CV::rect(args.X, args.Y, args.X + args.Width, args.Y + args.Height);
 
             // printf(
             //    "StrokeRectangle(X = %f, Y = %f, Width = %f, Height = %f)\n",
@@ -156,8 +154,6 @@ namespace yap
 
             // printf("FillPolygon()\n");
         }
-
-
 
         void ProcessTextCommand(const TextRenderingCommandArguments& args)
         {

@@ -10,22 +10,31 @@ namespace yap
     class Slider : public Box
     {
     private:
-        std::shared_ptr<Box> m_Thumb;
         std::shared_ptr<Box> m_Track;
+        std::shared_ptr<Box> m_Thumb;
 
         float m_Value = 0.0f;
 
     public:
+        float MinValue = 0.0f;
+        float MaxValue = 1.0f;
+
+        float Step = 0.01f;
+
         std::function<void(Slider&, float)> OnChange;
 
         Slider()
         {
+            m_Track = std::make_shared<Box>();
+            m_Thumb = std::make_shared<Box>();
+
             InitTrack();
             InitThumb();
 
             SetStyle(
                 StyleSheet()
-                    .WithSize(AxisSizingRule::Fill(), AxisSizingRule::Fixed(16))
+                    .WithSize(AxisSizingRule::Fill(), AxisSizingRule::Fit())
+                    .WithPadding(BoxPadding(8, 2))
             );
 
             OnAnimate = [this](Element& element) {
@@ -42,11 +51,15 @@ namespace yap
                     SyncThumbToMouse();
                 }
             };
+
+            AddChild(m_Track);
+            AddChild(m_Thumb);
         }
 
         void SetValue(float value)
         {
-            m_Value = Clamp(value, 0.0f, 1.0f);
+            m_Value = std::floor(value / Step) * Step;
+            m_Value = Clamp(m_Value, MinValue, MaxValue);
         }
 
         float GetValue() const
@@ -57,37 +70,30 @@ namespace yap
     private:
         void InitTrack()
         {
-            m_Track = std::make_shared<Box>();
-
             m_Track->SetStyle(
                 StyleSheet()
                     .WithSize(AxisSizingRule::Fill(), AxisSizingRule::Fixed(12))
                     .WithBackground(BoxBackground::Solid(ColorRGB(56, 56, 56)))
             );
-
-            AddChild(m_Track);
         }
 
         void InitThumb()
         {
-            m_Thumb = std::make_shared<Box>();
-
             m_Thumb->SetStyle(
                 StyleSheet()
                     .WithSize(AxisSizingRule::Fixed(16), AxisSizingRule::Fixed(16))
                     .WithBackground(BoxBackground::Solid(ColorRGB(255, 255, 255)))
+                    .WithPosition(PositioningRule::Relative(Vec2(0.0f, 0.0f)))
             );
-
-            AddChild(m_Thumb);
         }
 
         void SyncThumbToMouse()
         {
             const Mouse& mouse = GetScreen()->GetMouse();
 
-            float value = (mouse.Position.X - m_Track->Position.X) / m_Track->Size.X;
+            float offset = (mouse.Position.X - m_Track->Position.X) / m_Track->Size.X;
 
-            SetValue(value);
+            SetValue((MaxValue - MinValue) * offset + MinValue);
 
             if (OnChange)
             {
@@ -97,14 +103,14 @@ namespace yap
 
         void RefreshThumb()
         {
-            Vec2 position = Vec2(m_Value, 0.0f);
+            float offset = Clamp((m_Value - MinValue) / (MaxValue - MinValue), 0.0f, 1.0f);
+
+            Vec2 position = Vec2(offset, 0.0f);
             position *= m_Track->Size;
-            position += m_Track->Position;
-            position -= Vec2(8.0f, 2.0f);
 
             m_Thumb->SetStyle(
                 m_Thumb->GetStyle()
-                    .WithPosition(PositioningRule::Absolute(position))
+                    .WithPosition(PositioningRule::Relative(position))
             );
         }
     };

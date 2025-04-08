@@ -16,13 +16,16 @@ namespace yap
         std::shared_ptr<ColorPalette> m_ColorPalette;
         std::shared_ptr<ViewportSpace> m_ViewportSpace;
 
+        std::shared_ptr<Box> m_Area;
+
+        std::shared_ptr<Box> m_OptionsBar;
+
         std::shared_ptr<Box> m_Viewport;
         std::shared_ptr<Box> m_ViewportPreview;
         std::shared_ptr<Box> m_ViewportOverlay;
 
         std::shared_ptr<Box> m_ToolBar;
         std::shared_ptr<Box> m_ToolBarTools;
-        std::shared_ptr<Box> m_ToolBarDivider;
 
         std::shared_ptr<Box> m_SideBar;
     
@@ -32,12 +35,23 @@ namespace yap
             m_Project = std::make_shared<Project>(300, 300);
             m_ColorPalette = std::make_shared<ColorPalette>(ColorRGBA(255, 0, 0, 255));
 
-            InitViewport();
+            m_Area = std::make_shared<Box>();
+            m_OptionsBar = std::make_shared<Box>();
+            m_Viewport = std::make_shared<Box>();
+            m_ViewportPreview = std::make_shared<Box>();
+            m_ViewportOverlay = std::make_shared<Box>();
+            m_ToolBar = std::make_shared<Box>();
+            m_ToolBarTools = std::make_shared<Box>();
+            m_SideBar = std::make_shared<Box>();
 
             m_ViewportSpace = std::make_shared<ViewportSpace>(m_Project, m_ViewportPreview);
 
             InitToolBar();
+            InitArea();
             InitSideBar();
+
+            InitOptionsBar();
+            InitViewport();
 
             PencilBrush brush(m_ColorPalette);
 
@@ -63,16 +77,20 @@ namespace yap
                 std::make_shared<BrushTool>(m_Project, m_ViewportSpace, std::make_shared<PencilBrush>(std::make_shared<ColorPalette>(ColorRGBA(0, 0, 0, 0))))
             );
 
+            SetStyle(
+                StyleSheet()
+                    .WithSize(AxisSizingRule::Fill(), AxisSizingRule::Fill())
+                    .WithBackground(BoxBackground::Solid(ColorRGB(70, 70, 70)))
+            );
+
             AddChild(m_ToolBar);
-            AddChild(m_Viewport);
+            AddChild(m_Area);
             AddChild(m_SideBar);
 
             for (int i = 0; i < 10; ++i)
             {
                 m_Project->CreateLayer();
             }
-
-            AddChild(std::make_shared<Slider>());
         }
 
         void Animate() override
@@ -89,16 +107,26 @@ namespace yap
         }
     
     private:
+        void InitArea()
+        {
+            m_Area->SetStyle(
+                StyleSheet()
+                    .WithSize(AxisSizingRule::Fill(), AxisSizingRule::Fill())
+                    .WithDirection(BoxDirection::Column)
+                    .WithGap(1)
+            );
+
+            m_Area->AddChild(m_OptionsBar);
+            m_Area->AddChild(m_Viewport);
+        }
+
         void InitSideBar()
         {
-            m_SideBar = std::make_shared<Box>();
-
             m_SideBar->SetStyle(
                 StyleSheet()
                     .WithSize(AxisSizingRule::Fixed(320), AxisSizingRule::Fill())
                     .WithDirection(BoxDirection::Column)
                     .WithPadding(BoxPadding(0, 0, 0, 1))
-                    .WithBackground(BoxBackground::Solid(ColorRGB(70, 70, 70)))
                     .WithGap(1)
             );
 
@@ -106,17 +134,18 @@ namespace yap
             m_SideBar->AddChild(std::make_shared<LayerSection>(m_Project));
         }
 
+        void InitOptionsBar()
+        {
+            m_OptionsBar->SetStyle(
+                StyleSheet()
+                    .WithSize(AxisSizingRule::Fill(), AxisSizingRule::Fixed(56))
+                    .WithBackground(BoxBackground::Solid(ColorRGB(44, 44, 44)))
+                    .WithPadding(BoxPadding(8, 0))
+            );
+        }
+
         void InitViewport()
         {
-            m_Viewport = std::make_shared<Box>();
-            m_ViewportPreview = std::make_shared<Box>();
-            m_ViewportOverlay = std::make_shared<Box>();
-
-            SetStyle(
-                StyleSheet()
-                    .WithSize(AxisSizingRule::Fill(), AxisSizingRule::Fill())\
-                    .WithBackground(BoxBackground::Solid(ColorRGB(255, 0, 0)))
-            );
 
             m_Viewport->SetStyle(
                 StyleSheet()
@@ -148,10 +177,8 @@ namespace yap
 
         void InitToolBar()
         {
-            m_ToolBar = std::make_shared<Box>();
-
             m_ToolBarTools = std::make_shared<Box>();
-            m_ToolBarDivider = std::make_shared<Box>();
+            auto toolbarDivider = std::make_shared<Box>();
 
             m_ToolBar->SetStyle(
                 StyleSheet()
@@ -168,14 +195,14 @@ namespace yap
                     .WithGap(8)
             );
 
-            m_ToolBarDivider->SetStyle(
+            toolbarDivider->SetStyle(
                 StyleSheet()
                     .WithSize(AxisSizingRule::Fixed(1), AxisSizingRule::Fill())
                     .WithBackground(BoxBackground::Solid(ColorRGB(70, 70, 70)))
             );
 
             m_ToolBar->AddChild(m_ToolBarTools);
-            m_ToolBar->AddChild(m_ToolBarDivider);
+            m_ToolBar->AddChild(toolbarDivider);
         }
 
         void InitToolButton(const std::shared_ptr<Bitmap>& icon, const std::shared_ptr<Tool>& tool)
@@ -211,6 +238,9 @@ namespace yap
 
                 m_ViewportOverlay->ClearChildren();
                 m_ViewportOverlay->AddChild(tool->CreateOverlay());
+
+                m_OptionsBar->ClearChildren();
+                m_OptionsBar->AddChild(tool->CreateOptions());
 
                 element.EnableTrait("selected");
             };

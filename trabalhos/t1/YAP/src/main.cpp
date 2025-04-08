@@ -52,24 +52,15 @@ void render()
    frameBenchmark.Stop();
    frameBenchmark.Start();
 
-   // renderingContext.ClearCommands();
+   renderingContext.ClearCommands();
 
    renderBenchmark.Start();
-   // screen->Resize(windowWidth, windowHeight);
-   // screen->Render(renderingContext);
+   screen->Resize(windowWidth, windowHeight);
+   screen->Render(renderingContext);
    renderBenchmark.Stop();
 
    processBenchmark.Start();
-   // renderingEngine.ProcessCommands(renderingContext.GetCommands());
-
-   for (int i = 0; i < 400; ++i)
-   {
-      for (int j = 0; j < 400; ++j)
-      {
-         CV::color(0, 0, 0);
-         CV::rectFill(i, j, i + 1, j + 1);
-      }
-   }
+   renderingEngine.ProcessCommands(renderingContext.GetCommands());
    processBenchmark.Stop();
 
    if (frameBenchmark.GetSamples() % 100 == 0)

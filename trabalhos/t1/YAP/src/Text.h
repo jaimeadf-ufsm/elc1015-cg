@@ -50,7 +50,7 @@ namespace yap
 
         float MeasureTextHeight()
         {
-            return 13.0f;
+            return 10.0f;
         }
     };
 }

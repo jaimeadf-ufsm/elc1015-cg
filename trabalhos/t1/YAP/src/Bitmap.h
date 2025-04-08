@@ -98,16 +98,6 @@ namespace yap
                     int sourceX = static_cast<int>(x * xRatio);
                     int sourceY = static_cast<int>(y * yRatio);
 
-                    // if (sourceX >= source.GetWidth())
-                    // {
-                    //     sourceX = source.GetWidth() - 1;
-                    // }
-
-                    // if (sourceY >= source.GetHeight())
-                    // {
-                    //     sourceY = source.GetHeight() - 1;
-                    // }
-
                     destination.SetPixel(x, y, source.GetPixel(sourceX, sourceY));
                 }
             }

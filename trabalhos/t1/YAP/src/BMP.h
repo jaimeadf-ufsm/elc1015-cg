@@ -175,9 +175,9 @@ namespace yap
                 for (int x = 0; x < bitmap.GetWidth(); x++)
                 {
                     ColorRGBA color = bitmap.GetPixel(x, y);
-                    uint8_t b = static_cast<uint8_t>(color.B * 255);
-                    uint8_t g = static_cast<uint8_t>(color.G * 255);
-                    uint8_t r = static_cast<uint8_t>(color.R * 255);
+                    uint8_t b = static_cast<uint8_t>(color.B * 255 * color.A);
+                    uint8_t g = static_cast<uint8_t>(color.G * 255 * color.A);
+                    uint8_t r = static_cast<uint8_t>(color.R * 255 * color.A);
 
                     file.write(reinterpret_cast<const char*>(&b), sizeof(b));
                     file.write(reinterpret_cast<const char*>(&g), sizeof(g));
