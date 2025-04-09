@@ -7,4 +7,9 @@ namespace yap
     {
         return std::max(min, std::min(value, max));
     }
+
+    float Lerp(float a, float b, float t)
+    {
+        return a + t * (b - a);
+    }
 };

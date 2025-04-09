@@ -30,8 +30,10 @@ namespace yap
             m_Effects = {
                 std::make_shared<BrightnessContrastEffect>(),
                 std::make_shared<GrayscaleEffect>(),
+                std::make_shared<SepiaEffect>(),
+                std::make_shared<GaussianBlurEffect>(),
                 std::make_shared<PixelateEffect>(),
-                std::make_shared<GaussianBlurEffect>()
+                std::make_shared<RandomNoiseEffect>()
             };
 
             m_PreviewBitmap = std::make_shared<Bitmap>();

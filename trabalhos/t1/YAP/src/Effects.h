@@ -2,6 +2,7 @@
 
 #include <iomanip>
 #include <sstream>
+#include <random>
 
 #include "Bitmap.h"
 #include "Box.h"
@@ -250,67 +251,36 @@ namespace yap
         }
     };
 
-    class PixelateEffect : public Effect
+
+    class SepiaEffect : public Effect
     {
-    private:
-        int m_BlockSize = 8;
-
     public:
-        PixelateEffect() : Effect("Pixelar")
+        SepiaEffect() : Effect("Sepia")
         {
-        }
-
-        std::shared_ptr<Box> CreateOptions() override
-        {
-            auto form = CreateForm();
-
-            form->AddChild(CreateLabel("Tamanho do bloco:"));
-            form->AddChild(CreateSlider(
-                1.0f,
-                64.0f,
-                1.0f,
-                static_cast<float>(m_BlockSize),
-                [this](float value) {
-                    m_BlockSize = static_cast<int>(value);
-                    TriggerUpdate();
-                },
-                [](float value) {
-                    return std::to_string(static_cast<int>(value)) + " px";
-                })
-            );
-
-            return form;
         }
 
         void Apply(const Bitmap& source, Bitmap& destination) override
         {
             destination.Reallocate(source.GetWidth(), source.GetHeight());
 
-            for (int y = 0; y < source.GetHeight(); y += m_BlockSize)
+            for (int y = 0; y < source.GetHeight(); ++y)
             {
-                for (int x = 0; x < source.GetWidth(); x += m_BlockSize)
+                for (int x = 0; x < source.GetWidth(); ++x)
                 {
-                    ColorRGBA averageColor = ColorRGBA(0, 0, 0, 0);
-                    int count = 0;
+                    ColorRGBA color = source.GetPixel(x, y);
 
-                    for (int j = 0; j < m_BlockSize && y + j < source.GetHeight(); ++j)
-                    {
-                        for (int i = 0; i < m_BlockSize && x + i < source.GetWidth(); ++i)
-                        {
-                            averageColor += source.GetPixel(x + i, y + j);
-                            count++;
-                        }
-                    }
+                    float tr = 0.393f * color.R + 0.769f * color.G + 0.189f * color.B;
+                    float tg = 0.349f * color.R + 0.686f * color.G + 0.168f * color.B;
+                    float tb = 0.272f * color.R + 0.534f * color.G + 0.131f * color.B;
 
-                    averageColor /= static_cast<float>(count);
+                    ColorRGBA sepiaColor = ColorRGBA(
+                        Clamp(tr, 0.0f, 1.0f),
+                        Clamp(tg, 0.0f, 1.0f),
+                        Clamp(tb, 0.0f, 1.0f),
+                        color.A
+                    );
 
-                    for (int j = 0; j < m_BlockSize && y + j < source.GetHeight(); ++j)
-                    {
-                        for (int i = 0; i < m_BlockSize && x + i < source.GetWidth(); ++i)
-                        {
-                            destination.SetPixel(x + i, y + j, averageColor);
-                        }
-                    }
+                    destination.SetPixel(x, y, sepiaColor);
                 }
             }
         }
@@ -380,7 +350,7 @@ namespace yap
                     for (int i = 0; i < kernelSize; ++i) {
                         int sampleX = x + (i - halfSize);
                         
-                        sampleX = std::max(0, std::min(source.GetWidth() - 1, sampleX));
+                        sampleX = Clamp(sampleX, 0, source.GetWidth() - 1);
                         
                         ColorRGBA sampleColor = source.GetPixel(sampleX, y);
                         blurredColor += sampleColor * kernel[i];
@@ -397,14 +367,197 @@ namespace yap
                     for (int i = 0; i < kernelSize; ++i) {
                         int sampleY = y + (i - halfSize);
                         
-                        // Clamp to edge
-                        sampleY = std::max(0, std::min(temp.GetHeight() - 1, sampleY));
+                        sampleY = Clamp(sampleY, 0, temp.GetHeight() - 1);
                         
                         ColorRGBA sampleColor = temp.GetPixel(x, sampleY);
                         blurredColor += sampleColor * kernel[i];
                     }
                     
                     destination.SetPixel(x, y, blurredColor);
+                }
+            }
+        }
+    };
+
+    class PixelateEffect : public Effect
+    {
+    private:
+        int m_BlockSize = 8;
+
+    public:
+        PixelateEffect() : Effect("Pixelar")
+        {
+        }
+
+        std::shared_ptr<Box> CreateOptions() override
+        {
+            auto form = CreateForm();
+
+            form->AddChild(CreateLabel("Tamanho do bloco:"));
+            form->AddChild(CreateSlider(
+                1.0f,
+                64.0f,
+                1.0f,
+                static_cast<float>(m_BlockSize),
+                [this](float value) {
+                    m_BlockSize = static_cast<int>(value);
+                    TriggerUpdate();
+                },
+                [](float value) {
+                    return std::to_string(static_cast<int>(value)) + " px";
+                })
+            );
+
+            return form;
+        }
+
+        void Apply(const Bitmap& source, Bitmap& destination) override
+        {
+            destination.Reallocate(source.GetWidth(), source.GetHeight());
+
+            for (int y = 0; y < source.GetHeight(); y += m_BlockSize)
+            {
+                for (int x = 0; x < source.GetWidth(); x += m_BlockSize)
+                {
+                    ColorRGBA averageColor = ColorRGBA(0, 0, 0, 0);
+                    int count = 0;
+
+                    for (int j = 0; j < m_BlockSize && y + j < source.GetHeight(); ++j)
+                    {
+                        for (int i = 0; i < m_BlockSize && x + i < source.GetWidth(); ++i)
+                        {
+                            averageColor += source.GetPixel(x + i, y + j);
+                            count++;
+                        }
+                    }
+
+                    averageColor /= static_cast<float>(count);
+
+                    for (int j = 0; j < m_BlockSize && y + j < source.GetHeight(); ++j)
+                    {
+                        for (int i = 0; i < m_BlockSize && x + i < source.GetWidth(); ++i)
+                        {
+                            destination.SetPixel(x + i, y + j, averageColor);
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    class RandomNoiseEffect : public Effect
+    {
+    private:
+        float m_RedNoise = 0.2f;
+        float m_GreenNoise = 0.2f;
+        float m_BlueNoise = 0.2f;
+        float m_AlphaNoise = 0.0f;
+
+    public:
+        RandomNoiseEffect() : Effect("Ruido Aleatorio")
+        {
+        }
+
+        std::shared_ptr<Box> CreateOptions() override
+        {
+            auto form = CreateForm();
+
+            form->AddChild(CreateLabel("Intensidade de ruido (Vermelho):"));
+            form->AddChild(CreateSlider(
+                0.0f,
+                1.0f,
+                0.01f,
+                m_RedNoise,
+                [this](float value) {
+                    m_RedNoise = value;
+                    TriggerUpdate();
+                },
+                [](float value) {
+                    return std::to_string(static_cast<int>(value * 100.0f)) + "%";
+                })
+            );
+
+            form->AddChild(CreateSpacing(8.0f));
+
+            form->AddChild(CreateLabel("Intensidade de ruido (Verde):"));
+            form->AddChild(CreateSlider(
+                0.0f,
+                1.0f,
+                0.01f,
+                m_GreenNoise,
+                [this](float value) {
+                    m_GreenNoise = value;
+                    TriggerUpdate();
+                },
+                [](float value) {
+                    return std::to_string(static_cast<int>(value * 100.0f)) + "%";
+                })
+            );
+
+            form->AddChild(CreateSpacing(8.0f));
+
+            form->AddChild(CreateLabel("Intensidade de ruido (Azul):"));
+            form->AddChild(CreateSlider(
+                0.0f,
+                1.0f,
+                0.01f,
+                m_BlueNoise,
+                [this](float value) {
+                    m_BlueNoise = value;
+                    TriggerUpdate();
+                },
+                [](float value) {
+                    return std::to_string(static_cast<int>(value * 100.0f)) + "%";
+                })
+            );
+
+            form->AddChild(CreateSpacing(8.0f));
+
+            form->AddChild(CreateLabel("Intensidade de ruido (Alfa):"));
+            form->AddChild(CreateSlider(
+                0.0f,
+                1.0f,
+                0.01f,
+                m_AlphaNoise,
+                [this](float value) {
+                    m_AlphaNoise = value;
+                    TriggerUpdate();
+                },
+                [](float value) {
+                    return std::to_string(static_cast<int>(value * 100.0f)) + "%";
+                })
+            );
+
+            return form;
+        }
+
+        void Apply(const Bitmap& source, Bitmap& destination) override
+        {
+            destination.Reallocate(source.GetWidth(), source.GetHeight());
+
+            std::random_device rd;
+            std::mt19937 gen(rd());
+            std::uniform_real_distribution<float> dist(-1.0f, 1.0f);
+
+            for (int y = 0; y < source.GetHeight(); ++y)
+            {
+                for (int x = 0; x < source.GetWidth(); ++x)
+                {
+                    ColorRGBA color = source.GetPixel(x, y);
+
+                    float noiseR = dist(gen) * m_RedNoise;
+                    float noiseG = dist(gen) * m_GreenNoise;
+                    float noiseB = dist(gen) * m_BlueNoise;
+                    float noiseA = dist(gen) * m_AlphaNoise;
+
+                    ColorRGBA noisyColor = ColorRGBA(
+                        Clamp(color.R + noiseR, 0.0f, 1.0f),
+                        Clamp(color.G + noiseG, 0.0f, 1.0f),
+                        Clamp(color.B + noiseB, 0.0f, 1.0f),
+                        Clamp(color.A + noiseA, 0.0f, 1.0f)
+                    );
+
+                    destination.SetPixel(x, y, noisyColor);
                 }
             }
         }

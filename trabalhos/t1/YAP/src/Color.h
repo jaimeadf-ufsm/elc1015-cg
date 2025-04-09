@@ -137,9 +137,9 @@ namespace yap
         static ColorRGB Lerp(const ColorRGB& c1, const ColorRGB& c2, float t)
         {
             return ColorRGB(
-                c1.R * (1 - t) + c2.R * t,
-                c1.G * (1 - t) + c2.G * t,
-                c1.B * (1 - t) + c2.B * t
+                yap::Lerp(c1.R, c2.R, t),
+                yap::Lerp(c1.G, c2.G, t),
+                yap::Lerp(c1.B, c2.B, t)
             );
         }
     };
