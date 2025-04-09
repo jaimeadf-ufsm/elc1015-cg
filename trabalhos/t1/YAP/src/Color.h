@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Math.h"
+
 namespace yap
 {
     class ColorRGB;
@@ -26,6 +28,110 @@ namespace yap
         bool operator!=(const ColorRGB& other) const
         {
             return !(*this == other);
+        }
+
+        ColorRGB& operator+=(const ColorRGB& other)
+        {
+            R += other.R;
+            G += other.G;
+            B += other.B;
+            return *this;
+        }
+
+        ColorRGB& operator-=(const ColorRGB& other)
+        {
+            R -= other.R;
+            G -= other.G;
+            B -= other.B;
+            return *this;
+        }
+
+        ColorRGB& operator*=(const ColorRGB& other)
+        {
+            R *= other.R;
+            G *= other.G;
+            B *= other.B;
+            return *this;
+        }
+
+        ColorRGB& operator/=(const ColorRGB& other)
+        {
+            R /= other.R;
+            G /= other.G;
+            B /= other.B;
+            return *this;
+        }
+
+        ColorRGB& operator+=(float scalar)
+        {
+            R += scalar;
+            G += scalar;
+            B += scalar;
+            return *this;
+        }
+
+        ColorRGB& operator-=(float scalar)
+        {
+            R -= scalar;
+            G -= scalar;
+            B -= scalar;
+            return *this;
+        }
+
+        ColorRGB& operator*=(float scalar)
+        {
+            R *= scalar;
+            G *= scalar;
+            B *= scalar;
+            return *this;
+        }
+
+        ColorRGB& operator/=(float scalar)
+        {
+            R /= scalar;
+            G /= scalar;
+            B /= scalar;
+            return *this;
+        }
+
+        ColorRGB operator+(const ColorRGB& other) const
+        {
+            return ColorRGB(R + other.R, G + other.G, B + other.B);
+        }
+
+        ColorRGB operator-(const ColorRGB& other) const
+        {
+            return ColorRGB(R - other.R, G - other.G, B - other.B);
+        }
+
+        ColorRGB operator*(const ColorRGB& other) const
+        {
+            return ColorRGB(R * other.R, G * other.G, B * other.B);
+        }
+
+        ColorRGB operator/(const ColorRGB& other) const
+        {
+            return ColorRGB(R / other.R, G / other.G, B / other.B);
+        }
+
+        ColorRGB operator+(float scalar) const
+        {
+            return ColorRGB(R + scalar, G + scalar, B + scalar);
+        }
+
+        ColorRGB operator-(float scalar) const
+        {
+            return ColorRGB(R - scalar, G - scalar, B - scalar);
+        }
+
+        ColorRGB operator*(float scalar) const
+        {
+            return ColorRGB(R * scalar, G * scalar, B * scalar);
+        }
+
+        ColorRGB operator/(float scalar) const
+        {
+            return ColorRGB(R / scalar, G / scalar, B / scalar);
         }
 
         static ColorRGB Lerp(const ColorRGB& c1, const ColorRGB& c2, float t)
@@ -89,6 +195,118 @@ namespace yap
 
         ColorHSVA ToHSVA() const;
 
+        ColorRGBA& operator+=(const ColorRGBA& other)
+        {
+            R += other.R;
+            G += other.G;
+            B += other.B;
+            A += other.A;
+            return *this;
+        }
+
+        ColorRGBA& operator-=(const ColorRGBA& other)
+        {
+            R -= other.R;
+            G -= other.G;
+            B -= other.B;
+            A -= other.A;
+            return *this;
+        }
+
+        ColorRGBA& operator*=(const ColorRGBA& other)
+        {
+            R *= other.R;
+            G *= other.G;
+            B *= other.B;
+            A *= other.A;
+            return *this;
+        }
+
+        ColorRGBA& operator/=(const ColorRGBA& other)
+        {
+            R /= other.R;
+            G /= other.G;
+            B /= other.B;
+            A /= other.A;
+            return *this;
+        }
+
+        ColorRGBA& operator+=(float scalar)
+        {
+            R += scalar;
+            G += scalar;
+            B += scalar;
+            A += scalar;
+            return *this;
+        }
+
+        ColorRGBA& operator-=(float scalar)
+        {
+            R -= scalar;
+            G -= scalar;
+            B -= scalar;
+            A -= scalar;
+            return *this;
+        }
+
+        ColorRGBA& operator*=(float scalar)
+        {
+            R *= scalar;
+            G *= scalar;
+            B *= scalar;
+            A *= scalar;
+            return *this;
+        }
+
+        ColorRGBA& operator/=(float scalar)
+        {
+            R /= scalar;
+            G /= scalar;
+            B /= scalar;
+            A /= scalar;
+            return *this;
+        }
+
+        ColorRGBA operator+(const ColorRGBA& other) const
+        {
+            return ColorRGBA(R + other.R, G + other.G, B + other.B, A + other.A);
+        }
+
+        ColorRGBA operator-(const ColorRGBA& other) const
+        {
+            return ColorRGBA(R - other.R, G - other.G, B - other.B, A - other.A);
+        }
+
+        ColorRGBA operator*(const ColorRGBA& other) const
+        {
+            return ColorRGBA(R * other.R, G * other.G, B * other.B, A * other.A);
+        }
+
+        ColorRGBA operator/(const ColorRGBA& other) const
+        {
+            return ColorRGBA(R / other.R, G / other.G, B / other.B, A / other.A);
+        }
+
+        ColorRGBA operator+(float scalar) const
+        {
+            return ColorRGBA(R + scalar, G + scalar, B + scalar, A + scalar);
+        }
+
+        ColorRGBA operator-(float scalar) const
+        {
+            return ColorRGBA(R - scalar, G - scalar, B - scalar, A - scalar);
+        }
+
+        ColorRGBA operator*(float scalar) const
+        {
+            return ColorRGBA(R * scalar, G * scalar, B * scalar, A * scalar);
+        }
+
+        ColorRGBA operator/(float scalar) const
+        {
+            return ColorRGBA(R / scalar, G / scalar, B / scalar, A / scalar);
+        }
+
         bool operator==(const ColorRGBA& other) const
         {
             return R == other.R && G == other.G && B == other.B && A == other.A;
@@ -106,6 +324,16 @@ namespace yap
                 c1.G * (1 - t) + c2.G * t,
                 c1.B * (1 - t) + c2.B * t,
                 c1.A * (1 - t) + c2.A * t
+            );
+        }
+
+        static ColorRGBA Clamp(const ColorRGBA& color, float min = 0.0f, float max = 1.0f)
+        {
+            return ColorRGBA(
+                yap::Clamp(color.R, min, max),
+                yap::Clamp(color.G, min, max),
+                yap::Clamp(color.B, min, max),
+                yap::Clamp(color.A, min, max)
             );
         }
     };

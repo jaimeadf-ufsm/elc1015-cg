@@ -11,16 +11,6 @@ namespace yap
 
         Modal()
         {
-            SetStyle(
-                StyleSheet()
-                    .WithSize(AxisSizingRule::Fixed(512), AxisSizingRule::Fixed(512))
-                    .WithBackground(BoxBackground::Solid(ColorRGBA(0, 0, 0)))
-            );
-
-            OnMousePress = [this](Element& element)
-            {
-                Close();
-            };
         }
 
         void Close()

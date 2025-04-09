@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "Math.h"
 #include "Color.h"
 
 namespace yap
@@ -70,7 +71,7 @@ namespace yap
 
         void SetPixel(int x, int y, const ColorRGBA& color)
         {
-            m_Pixels[y * m_Width + x] = color;
+            m_Pixels[y * m_Width + x] = ColorRGBA::Clamp(color);
         }
 
         const ColorRGBA &GetPixel(int x, int y) const

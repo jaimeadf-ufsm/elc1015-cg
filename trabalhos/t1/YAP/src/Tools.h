@@ -562,7 +562,7 @@ namespace yap
                         .WithSize(AxisSizingRule::Fill(), AxisSizingRule::Fill())
                         .WithAlignment(BoxAxisAlignment::Start, BoxAxisAlignment::Center)
                         .WithForeground(ColorRGB(255, 255, 255))
-                        .WithGap(8)
+                        .WithGap(16)
                 );
 
                 AddChild(sizeLabel);

@@ -15,6 +15,9 @@ namespace yap
         Mouse m_Mouse;
         Keyboard m_Keyboard;
 
+        std::vector<std::function<void()>> m_CurrentFrameCallbacks;
+        std::vector<std::function<void()>> m_NextFrameCallbacks;
+
     public:
         std::shared_ptr<Box> Root;
 
@@ -95,12 +98,26 @@ namespace yap
 
         void Render(RenderingContext& context)
         {
+            m_CurrentFrameCallbacks.clear();
+
+            std::swap(m_CurrentFrameCallbacks, m_NextFrameCallbacks);
+
+            for (const auto& callback : m_CurrentFrameCallbacks)
+            {
+                callback();
+            }
+
             Root->Animate();
             Root->ComputeStyle(ComputedStyleSheet());
             Root->ComputeIndependentDimensions();
             Root->ComputeResponsiveDimensions();
             Root->ComputePosition();
             Root->Draw(context);
+        }
+
+        void ExecuteNextFrame(const std::function<void()>& callback)
+        {
+            m_NextFrameCallbacks.emplace_back(callback);
         }
 
         const Mouse& GetMouse() const

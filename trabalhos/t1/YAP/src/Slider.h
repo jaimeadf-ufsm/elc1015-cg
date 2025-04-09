@@ -22,6 +22,7 @@ namespace yap
         float Step = 0.01f;
 
         std::function<void(Slider&, float)> OnChange;
+        std::function<void(Slider&, float)> OnChangeEnd;
 
         Slider()
         {
@@ -34,7 +35,7 @@ namespace yap
             SetStyle(
                 StyleSheet()
                     .WithSize(AxisSizingRule::Fill(), AxisSizingRule::Fit())
-                    .WithPadding(BoxPadding(8, 2))
+                    .WithPadding(BoxPadding(0, 2))
             );
 
             OnAnimate = [this](Element& element) {
@@ -49,6 +50,13 @@ namespace yap
                 if (IsPressed())
                 {
                     SyncThumbToMouse();
+                }
+            };
+
+            OnMouseRelease = [this](Element& element) {
+                if (OnChangeEnd)
+                {
+                    OnChangeEnd(*this, m_Value);
                 }
             };
 
@@ -85,6 +93,24 @@ namespace yap
                     .WithBackground(BoxBackground::Solid(ColorRGB(255, 255, 255)))
                     .WithPosition(PositioningRule::Relative(Vec2(0.0f, 0.0f)))
             );
+
+            m_Thumb->OnMousePress = [this](Element& element) {
+                SyncThumbToMouse();
+            };
+
+            m_Thumb->OnMouseMove = [this](Element& element) {
+                if (element.IsPressed())
+                {
+                    SyncThumbToMouse();
+                }
+            };
+
+            m_Thumb->OnMouseRelease = [this](Element& element) {
+                if (OnChangeEnd)
+                {
+                    OnChangeEnd(*this, m_Value);
+                }
+            };
         }
 
         void SyncThumbToMouse()
@@ -107,6 +133,7 @@ namespace yap
 
             Vec2 position = Vec2(offset, 0.0f);
             position *= m_Track->Size;
+            position -= Vec2(8.0, 0.0);
 
             m_Thumb->SetStyle(
                 m_Thumb->GetStyle()

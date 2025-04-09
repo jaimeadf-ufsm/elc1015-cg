@@ -4,7 +4,7 @@
 
 #include "ModalStack.h"
 
-#include "Tool.h"
+#include "Tools.h"
 #include "EffectModal.h"
 #include "ColorSection.h"
 #include "LayerSection.h"
@@ -116,7 +116,7 @@ namespace yap
                 std::make_shared<Bitmap>(BMP::Load("YAP/assets/effects.bmp")),
                 [this]()
                 {
-                    m_ModalStack->PushModal(std::make_shared<EffectModal>());
+                    m_ModalStack->PushModal(std::make_shared<EffectModal>(m_Project));
                 }
             );
 
@@ -140,17 +140,27 @@ namespace yap
 
             m_ModalStack->m_OnModal = [this](ModalStack& stack, const std::shared_ptr<Modal>& modal)
             {
-                m_ModalContent->ClearChildren();
+                auto screen = GetScreen();
 
-                m_MainContent->SetStyle(
-                    m_MainContent->GetStyle()
-                        .WithEvents(modal ? PointerEvents::None : PointerEvents::Auto)
-                );
-
-                if (modal)
+                if (!screen)
                 {
-                    m_ModalContent->AddChild(modal);
+                    return;
                 }
+
+                screen->ExecuteNextFrame([this, modal]()
+                {
+                    m_ModalContent->ClearChildren();
+
+                    m_MainContent->SetStyle(
+                        m_MainContent->GetStyle()
+                            .WithEvents(modal ? PointerEvents::None : PointerEvents::Auto)
+                    );
+
+                    if (modal)
+                    {
+                        m_ModalContent->AddChild(modal);
+                    }
+                });
             };
 
             SetStyle(
