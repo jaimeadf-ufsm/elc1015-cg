@@ -8,6 +8,8 @@
 #include "EffectModal.h"
 #include "ColorSection.h"
 #include "LayerSection.h"
+#include "TextInput.h"
+#include "FileSelector.h"
 
 namespace yap
 {
@@ -22,6 +24,9 @@ namespace yap
 
         std::shared_ptr<Box> m_MainContent;
         std::shared_ptr<Box> m_ModalContent;
+
+        std::shared_ptr<Box> m_MainHeader;
+        std::shared_ptr<Box> m_MainBody;
 
         std::shared_ptr<Box> m_Area;
 
@@ -46,6 +51,9 @@ namespace yap
 
             m_MainContent = std::make_shared<Box>();
             m_ModalContent = std::make_shared<Box>();
+
+            m_MainBody = std::make_shared<Box>();
+            m_MainHeader = std::make_shared<Box>();
 
             m_Area = std::make_shared<Box>();
             m_OptionsBar = std::make_shared<Box>();
@@ -120,16 +128,34 @@ namespace yap
                 }
             );
 
+            m_MainHeader->SetStyle(
+                StyleSheet()
+                    .WithSize(AxisSizingRule::Fill(), AxisSizingRule::Fixed(56))
+                    .WithBackground(BoxBackground::Solid(ColorRGB(44, 44, 44)))
+            );
+
+            m_MainBody->AddChild(std::make_shared<FileSelector>());
+
+            m_MainBody->SetStyle(
+                StyleSheet()
+                    .WithSize(AxisSizingRule::Fill(), AxisSizingRule::Fill())
+                    .WithGap(1)
+            );
+
+            m_MainBody->AddChild(m_ToolBar);
+            m_MainBody->AddChild(m_Area);
+            m_MainBody->AddChild(m_SideBar);
+
             m_MainContent->SetStyle(
                 StyleSheet()
                     .WithSize(AxisSizingRule::Fill(), AxisSizingRule::Fill())
+                    .WithDirection(BoxDirection::Column)
                     .WithBackground(BoxBackground::Solid(ColorRGB(70, 70, 70)))
                     .WithGap(1)
             );
 
-            m_MainContent->AddChild(m_ToolBar);
-            m_MainContent->AddChild(m_Area);
-            m_MainContent->AddChild(m_SideBar);
+            m_MainContent->AddChild(m_MainHeader);
+            m_MainContent->AddChild(m_MainBody);
 
             m_ModalContent->SetStyle(
                 StyleSheet()
@@ -138,7 +164,7 @@ namespace yap
                     .WithAlignment(BoxAxisAlignment::Center, BoxAxisAlignment::Center)
             );
 
-            m_ModalStack->m_OnModal = [this](ModalStack& stack, const std::shared_ptr<Modal>& modal)
+            m_ModalStack->OnModal = [this](ModalStack& stack, const std::shared_ptr<Modal>& modal)
             {
                 auto screen = GetScreen();
 

@@ -10,7 +10,7 @@ namespace yap
         std::vector<std::shared_ptr<Modal>> m_Modals;
     
     public:
-        std::function<void(ModalStack&, const std::shared_ptr<Modal>&)> m_OnModal;
+        std::function<void(ModalStack&, const std::shared_ptr<Modal>&)> OnModal;
 
         void PushModal(const std::shared_ptr<Modal>& modal)
         {
@@ -21,9 +21,9 @@ namespace yap
 
             m_Modals.push_back(modal);
 
-            if (m_OnModal)
+            if (OnModal)
             {
-                m_OnModal(*this, modal);
+                OnModal(*this, modal);
             }
         }
 
@@ -33,15 +33,15 @@ namespace yap
             {
                 m_Modals.pop_back();
 
-                if (m_OnModal)
+                if (OnModal)
                 {
                     if (!m_Modals.empty())
                     {
-                        m_OnModal(*this, m_Modals.back());
+                        OnModal(*this, m_Modals.back());
                     }
                     else
                     {
-                        m_OnModal(*this, nullptr);
+                        OnModal(*this, nullptr);
                     }
                 }
             }

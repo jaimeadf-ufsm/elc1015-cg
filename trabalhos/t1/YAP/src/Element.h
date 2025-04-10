@@ -37,13 +37,15 @@ namespace yap
         std::function<void(Element&)> OnMount = nullptr;
         std::function<void(Element&)> OnUnmount = nullptr;
         std::function<void(Element&)> OnAnimate = nullptr;
+        std::function<void(Element&)> OnFocus = nullptr;
+        std::function<void(Element&)> OnUnfocus = nullptr;
         std::function<void(Element&)> OnMouseMove = nullptr;
         std::function<void(Element&)> OnMouseEnter = nullptr;
         std::function<void(Element&)> OnMouseLeave = nullptr;
         std::function<void(Element&)> OnMousePress = nullptr;
         std::function<void(Element&)> OnMouseRelease = nullptr;
-        std::function<void(Element&)> OnMouseDrag = nullptr;
-        std::function<void(Element&)> OnMouseClick = nullptr;
+        std::function<void(Element&, KeyboardKey)> OnKeyboardDown = nullptr;
+        std::function<void(Element&, KeyboardKey)> OnKeyboardUp = nullptr;
 
         virtual void ProcessMouseMove(Mouse &mouse) 
         {
@@ -100,7 +102,7 @@ namespace yap
 
             if (m_Hovered)
             {
-                m_Focused = true;
+                Focus();
 
                 if (button == MouseButton::Left)
                 {
@@ -114,7 +116,7 @@ namespace yap
             }
             else
             {
-                m_Focused = false;
+                Unfocus();
             }
         }
 
@@ -137,8 +139,28 @@ namespace yap
         }
 
         virtual void ProcessMouseScroll(Mouse &mouse, MouseScrollDirection direction) {}
-        virtual void ProcessKeyboardDown(Keyboard &keyboard, KeyboardKey key) {}
-        virtual void ProcessKeyboardUp(Keyboard &keyboard, KeyboardKey key) {}
+
+        virtual void ProcessKeyboardDown(Keyboard &keyboard, KeyboardKey key)
+        {
+            if (m_Focused)
+            {
+                if (OnKeyboardDown)
+                {
+                    OnKeyboardDown(*this, key);
+                }
+            }
+        }
+
+        virtual void ProcessKeyboardUp(Keyboard &keyboard, KeyboardKey key)
+        {
+            if (m_Focused)
+            {
+                if (OnKeyboardUp)
+                {
+                    OnKeyboardUp(*this, key);
+                }
+            }
+        }
 
         virtual void Mount(const std::shared_ptr<Screen>& screen)
         {
@@ -275,6 +297,32 @@ namespace yap
                 point.X >= Position.X && point.X <= Position.X + Size.X &&
                 point.Y >= Position.Y && point.Y <= Position.Y + Size.Y
             );
+        }
+
+        void Focus()
+        {
+            if (!m_Focused)
+            {
+                m_Focused = true;
+
+                if (OnFocus)
+                {
+                    OnFocus(*this);
+                }
+            }
+        }
+
+        void Unfocus()
+        {
+            if (m_Focused)
+            {
+                m_Focused = false;
+
+                if (OnUnfocus)
+                {
+                    OnUnfocus(*this);
+                }
+            }
         }
 
         bool IsHovered() const

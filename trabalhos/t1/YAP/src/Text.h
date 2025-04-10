@@ -39,7 +39,7 @@ namespace yap
             }
 
             context.Color(ComputedStyle.Foreground);
-            context.Text(Position + Vec2(0.0f, MeasureTextHeight()), Content.c_str());
+            context.Text(Position + Vec2(0.0f, 11.0f), Content.c_str());
         }
     
     private:
@@ -50,7 +50,7 @@ namespace yap
 
         float MeasureTextHeight()
         {
-            return 10.0f;
+            return 13.0f;
         }
     };
 }
