@@ -226,6 +226,60 @@ namespace yap
         }
     };
 
+    class GammaCorrectionEffect : public Effect
+    {
+    private:
+        float m_Gamma = 1.0f;
+
+    public:
+        GammaCorrectionEffect() : Effect("Gamma")
+        {
+        }
+
+        std::shared_ptr<Box> CreateOptions() override
+        {
+            auto form = CreateForm();
+
+            form->AddChild(CreateLabel("Gamma:"));
+            form->AddChild(CreateSlider(
+                0.1f,
+                5.0f,
+                0.01f,
+                m_Gamma,
+                [this](float value) {
+                    m_Gamma = value;
+                    TriggerUpdate();
+                },
+                [](float value) {
+                    std::stringstream ss;
+                    ss << std::fixed << std::setprecision(2) << value;
+                    return ss.str();
+                })
+            );
+
+            return form;
+        }
+
+        void Apply(const Bitmap& source, Bitmap& destination) override
+        {
+            destination.Reallocate(source.GetWidth(), source.GetHeight());
+
+            for (int y = 0; y < source.GetHeight(); ++y)
+            {
+                for (int x = 0; x < source.GetWidth(); ++x)
+                {
+                    ColorRGBA color = source.GetPixel(x, y);
+
+                    color.R = Clamp(std::pow(color.R, m_Gamma), 0.0f, 1.0f);
+                    color.G = Clamp(std::pow(color.G, m_Gamma), 0.0f, 1.0f);
+                    color.B = Clamp(std::pow(color.B, m_Gamma), 0.0f, 1.0f);
+
+                    destination.SetPixel(x, y, color);
+                }
+            }
+        }
+    };
+
     class GrayscaleEffect : public Effect
     {
     public:
