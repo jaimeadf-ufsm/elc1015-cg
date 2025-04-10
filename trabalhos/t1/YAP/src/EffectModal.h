@@ -29,6 +29,7 @@ namespace yap
             m_WorkLayer = m_Project->GetActiveLayer();
             m_Effects = {
                 std::make_shared<BrightnessContrastEffect>(),
+                std::make_shared<GammaCorrectionEffect>(),
                 std::make_shared<GrayscaleEffect>(),
                 std::make_shared<SepiaEffect>(),
                 std::make_shared<GaussianBlurEffect>(),
@@ -68,7 +69,7 @@ namespace yap
             auto headerFill = std::make_shared<Box>();
 
             auto headerCloseButton = CreateIconButton(
-                std::make_shared<Bitmap>(BMP::Load("YAP/assets/x.bmp")),
+                std::make_shared<Bitmap>(BMP::Load("YAP/assets/x-40x40.bmp")),
                 [this](Element& element)
                 {
                     Close();
@@ -128,7 +129,7 @@ namespace yap
             auto carouselSelection = std::make_shared<Box>();
 
             auto carouselPreviousButton = CreateIconButton(
-                std::make_shared<Bitmap>(BMP::Load("YAP/assets/chevron-left.bmp")),
+                std::make_shared<Bitmap>(BMP::Load("YAP/assets/chevron-left-40x40.bmp")),
                 [this](Element& element)
                 {
                     PreviousEffect();
@@ -136,7 +137,7 @@ namespace yap
             );
 
             auto carouselNextButton = CreateIconButton(
-                std::make_shared<Bitmap>(BMP::Load("YAP/assets/chevron-right.bmp")),
+                std::make_shared<Bitmap>(BMP::Load("YAP/assets/chevron-right-40x40.bmp")),
                 [this](Element& element)
                 {
                     NextEffect();

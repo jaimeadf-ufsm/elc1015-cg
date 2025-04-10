@@ -67,27 +67,27 @@ namespace yap
             InitViewport();
 
             InitTool(
-                std::make_shared<Bitmap>(BMP::Load("YAP/assets/move.bmp")),
+                std::make_shared<Bitmap>(BMP::Load("YAP/assets/move-40x40.bmp")),
                 std::make_shared<MoveTool>(m_Project, m_ViewportSpace)
             );
 
             InitTool(
-                std::make_shared<Bitmap>(BMP::Load("YAP/assets/transform.bmp")),
+                std::make_shared<Bitmap>(BMP::Load("YAP/assets/transform-40x40.bmp")),
                 std::make_shared<TransformTool>(m_Project, m_ViewportSpace)
             );
 
             InitTool(
-                std::make_shared<Bitmap>(BMP::Load("YAP/assets/brush.bmp")),
+                std::make_shared<Bitmap>(BMP::Load("YAP/assets/brush-40x40.bmp")),
                 std::make_shared<BrushTool>(m_Project, m_ViewportSpace, std::make_shared<PencilBrush>(m_ColorPalette))
             );
 
             InitTool(
-                std::make_shared<Bitmap>(BMP::Load("YAP/assets/eraser.bmp")),
+                std::make_shared<Bitmap>(BMP::Load("YAP/assets/eraser-40x40.bmp")),
                 std::make_shared<BrushTool>(m_Project, m_ViewportSpace, std::make_shared<PencilBrush>(std::make_shared<ColorPalette>(ColorRGBA(0, 0, 0, 0))))
             );
 
             InitAction(
-                std::make_shared<Bitmap>(BMP::Load("YAP/assets/horizontal-flip.bmp")),
+                std::make_shared<Bitmap>(BMP::Load("YAP/assets/horizontal-flip-40x40.bmp")),
                 [this]()
                 {
                     std::shared_ptr<Layer> layer = m_Project->GetActiveLayer();
@@ -100,7 +100,7 @@ namespace yap
             );
 
             InitAction(
-                std::make_shared<Bitmap>(BMP::Load("YAP/assets/vertical-flip.bmp")),
+                std::make_shared<Bitmap>(BMP::Load("YAP/assets/vertical-flip-40x40.bmp")),
                 [this]()
                 {
                     std::shared_ptr<Layer> layer = m_Project->GetActiveLayer();
@@ -113,7 +113,7 @@ namespace yap
             );
 
             InitAction(
-                std::make_shared<Bitmap>(BMP::Load("YAP/assets/effects.bmp")),
+                std::make_shared<Bitmap>(BMP::Load("YAP/assets/effects-40x40.bmp")),
                 [this]()
                 {
                     m_ModalStack->PushModal(std::make_shared<EffectModal>(m_Project));
