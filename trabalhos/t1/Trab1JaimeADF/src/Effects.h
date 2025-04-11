@@ -1,5 +1,12 @@
 #pragma once
 
+// Summary:
+// This file defines a set of image processing effects that can be applied to bitmaps. 
+// Each effect is implemented as a class inheriting from the base `Effect` class. 
+// The effects include brightness/contrast adjustment, gamma correction, grayscale conversion, sepia tone, 
+// Gaussian blur, pixelation, and random noise addition. Each effect provides options for customization 
+// and an `Apply` method to process the image.
+
 #include <iomanip>
 #include <sstream>
 #include <random>
@@ -10,24 +17,40 @@
 
 namespace yap
 {
+    /**
+     * @class Effect
+     * @brief Base class for all image effects.
+     */
     class Effect
     {
     private:
-        std::string m_Name;
-    
-    public:
-        std::function<void(Effect&)> OnUpdate;
+        std::string m_Name; ///< Name of the effect.
 
+    public:
+        std::function<void(Effect&)> OnUpdate; ///< Callback triggered when the effect is updated.
+
+        /**
+         * @brief Constructor for the Effect class.
+         * @param name Name of the effect.
+         */
         Effect(const std::string& name) : m_Name(name)
         {
             m_Name = name;
         }
 
+        /**
+         * @brief Creates and returns the name of the effect.
+         * @return The name of the effect.
+         */
         virtual const std::string& CreateName()
         {
             return m_Name;
         }
 
+        /**
+         * @brief Creates a UI form for configuring the effect.
+         * @return A shared pointer to a Box containing the form.
+         */
         virtual std::shared_ptr<Box> CreateOptions()
         {
             auto form = CreateForm();
@@ -49,9 +72,18 @@ namespace yap
             return form;
         }
 
+        /**
+         * @brief Applies the effect to a bitmap.
+         * @param source The source bitmap.
+         * @param destination The destination bitmap.
+         */
         virtual void Apply(const Bitmap& source, Bitmap& destination) = 0;
 
     protected:
+        /**
+         * @brief Creates a container for UI elements.
+         * @return A shared pointer to a Box.
+         */
         std::shared_ptr<Box> CreateForm()
         {
             auto container = std::make_shared<Box>();
@@ -67,6 +99,11 @@ namespace yap
             return container;
         }
 
+        /**
+         * @brief Creates a label for UI.
+         * @param text The label text.
+         * @return A shared pointer to a Text object.
+         */
         std::shared_ptr<Text> CreateLabel(const std::string& text)
         {
             auto label = std::make_shared<Text>();
@@ -76,6 +113,11 @@ namespace yap
             return label;
         }
 
+        /**
+         * @brief Creates a spacing element for UI.
+         * @param size The size of the spacing.
+         * @return A shared pointer to a Box.
+         */
         std::shared_ptr<Box> CreateSpacing(float size = 8.0f)
         {
             auto box = std::make_shared<Box>();
@@ -88,6 +130,16 @@ namespace yap
             return box;
         }
 
+        /**
+         * @brief Creates a slider for UI.
+         * @param min Minimum value.
+         * @param max Maximum value.
+         * @param step Step size.
+         * @param defaultValue Default value.
+         * @param handleChange Callback for value changes.
+         * @param formatValue Function to format the slider value.
+         * @return A shared pointer to a Box containing the slider.
+         */
         std::shared_ptr<Box> CreateSlider(
             float min,
             float max,
@@ -143,6 +195,9 @@ namespace yap
             return container;
         }
 
+        /**
+         * @brief Triggers the OnUpdate callback.
+         */
         void TriggerUpdate()
         {
             if (OnUpdate)
@@ -152,11 +207,15 @@ namespace yap
         }
     };
 
+    /**
+     * @class BrightnessContrastEffect
+     * @brief Adjusts the brightness and contrast of an image.
+     */
     class BrightnessContrastEffect : public Effect
     {
     private:
-        float m_Brightness = 0.0f;
-        float m_Contrast = 0.0f;
+        float m_Brightness = 0.0f; ///< Brightness adjustment value.
+        float m_Contrast = 0.0f; ///< Contrast adjustment value.
 
     public:
         BrightnessContrastEffect() : Effect("Brilho / Contraste")
@@ -226,10 +285,14 @@ namespace yap
         }
     };
 
+    /**
+     * @class GammaCorrectionEffect
+     * @brief Applies gamma correction to an image.
+     */
     class GammaCorrectionEffect : public Effect
     {
     private:
-        float m_Gamma = 1.0f;
+        float m_Gamma = 1.0f; ///< Gamma correction value.
 
     public:
         GammaCorrectionEffect() : Effect("Gama")
@@ -280,6 +343,10 @@ namespace yap
         }
     };
 
+    /**
+     * @class GrayscaleEffect
+     * @brief Converts an image to grayscale.
+     */
     class GrayscaleEffect : public Effect
     {
     public:
@@ -305,7 +372,10 @@ namespace yap
         }
     };
 
-
+    /**
+     * @class SepiaEffect
+     * @brief Applies a sepia tone to an image.
+     */
     class SepiaEffect : public Effect
     {
     public:
@@ -340,10 +410,14 @@ namespace yap
         }
     };
 
+    /**
+     * @class GaussianBlurEffect
+     * @brief Applies a Gaussian blur to an image.
+     */
     class GaussianBlurEffect : public Effect
     {
     private:
-        float m_Radius = 1.0f;
+        float m_Radius = 1.0f; ///< Radius of the blur.
 
     public:
         GaussianBlurEffect() : Effect("Desfoque Gaussiano")
@@ -433,10 +507,14 @@ namespace yap
         }
     };
 
+    /**
+     * @class PixelateEffect
+     * @brief Pixelates an image by grouping pixels into blocks.
+     */
     class PixelateEffect : public Effect
     {
     private:
-        int m_BlockSize = 8;
+        int m_BlockSize = 8; ///< Size of the pixelation blocks.
 
     public:
         PixelateEffect() : Effect("Pixelar")
@@ -499,13 +577,17 @@ namespace yap
         }
     };
 
+    /**
+     * @class RandomNoiseEffect
+     * @brief Adds random noise to an image.
+     */
     class RandomNoiseEffect : public Effect
     {
     private:
-        float m_RedNoise = 0.2f;
-        float m_GreenNoise = 0.2f;
-        float m_BlueNoise = 0.2f;
-        float m_AlphaNoise = 0.0f;
+        float m_RedNoise = 0.2f; ///< Intensity of red noise.
+        float m_GreenNoise = 0.2f; ///< Intensity of green noise.
+        float m_BlueNoise = 0.2f; ///< Intensity of blue noise.
+        float m_AlphaNoise = 0.0f; ///< Intensity of alpha noise.
 
     public:
         RandomNoiseEffect() : Effect("Ruido Aleatorio")

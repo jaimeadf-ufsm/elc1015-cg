@@ -6,31 +6,45 @@
 #include <dirent.h>
 
 #include "Path.h"
-
 #include "TextInput.h"
+
+/**
+ * @file FileSelector.h
+ * @brief Provides a graphical file selector component for navigating directories and selecting files.
+ * 
+ * This class allows users to navigate through directories, view files, and select a file or folder.
+ * It supports pagination for large directories and provides a graphical interface with icons for files and folders.
+ */
 
 namespace yap
 {
+    /**
+     * @class FileSelector
+     * @brief A graphical component for navigating directories and selecting files or folders.
+     */
     class FileSelector : public Box
     {
     private:
-        std::string m_CurrentPath;
-        std::vector<std::string> m_CurrentFiles;
+        std::string m_CurrentPath; ///< The current directory path being displayed.
+        std::vector<std::string> m_CurrentFiles; ///< List of files and folders in the current directory.
 
-        int m_ItemsPerPage = 10;
-        int m_CurrentPage;
+        int m_ItemsPerPage = 10; ///< Number of items displayed per page.
+        int m_CurrentPage; ///< The current page index.
 
-        std::string m_SelectedPath;
+        std::string m_SelectedPath; ///< The currently selected file or folder path.
 
-        std::shared_ptr<TextInput> m_PathInput;
-        std::shared_ptr<Text> m_PageIndicator;
+        std::shared_ptr<TextInput> m_PathInput; ///< Input field for entering or displaying the current path.
+        std::shared_ptr<Text> m_PageIndicator; ///< Text element displaying the current page and total pages.
 
-        std::shared_ptr<Box> m_Items;
+        std::shared_ptr<Box> m_Items; ///< Container for displaying file and folder items.
 
-        std::shared_ptr<Bitmap> m_FileIcon;
-        std::shared_ptr<Bitmap> m_FolderIcon;
+        std::shared_ptr<Bitmap> m_FileIcon; ///< Icon for files.
+        std::shared_ptr<Bitmap> m_FolderIcon; ///< Icon for folders.
 
     public:
+        /**
+         * @brief Constructs a FileSelector instance and initializes its components.
+         */
         FileSelector()
         {
             m_CurrentPath = ".";
@@ -113,22 +127,38 @@ namespace yap
             AddChild(m_Items);
         }
 
+        /**
+         * @brief Sets the current path and navigates to it.
+         * @param path The directory path to navigate to.
+         */
         void SetPath(const std::string& path)
         {
             NavigateTo(path);
         }
 
+        /**
+         * @brief Gets the current directory path.
+         * @return The current directory path.
+         */
         const std::string& GetPath() const
         {
             return m_CurrentPath;
         }
 
+        /**
+         * @brief Gets the currently selected file or folder path.
+         * @return The selected file or folder path.
+         */
         const std::string& GetSelectedPath() const
         {
             return m_SelectedPath;
         }
 
     private:
+        /**
+         * @brief Navigates to the specified directory path.
+         * @param path The directory path to navigate to.
+         */
         void NavigateTo(const std::string& path)
         {
             std::string normalizedPath = Path::Normalize(path);
@@ -171,22 +201,36 @@ namespace yap
             }
         }
 
+        /**
+         * @brief Selects a file or folder.
+         * @param path The path of the file or folder to select.
+         */
         void SelectPath(const std::string& path)
         {
             m_SelectedPath = path;
             RefreshItems();
         }
 
+        /**
+         * @brief Navigates to the next page of items.
+         */
         void NextPage()
         {
             ChangePage(m_CurrentPage + 1);
         }
 
+        /**
+         * @brief Navigates to the previous page of items.
+         */
         void PreviousPage()
         {
             ChangePage(m_CurrentPage - 1);
         }
 
+        /**
+         * @brief Changes the current page to the specified page index.
+         * @param page The page index to navigate to.
+         */
         void ChangePage(int page)
         {
             int totalPages = CountPages();
@@ -196,21 +240,34 @@ namespace yap
             RefreshItems();
         }
 
+        /**
+         * @brief Counts the total number of pages based on the number of items and items per page.
+         * @return The total number of pages.
+         */
         int CountPages()
         {
             return (m_CurrentFiles.size() + m_ItemsPerPage - 1) / m_ItemsPerPage;
         }
 
+        /**
+         * @brief Refreshes the path input field with the current path.
+         */
         void RefreshInput()
         {
             m_PathInput->SetValue(m_CurrentPath);
         }
 
+        /**
+         * @brief Updates the page indicator with the current page and total pages.
+         */
         void RefreshPageIndicator()
         {
             m_PageIndicator->Content = std::to_string(m_CurrentPage + 1) + " / " + std::to_string(CountPages());
         }
 
+        /**
+         * @brief Refreshes the displayed items based on the current page.
+         */
         void RefreshItems()
         {
             m_Items->ClearChildren();
@@ -224,6 +281,12 @@ namespace yap
             }
         }
 
+        /**
+         * @brief Creates a graphical item representing a file or folder.
+         * @param path The directory path of the item.
+         * @param filename The name of the file or folder.
+         * @return A shared pointer to the created item.
+         */
         std::shared_ptr<Box> CreateItem(const std::string& path, const std::string& filename)
         {
             auto item = std::make_shared<Box>();
@@ -351,6 +414,11 @@ namespace yap
             return item;
         }
 
+        /**
+         * @brief Creates a control button with the specified icon.
+         * @param icon The bitmap icon for the button.
+         * @return A shared pointer to the created button.
+         */
         std::shared_ptr<Box> CreateControlButton(const std::shared_ptr<Bitmap>& icon)
         {
             auto button = std::make_shared<Box>();

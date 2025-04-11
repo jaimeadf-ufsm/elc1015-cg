@@ -1,9 +1,12 @@
+// Summary:
+// This file defines the `Workspace` class, which represents the main user interface for a graphical application. 
+// The `Workspace` class manages various UI components such as headers, toolbars, sidebars, and modals, 
+// and provides functionality for interacting with tools, layers, and project settings.
+
 #pragma once
 
 #include "Project.h"
-
 #include "ModalStack.h"
-
 #include "Tools.h"
 #include "EffectModal.h"
 #include "ColorSection.h"
@@ -14,39 +17,51 @@
 
 namespace yap
 {
+    /**
+     * @class Workspace
+     * @brief Represents the main user interface workspace for the application.
+     * 
+     * The `Workspace` class is responsible for managing the layout and behavior of the application's UI components,
+     * including the header, toolbar, sidebar, viewport, and modals. It also provides methods for initializing and
+     * interacting with these components.
+     */
     class Workspace : public Box
     {
     private:
-        std::shared_ptr<Project> m_Project;
-        std::shared_ptr<ColorPalette> m_ColorPalette;
-        std::shared_ptr<ViewportSpace> m_ViewportSpace;
+        // Member variables for managing UI components and application state.
+        std::shared_ptr<Project> m_Project; ///< The active project being edited.
+        std::shared_ptr<ColorPalette> m_ColorPalette; ///< The color palette used for tools.
+        std::shared_ptr<ViewportSpace> m_ViewportSpace; ///< The viewport space for rendering and interaction.
 
-        std::shared_ptr<ModalStack> m_ModalStack;
+        std::shared_ptr<ModalStack> m_ModalStack; ///< Stack for managing modals.
 
-        std::shared_ptr<Box> m_MainContent;
-        std::shared_ptr<Box> m_ModalContent;
+        std::shared_ptr<Box> m_MainContent; ///< Main content container.
+        std::shared_ptr<Box> m_ModalContent; ///< Modal content container.
 
-        std::shared_ptr<Box> m_MainHeader;
-        std::shared_ptr<Box> m_MainHeaderTitle;
-        std::shared_ptr<Box> m_MainHeaderActions;
+        std::shared_ptr<Box> m_MainHeader; ///< Header container.
+        std::shared_ptr<Box> m_MainHeaderTitle; ///< Header title container.
+        std::shared_ptr<Box> m_MainHeaderActions; ///< Header actions container.
 
-        std::shared_ptr<Box> m_MainBody;
+        std::shared_ptr<Box> m_MainBody; ///< Main body container.
 
-        std::shared_ptr<Box> m_Area;
+        std::shared_ptr<Box> m_Area; ///< Area container for options and viewport.
 
-        std::shared_ptr<Box> m_OptionsBar;
+        std::shared_ptr<Box> m_OptionsBar; ///< Options bar container.
 
-        std::shared_ptr<Box> m_Viewport;
-        std::shared_ptr<Box> m_ViewportPreview;
-        std::shared_ptr<Box> m_ViewportOverlay;
+        std::shared_ptr<Box> m_Viewport; ///< Viewport container.
+        std::shared_ptr<Box> m_ViewportPreview; ///< Viewport preview container.
+        std::shared_ptr<Box> m_ViewportOverlay; ///< Viewport overlay container.
 
-        std::shared_ptr<Box> m_ToolBar;
-        std::shared_ptr<Box> m_ToolBarTools;
-        std::shared_ptr<Box> m_ToolBarActions;
+        std::shared_ptr<Box> m_ToolBar; ///< Toolbar container.
+        std::shared_ptr<Box> m_ToolBarTools; ///< Toolbar tools container.
+        std::shared_ptr<Box> m_ToolBarActions; ///< Toolbar actions container.
 
-        std::shared_ptr<Box> m_SideBar;
-    
+        std::shared_ptr<Box> m_SideBar; ///< Sidebar container.
+
     public:
+        /**
+         * @brief Constructs the `Workspace` and initializes all UI components.
+         */
         Workspace()
         {
             m_Project = std::make_shared<Project>(640, 480);
@@ -237,6 +252,9 @@ namespace yap
             AddChild(m_ModalContent);
         }
 
+        /**
+         * @brief Animates the workspace, updating the viewport preview with the rendered project canvas.
+         */
         void Animate() override
         {
             Box::Animate();
@@ -249,8 +267,11 @@ namespace yap
                     .WithBackground(BoxBackground::Image(projection))
             );
         }
-    
+
     private:
+        /**
+         * @brief Initializes the header section of the workspace.
+         */
         void InitHeader()
         {
 
@@ -272,6 +293,9 @@ namespace yap
             m_MainHeader->AddChild(m_MainHeaderActions);
         }
 
+        /**
+         * @brief Initializes the main area, including the options bar and viewport.
+         */
         void InitArea()
         {
             m_Area->SetStyle(
@@ -285,6 +309,9 @@ namespace yap
             m_Area->AddChild(m_Viewport);
         }
 
+        /**
+         * @brief Initializes the sidebar, adding the color and layer sections.
+         */
         void InitSideBar()
         {
             m_SideBar->SetStyle(
@@ -298,6 +325,9 @@ namespace yap
             m_SideBar->AddChild(std::make_shared<LayerSection>(m_Project));
         }
 
+        /**
+         * @brief Initializes the options bar.
+         */
         void InitOptionsBar()
         {
             m_OptionsBar->SetStyle(
@@ -308,6 +338,9 @@ namespace yap
             );
         }
 
+        /**
+         * @brief Initializes the viewport, including the preview and overlay.
+         */
         void InitViewport()
         {
 
@@ -334,11 +367,14 @@ namespace yap
                     .WithSize(SizingRule(AxisSizingRule::Fill(), AxisSizingRule::Fill()))
                     .WithPosition(PositioningRule::Relative(Vec2(0.0f, 0.0f)))
             );
-    
+
             m_Viewport->AddChild(m_ViewportPreview);
             m_Viewport->AddChild(m_ViewportOverlay);
         }
 
+        /**
+         * @brief Initializes the toolbar, including tools and actions.
+         */
         void InitToolBar()
         {
             m_ToolBar->SetStyle(
@@ -370,6 +406,12 @@ namespace yap
             m_ToolBar->AddChild(m_ToolBarActions);
         }
 
+        /**
+         * @brief Adds an action button to the header.
+         * 
+         * @param icon The icon for the button.
+         * @param action The action to perform when the button is clicked.
+         */
         void InitHeaderAction(const std::shared_ptr<Bitmap>& icon, const std::function<void()>& action)
         {
             auto button = std::make_shared<Box>();
@@ -396,6 +438,12 @@ namespace yap
             m_MainHeaderActions->AddChild(button);
         }
 
+        /**
+         * @brief Adds a tool button to the toolbar.
+         * 
+         * @param icon The icon for the tool.
+         * @param tool The tool to activate when the button is clicked.
+         */
         void InitToolBarTool(const std::shared_ptr<Bitmap>& icon, const std::shared_ptr<Tool>& tool)
         {
             auto button = std::make_shared<Box>();
@@ -439,6 +487,12 @@ namespace yap
             m_ToolBarTools->AddChild(button);
         }
 
+        /**
+         * @brief Adds an action button to the toolbar.
+         * 
+         * @param icon The icon for the button.
+         * @param action The action to perform when the button is clicked.
+         */
         void InitToolBarAction(const std::shared_ptr<Bitmap>& icon, const std::function<void()>& action)
         {
             auto button = std::make_shared<Box>();

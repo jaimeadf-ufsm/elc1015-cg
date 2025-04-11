@@ -4,27 +4,51 @@
 #include "Text.h"
 #include "Checkbox.h"
 
+/**
+ * @file LayerItem.h
+ * @brief Defines the LayerItem class, which represents a UI element for managing and displaying a layer in a project.
+ * 
+ * The LayerItem class is responsible for rendering a layer's information, including its visibility, name, and preview.
+ * It also provides interactivity for toggling visibility and selecting the active layer.
+ */
+
 namespace yap
 {
+    /**
+     * @class LayerItem
+     * @brief A UI component representing a layer in a project.
+     * 
+     * The LayerItem class extends the Box class and provides a structured layout for displaying
+     * layer-related information, such as visibility, name, and preview. It also handles user interactions
+     * like toggling visibility and selecting the active layer.
+     */
     class LayerItem : public Box
     {
     private:
-        std::shared_ptr<Project> m_Project;
-        std::shared_ptr<Layer> m_Layer;
+        std::shared_ptr<Project> m_Project; ///< The project to which the layer belongs.
+        std::shared_ptr<Layer> m_Layer; ///< The layer represented by this UI component.
 
-        std::shared_ptr<Box> m_Container;
+        std::shared_ptr<Box> m_Container; ///< The main container for the LayerItem layout.
 
-        std::shared_ptr<Checkbox> m_Checkbox;
-        std::shared_ptr<Box> m_Divider;
+        std::shared_ptr<Checkbox> m_Checkbox; ///< Checkbox for toggling layer visibility.
+        std::shared_ptr<Box> m_Divider; ///< Divider line for visual separation.
 
-        std::shared_ptr<Box> m_Information;
+        std::shared_ptr<Box> m_Information; ///< Container for layer information (name, preview).
 
-        std::shared_ptr<Box> m_Preview;
-        std::shared_ptr<Text> m_Name;
+        std::shared_ptr<Box> m_Preview; ///< Box displaying the layer's preview image.
+        std::shared_ptr<Text> m_Name; ///< Text displaying the layer's name.
 
-        std::shared_ptr<Box> m_Line;
+        std::shared_ptr<Box> m_Line; ///< Horizontal line at the bottom of the LayerItem.
 
     public:
+        /**
+         * @brief Constructs a LayerItem.
+         * 
+         * Initializes the LayerItem with the given project and layer, setting up its layout and styles.
+         * 
+         * @param project A shared pointer to the project containing the layer.
+         * @param layer A shared pointer to the layer represented by this LayerItem.
+         */
         LayerItem(std::shared_ptr<Project> project, std::shared_ptr<Layer> layer) : m_Project(project), m_Layer(layer)
         {
             m_Container = std::make_shared<Box>();
@@ -116,6 +140,12 @@ namespace yap
             AddChild(m_Line);
         }
 
+        /**
+         * @brief Animates the LayerItem.
+         * 
+         * Updates the visual state of the LayerItem, such as toggling the "selected" trait
+         * and updating the preview image based on the layer's bitmap.
+         */
         void Animate() override
         {
             Box::Animate();
