@@ -111,7 +111,9 @@ será escrito no local indicado.
 arquivos similar ao "Salvar projeto". 
 
 OBS: No explorador de arquivos, é possível digitar manualmente o caminho na barra
-superior. No entanto, somente caminhos relativos são suportados.
+superior. No entanto, somente caminhos relativos são suportados. Observe também
+que só são mostrados 10 arquivos por vez e você pode mudar a página na barra
+superior.
 
 #### Barra de ferramentas
 
