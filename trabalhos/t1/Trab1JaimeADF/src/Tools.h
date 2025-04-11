@@ -736,7 +736,10 @@ namespace yap
                 auto sizeSlider = std::make_shared<Slider>();
                 auto sizeValue = std::make_shared<Text>();
 
-                sizeLabel->Content = "Brush Size:";
+                auto shapeLabel = std::make_shared<Text>();
+                auto shapeButtons = std::make_shared<Box>();
+
+                sizeLabel->Content = "Tamanho:";
                 sizeValue->Content = std::to_string(static_cast<int>(brush->GetSize())) + " px";
                 
                 sizeSlider->MinValue = 1.0f;
@@ -756,6 +759,44 @@ namespace yap
                     sizeValue->Content = std::to_string(size) + " px";
                 };
 
+                std::shared_ptr<PencilBrush> pencilBrush = std::dynamic_pointer_cast<PencilBrush>(brush);
+
+                if (pencilBrush)
+                {
+                    shapeLabel->Content = "Forma:";
+
+                    shapeButtons->SetStyle(
+                        StyleSheet()
+                            .WithSize(AxisSizingRule::Fit(), AxisSizingRule::Fixed(24))
+                            .WithAlignment(BoxAxisAlignment::Start, BoxAxisAlignment::Center)
+                            .WithGap(4)
+                    );
+
+                    shapeButtons->AddChild(
+                        CreateShapeButton(
+                            std::make_shared<Bitmap>(BMP::Load("Trab1JaimeADF/assets/circle-24x24.bmp")),
+                            pencilBrush,
+                            PencilShape::Circle
+                        )
+                    );
+
+                    shapeButtons->AddChild(
+                        CreateShapeButton(
+                            std::make_shared<Bitmap>(BMP::Load("Trab1JaimeADF/assets/square-24x24.bmp")),
+                            pencilBrush,
+                            PencilShape::Square
+                        )
+                    );
+
+                    shapeButtons->AddChild(
+                        CreateShapeButton(
+                            std::make_shared<Bitmap>(BMP::Load("Trab1JaimeADF/assets/triangle-24x24.bmp")),
+                            pencilBrush,
+                            PencilShape::Triangle
+                        )
+                    );
+                }
+
                 SetStyle(
                     StyleSheet()
                         .WithSize(AxisSizingRule::Fill(), AxisSizingRule::Fill())
@@ -767,6 +808,45 @@ namespace yap
                 AddChild(sizeLabel);
                 AddChild(sizeSlider);
                 AddChild(sizeValue);
+                AddChild(shapeLabel);
+                AddChild(shapeButtons);
+            }
+        
+        private:
+            std::shared_ptr<Box> CreateShapeButton(const std::shared_ptr<const Bitmap>& icon, const std::shared_ptr<PencilBrush> brush, PencilShape shape)
+            {
+                auto button = std::make_shared<Box>();
+
+                button->SetStyle(
+                    StyleSheet()
+                        .WithSize(AxisSizingRule::Fixed(24), AxisSizingRule::Fixed(24))
+                        .WithBackground(BoxBackground::Image(icon))
+                        .WithBackgroundReference(BoxBackgroundTransparencyReference::Static(ColorRGB(44, 44, 44)))
+                );
+
+                button->SetStyle(
+                    ":hover",
+                    StyleSheet()
+                        .WithBackgroundReference(BoxBackgroundTransparencyReference::Static(ColorRGB(56, 56, 56)))
+                );
+
+                button->SetStyle(
+                    "selected",
+                    StyleSheet()
+                        .WithBackgroundReference(BoxBackgroundTransparencyReference::Static(ColorRGB(74, 80, 124)))
+                );
+
+                button->OnAnimate = [this, brush, shape](Element& element)
+                {
+                    element.ToggleTrait("selected", brush->GetShape() == shape);
+                };
+
+                button->OnMousePress = [this, brush, shape](Element& element)
+                {
+                    brush->SetShape(shape);
+                };
+
+                return button;
             }
         };
     };

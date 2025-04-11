@@ -49,7 +49,7 @@ namespace yap
         void Reset() {
             if (IsSet) 
             {
-                reinterpret_cast<T*>(Payload)->~T();
+                GetPointer()->~T();
                 IsSet = false;
             }
         }
@@ -97,13 +97,13 @@ namespace yap
 
         T& operator*() {
             assert(IsSet);
-            return *reinterpret_cast<T*>(Payload);
+            return *GetPointer();
         }
 
         const T& operator*() const
         {
             assert(IsSet);
-            return *reinterpret_cast<const T*>(Payload);
+            return *GetPointer();
         }
 
         T* operator->()
@@ -115,5 +115,14 @@ namespace yap
         {
             return &**this;
         }
+
+    private:
+            T* GetPointer() {
+                return reinterpret_cast<T*>(Payload);
+            }
+            
+            const T* GetPointer() const {
+                return reinterpret_cast<const T*>(Payload);
+            }
     };
 }

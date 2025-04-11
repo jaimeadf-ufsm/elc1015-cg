@@ -1,0 +1,289 @@
+# depslib dependency file v1.0
+1744069258 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\gl_canvas2d.cpp
+	"gl_canvas2d.h"
+	<GL/glut.h>
+
+1744069258 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\gl_canvas2d.h
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	<string.h>
+	<GL/glut.h>
+	<GL/freeglut_ext.h>
+
+1744069258 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\include\gl\glut.h
+	"freeglut_std.h"
+
+1744069258 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\include\gl\freeglut_std.h
+	<windows.h>
+	<EGL/egl.h>
+	<GLES/gl.h>
+	<GLES2/gl2.h>
+	<OpenGL/gl.h>
+	<OpenGL/glu.h>
+	<GL/gl.h>
+	<GL/glu.h>
+	<stdlib.h>
+
+1744069258 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\include\gl\freeglut_ext.h
+	<stdarg.h>
+
+1744394232 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\main.cpp
+	<chrono>
+	<GL/glut.h>
+	<GL/freeglut_ext.h>
+	<math.h>
+	<stdio.h>
+	<stdlib.h>
+	"gl_canvas2d.h"
+	"Benchmark.h"
+	"BMP.h"
+	"Bitmap.h"
+	"RenderingContext.h"
+	"RenderingEngine.h"
+	"Screen.h"
+	"Workspace.h"
+
+1744395268 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\benchmark.h
+	<chrono>
+
+1744381452 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\bmp.h
+	<fstream>
+	<cstdint>
+	"Bitmap.h"
+
+1744376308 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\bitmap.h
+	<vector>
+	"Math.h"
+	"Color.h"
+	"Vec2.h"
+
+1744329596 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\math.h
+
+1744329596 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\color.h
+	"Math.h"
+
+1744381433 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\vec2.h
+	"Axis.h"
+
+1744069258 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\axis.h
+
+1744069258 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\renderingcontext.h
+	<vector>
+	"Vec2.h"
+	"RenderingCommand.h"
+	"gl_canvas2d.h"
+
+1744069258 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\renderingcommand.h
+	<memory>
+	"Color.h"
+
+1744394287 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\renderingengine.h
+	<vector>
+	"gl_canvas2d.h"
+	"RenderingCommand.h"
+
+1744160915 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\screen.h
+	<memory>
+	"Element.h"
+	"Box.h"
+	"Mouse.h"
+	"Keyboard.h"
+
+1744338254 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\element.h
+	<functional>
+	<unordered_set>
+	<string>
+	"Vec2.h"
+	"StyleSheet.h"
+	"Mouse.h"
+	"Keyboard.h"
+	"RenderingContext.h"
+
+1744155680 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\stylesheet.h
+	"Option.h"
+	"PointerEvents.h"
+	"SizingRule.h"
+	"PositioningRule.h"
+	"BoxBackground.h"
+	"BoxBorder.h"
+	"BoxDirection.h"
+	"BoxAlignment.h"
+	"BoxPadding.h"
+
+1744393297 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\option.h
+	<utility>
+	<cassert>
+
+1744155680 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\pointerevents.h
+
+1744069258 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\sizingrule.h
+
+1744069258 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\positioningrule.h
+	"Vec2.h"
+
+1744069258 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\boxbackground.h
+	<memory>
+	"Vec2.h"
+	"Color.h"
+	"Bitmap.h"
+
+1744069258 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\boxborder.h
+	"Color.h"
+
+1744069258 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\boxdirection.h
+
+1744069258 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\boxalignment.h
+	"Axis.h"
+
+1744069258 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\boxpadding.h
+	"Axis.h"
+
+1744069258 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\mouse.h
+	"Vec2.h"
+
+1744069258 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\keyboard.h
+
+1744343999 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\box.h
+	<vector>
+	<memory>
+	<algorithm>
+	"Element.h"
+	"StyleSheet.h"
+
+1744381560 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\workspace.h
+	"Project.h"
+	"ModalStack.h"
+	"Tools.h"
+	"EffectModal.h"
+	"ColorSection.h"
+	"LayerSection.h"
+	"FileModal.h"
+	"SaveModal.h"
+	"ShareModal.h"
+
+1744381946 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\project.h
+	"Layer.h"
+
+1744377830 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\layer.h
+	<functional>
+	<memory>
+	<queue>
+	"Vec2.h"
+	"Bitmap.h"
+
+1744329596 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\modalstack.h
+	"Modal.h"
+
+1744341132 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\modal.h
+	"Box.h"
+	"Text.h"
+
+1744329596 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\text.h
+	<string>
+	"Element.h"
+
+1744392229 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\tools.h
+	"Project.h"
+	"ViewportSpace.h"
+	"ColorPalette.h"
+	"Brush.h"
+	"Screen.h"
+	"Text.h"
+	"Slider.h"
+	"LayerBoundary.h"
+
+1744069258 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\viewportspace.h
+	"Project.h"
+	"Element.h"
+
+1744069258 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\colorpalette.h
+	"Color.h"
+
+1744379065 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\brush.h
+	"Vec2.h"
+	"Layer.h"
+	"ColorPalette.h"
+
+1744330037 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\slider.h
+	"Math.h"
+	"Box.h"
+	"Screen.h"
+
+1744069258 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\layerboundary.h
+	"Project.h"
+	"ViewportSpace.h"
+	"Box.h"
+
+1744335390 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\effectmodal.h
+	"Modal.h"
+	"Effects.h"
+
+1744392878 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\effects.h
+	<iomanip>
+	<sstream>
+	<random>
+	"Bitmap.h"
+	"Box.h"
+	"Text.h"
+
+1744074663 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\colorsection.h
+	"ColorPalette.h"
+	"ColorPicker.h"
+
+1744069258 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\colorpicker.h
+	"Box.h"
+	"Text.h"
+
+1744329596 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\layersection.h
+	"BMP.h"
+	"Project.h"
+	"Box.h"
+	"Text.h"
+	"LayerItem.h"
+
+1744069258 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\layeritem.h
+	"Box.h"
+	"Text.h"
+	"Checkbox.h"
+
+1744330022 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\checkbox.h
+	"Box.h"
+
+1744381890 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\filemodal.h
+	"Modal.h"
+	"Project.h"
+	"FileSelector.h"
+
+1744348663 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\fileselector.h
+	<sys/types.h>
+	<sys/stat.h>
+	<unistd.h>
+	<dirent.h>
+	"Path.h"
+	"TextInput.h"
+
+1744343359 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\path.h
+	<iostream>
+	<vector>
+	<string>
+	<sstream>
+	<algorithm>
+
+1744338740 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\textinput.h
+	<chrono>
+	"Box.h"
+	"Text.h"
+
+1744381525 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\savemodal.h
+	"Project.h"
+	"BMP.h"
+	"Modal.h"
+	"FileSelector.h"
+
+1744381532 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t1\yap\src\sharemodal.h
+	"Project.h"
+	"BMP.h"
+	"Modal.h"
+	"FileSelector.h"
+

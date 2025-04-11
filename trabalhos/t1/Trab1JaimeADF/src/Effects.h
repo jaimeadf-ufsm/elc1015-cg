@@ -232,7 +232,7 @@ namespace yap
         float m_Gamma = 1.0f;
 
     public:
-        GammaCorrectionEffect() : Effect("Gamma")
+        GammaCorrectionEffect() : Effect("Gama")
         {
         }
 
@@ -240,7 +240,7 @@ namespace yap
         {
             auto form = CreateForm();
 
-            form->AddChild(CreateLabel("Gamma:"));
+            form->AddChild(CreateLabel("Gama:"));
             form->AddChild(CreateSlider(
                 0.0f,
                 10.0f,

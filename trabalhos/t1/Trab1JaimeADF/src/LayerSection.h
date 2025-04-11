@@ -102,7 +102,7 @@ namespace yap
             );
 
             controls->AddChild(CreateControl(
-                std::make_shared<Bitmap>(BMP::Load("YAP/assets/plus-40x40.bmp")),
+                std::make_shared<Bitmap>(BMP::Load("Trab1JaimeADF/assets/plus-40x40.bmp")),
                 [this](Element& element)
                 {
                     m_Project->CreateLayer();
@@ -110,7 +110,7 @@ namespace yap
             ));
 
             controls->AddChild(CreateControl(
-                std::make_shared<Bitmap>(BMP::Load("YAP/assets/x-40x40.bmp")),
+                std::make_shared<Bitmap>(BMP::Load("Trab1JaimeADF/assets/x-40x40.bmp")),
                 [this](Element& element)
                 {
                     m_Project->DeleteActiveLayer();
@@ -118,7 +118,7 @@ namespace yap
             ));
 
             controls->AddChild(CreateControl(
-                std::make_shared<Bitmap>(BMP::Load("YAP/assets/chevron-up-40x40.bmp")),
+                std::make_shared<Bitmap>(BMP::Load("Trab1JaimeADF/assets/chevron-up-40x40.bmp")),
                 [this](Element& element)
                 {
                     m_Project->MoveLayerUp(m_Project->GetActiveLayer());
@@ -126,7 +126,7 @@ namespace yap
             ));
             
             controls->AddChild(CreateControl(
-                std::make_shared<Bitmap>(BMP::Load("YAP/assets/chevron-down-40x40.bmp")),
+                std::make_shared<Bitmap>(BMP::Load("Trab1JaimeADF/assets/chevron-down-40x40.bmp")),
                 [this](Element& element)
                 {
                     m_Project->MoveLayerDown(m_Project->GetActiveLayer());

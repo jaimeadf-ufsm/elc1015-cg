@@ -11,7 +11,7 @@ namespace yap
 
         std::chrono::high_resolution_clock::time_point m_StartTimepoint;
 
-        int64_t m_Samples = 0;
+        int32_t m_Samples = 0;
         double m_TotalTime = 0;
     
     public:
@@ -31,8 +31,11 @@ namespace yap
             m_Active = false;
             auto endTimepoint = std::chrono::high_resolution_clock::now();
 
+            auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(endTimepoint - m_StartTimepoint);
+            double seconds = duration.count() / 1e9;
+            
             m_Samples++;
-            m_TotalTime += (endTimepoint - m_StartTimepoint).count() / 1e9;
+            m_TotalTime += seconds;
         }
 
         void Reset()
@@ -41,7 +44,7 @@ namespace yap
             m_Samples = 0;
         }
 
-        int64_t GetSamples() const
+        int32_t GetSamples() const
         {
             return m_Samples;
         }

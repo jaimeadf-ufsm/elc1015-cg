@@ -47,7 +47,7 @@ namespace yap
             auto text = std::make_shared<Text>();
             auto fill = std::make_shared<Box>();
 
-            auto closeButton = CreateIconButton(std::make_shared<Bitmap>(BMP::Load("YAP/assets/x-40x40.bmp")));
+            auto closeButton = CreateIconButton(std::make_shared<Bitmap>(BMP::Load("Trab1JaimeADF/assets/x-40x40.bmp")));
 
             text->Content = title;
 

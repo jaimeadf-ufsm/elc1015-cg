@@ -77,7 +77,7 @@ namespace yap
 
             OnMount = [this, fileSelector](Element& element)
             {
-                fileSelector->SetPath("./YAP/images");
+                fileSelector->SetPath("./Trab1JaimeADF/images");
             };
 
             AddChild(header);

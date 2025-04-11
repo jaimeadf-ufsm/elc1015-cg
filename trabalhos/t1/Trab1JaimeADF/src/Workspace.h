@@ -83,7 +83,7 @@ namespace yap
             InitViewport();
 
             InitHeaderAction(
-                std::make_shared<Bitmap>(BMP::Load("YAP/assets/file-40x40.bmp")),
+                std::make_shared<Bitmap>(BMP::Load("Trab1JaimeADF/assets/file-40x40.bmp")),
                 [this]()
                 {
                     m_ModalStack->PushModal(std::make_shared<FileModal>(m_Project));
@@ -91,7 +91,7 @@ namespace yap
             );
 
             InitHeaderAction(
-                std::make_shared<Bitmap>(BMP::Load("YAP/assets/save-40x40.bmp")),
+                std::make_shared<Bitmap>(BMP::Load("Trab1JaimeADF/assets/save-40x40.bmp")),
                 [this]()
                 {
                     m_ModalStack->PushModal(std::make_shared<SaveModal>(m_Project));
@@ -99,7 +99,7 @@ namespace yap
             );
 
             InitHeaderAction(
-                std::make_shared<Bitmap>(BMP::Load("YAP/assets/share-40x40.bmp")),
+                std::make_shared<Bitmap>(BMP::Load("Trab1JaimeADF/assets/share-40x40.bmp")),
                 [this]()
                 {
                     m_ModalStack->PushModal(std::make_shared<ShareModal>(m_Project));
@@ -107,42 +107,42 @@ namespace yap
             );
 
             InitToolBarTool(
-                std::make_shared<Bitmap>(BMP::Load("YAP/assets/move-40x40.bmp")),
+                std::make_shared<Bitmap>(BMP::Load("Trab1JaimeADF/assets/move-40x40.bmp")),
                 std::make_shared<MoveTool>(m_Project, m_ViewportSpace)
             );
 
             InitToolBarTool(
-                std::make_shared<Bitmap>(BMP::Load("YAP/assets/transform-40x40.bmp")),
+                std::make_shared<Bitmap>(BMP::Load("Trab1JaimeADF/assets/transform-40x40.bmp")),
                 std::make_shared<TransformTool>(m_Project, m_ViewportSpace)
             );
 
             InitToolBarTool(
-                std::make_shared<Bitmap>(BMP::Load("YAP/assets/rotate-40x40.bmp")),
+                std::make_shared<Bitmap>(BMP::Load("Trab1JaimeADF/assets/rotate-40x40.bmp")),
                 std::make_shared<RotateTool>(m_Project, m_ViewportSpace)
             );
 
             InitToolBarTool(
-                std::make_shared<Bitmap>(BMP::Load("YAP/assets/brush-40x40.bmp")),
+                std::make_shared<Bitmap>(BMP::Load("Trab1JaimeADF/assets/brush-40x40.bmp")),
                 std::make_shared<BrushTool>(m_Project, m_ViewportSpace, std::make_shared<PencilBrush>(m_ColorPalette))
             );
 
             InitToolBarTool(
-                std::make_shared<Bitmap>(BMP::Load("YAP/assets/eraser-40x40.bmp")),
+                std::make_shared<Bitmap>(BMP::Load("Trab1JaimeADF/assets/eraser-40x40.bmp")),
                 std::make_shared<BrushTool>(m_Project, m_ViewportSpace, std::make_shared<PencilBrush>(std::make_shared<ColorPalette>(ColorRGBA(0, 0, 0, 0))))
             );
 
             InitToolBarTool(
-                std::make_shared<Bitmap>(BMP::Load("YAP/assets/bucket-40x40.bmp")),
+                std::make_shared<Bitmap>(BMP::Load("Trab1JaimeADF/assets/bucket-40x40.bmp")),
                 std::make_shared<BucketTool>(m_Project, m_ViewportSpace, m_ColorPalette)
             );
 
             InitToolBarTool(
-                std::make_shared<Bitmap>(BMP::Load("YAP/assets/eyedropper-40x40.bmp")),
+                std::make_shared<Bitmap>(BMP::Load("Trab1JaimeADF/assets/eyedropper-40x40.bmp")),
                 std::make_shared<ColorPickerTool>(m_Project, m_ViewportSpace, m_ColorPalette)
             );
 
             InitToolBarAction(
-                std::make_shared<Bitmap>(BMP::Load("YAP/assets/horizontal-flip-40x40.bmp")),
+                std::make_shared<Bitmap>(BMP::Load("Trab1JaimeADF/assets/horizontal-flip-40x40.bmp")),
                 [this]()
                 {
                     std::shared_ptr<Layer> layer = m_Project->GetActiveLayer();
@@ -155,7 +155,7 @@ namespace yap
             );
 
             InitToolBarAction(
-                std::make_shared<Bitmap>(BMP::Load("YAP/assets/vertical-flip-40x40.bmp")),
+                std::make_shared<Bitmap>(BMP::Load("Trab1JaimeADF/assets/vertical-flip-40x40.bmp")),
                 [this]()
                 {
                     std::shared_ptr<Layer> layer = m_Project->GetActiveLayer();
@@ -168,7 +168,7 @@ namespace yap
             );
 
             InitToolBarAction(
-                std::make_shared<Bitmap>(BMP::Load("YAP/assets/effects-40x40.bmp")),
+                std::make_shared<Bitmap>(BMP::Load("Trab1JaimeADF/assets/effects-40x40.bmp")),
                 [this]()
                 {
                     m_ModalStack->PushModal(std::make_shared<EffectModal>(m_Project));

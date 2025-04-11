@@ -55,8 +55,8 @@ namespace yap
 
                 auto carouselSelection = std::make_shared<Box>();
 
-                auto carouselPreviousButton = CreateIconButton(std::make_shared<Bitmap>(BMP::Load("YAP/assets/chevron-left-40x40.bmp")));
-                auto carouselNextButton = CreateIconButton(std::make_shared<Bitmap>(BMP::Load("YAP/assets/chevron-right-40x40.bmp")));
+                auto carouselPreviousButton = CreateIconButton(std::make_shared<Bitmap>(BMP::Load("Trab1JaimeADF/assets/chevron-left-40x40.bmp")));
+                auto carouselNextButton = CreateIconButton(std::make_shared<Bitmap>(BMP::Load("Trab1JaimeADF/assets/chevron-right-40x40.bmp")));
 
                 auto buttons = std::make_shared<Box>();
 

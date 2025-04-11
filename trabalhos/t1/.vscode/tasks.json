@@ -12,7 +12,7 @@
                 "-O2",
                 "-g",
                 "-I${workspaceFolder}\\include",
-                "${workspaceFolder}\\YAP\\src\\*.cpp",
+                "${workspaceFolder}\\Trab1JaimeADF/\\src\\*.cpp",
                 "-L${workspaceFolder}\\lib",
                 "-lfreeglut32",
                 "-lopengl32",

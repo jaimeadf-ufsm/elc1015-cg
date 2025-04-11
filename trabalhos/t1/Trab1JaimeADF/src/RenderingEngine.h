@@ -14,50 +14,50 @@ namespace yap
         std::vector<float> m_VerticesY;
 
     public:
-        void ProcessCommands(const std::vector<RenderingCommand>& commands)
+        void ExecuteCommands(const std::vector<RenderingCommand>& commands)
         {
             for (const auto& command : commands)
             {
-                ProcessCommand(command);
+                ExecuteCommand(command);
             }
         }
     
     private:
-        void ProcessCommand(const RenderingCommand& command)
+        void ExecuteCommand(const RenderingCommand& command)
         {
             switch (command.GetKind())
             {
                 case RenderingCommandKind::Color:
-                    ProcessColorCommand(command.GetColorArgs());
+                    ExecuteColorCommand(command.GetColorArgs());
                     break;
                 case RenderingCommandKind::FillPoint:
-                    ProcessFillPointCommand(command.GetFillPointArgs());
+                    ExecuteFillPointCommand(command.GetFillPointArgs());
                     break;
                 case RenderingCommandKind::StrokeRectangle:
-                    ProcessStrokeRectangleCommand(command.GetStrokeRectangleArgs());
+                    ExecuteStrokeRectangleCommand(command.GetStrokeRectangleArgs());
                     break;
                 case RenderingCommandKind::FillRectangle:
-                    ProcessFillRectangleCommand(command.GetFillRectangleArgs());
+                    ExecuteFillRectangleCommand(command.GetFillRectangleArgs());
                     break;
                 case RenderingCommandKind::BeginPolygon:
-                    ProcessBeginPolygonCommand(command.GetBeginPolygonArgs());
+                    ExecuteBeginPolygonCommand(command.GetBeginPolygonArgs());
                     break;
                 case RenderingCommandKind::Vertex:
-                    ProcessVertexCommand(command.GetVertexArgs());
+                    ExecuteVertexCommand(command.GetVertexArgs());
                     break;
                 case RenderingCommandKind::StrokePolygon:
-                    ProcessStrokePolygonCommand(command.GetStrokePolygonArgs());
+                    ExecuteStrokePolygonCommand(command.GetStrokePolygonArgs());
                     break;
                 case RenderingCommandKind::FillPolygon:
-                    ProcessFillPolygonCommand(command.GetFillPolygonArgs());
+                    ExecuteFillPolygonCommand(command.GetFillPolygonArgs());
                     break;
                 case RenderingCommandKind::Text:
-                    ProcessTextCommand(command.GetTextArgs());
+                    ExecuteTextCommand(command.GetTextArgs());
                     break;
             }
         }
 
-        void ProcessColorCommand(const ColorRenderingCommandArguments& args)
+        void ExecuteColorCommand(const ColorRenderingCommandArguments& args)
         {
             CV::color(args.R, args.G, args.B);
 
@@ -69,7 +69,7 @@ namespace yap
             // );
         }
 
-        void ProcessFillPointCommand(const FillPointRenderingCommandArguments& args)
+        void ExecuteFillPointCommand(const FillPointRenderingCommandArguments& args)
         {
             // CV::point(args.X, args.Y);
             CV::rectFill(args.X, args.Y, args.X + 1, args.Y + 1);
@@ -81,7 +81,7 @@ namespace yap
             // );
         }
 
-        void ProcessStrokeRectangleCommand(const StrokeRectangleRenderingCommandArguments& args)
+        void ExecuteStrokeRectangleCommand(const StrokeRectangleRenderingCommandArguments& args)
         {
             // CV::rect(args.X, args.Y, args.X + args.Width, args.Y + args.Height);
             CV::rectFill(args.X, args.Y, args.X + args.Width, args.Y + args.StrokeWidth);
@@ -98,7 +98,7 @@ namespace yap
             // );
         }
 
-        void ProcessFillRectangleCommand(const FillRectangleRenderingCommandArguments& args)
+        void ExecuteFillRectangleCommand(const FillRectangleRenderingCommandArguments& args)
         {
             CV::rectFill(args.X, args.Y, args.X + args.Width, args.Y + args.Height);
 
@@ -111,7 +111,7 @@ namespace yap
             // );
         }
 
-        void ProcessBeginPolygonCommand(const BeginPolygonRenderingCommandArguments& args)
+        void ExecuteBeginPolygonCommand(const BeginPolygonRenderingCommandArguments& args)
         {
             m_VerticesX.clear();
             m_VerticesY.clear();
@@ -119,7 +119,7 @@ namespace yap
             // printf("BeginPolygon()\n");
         }
 
-        void ProcessVertexCommand(const VertexCommandArguments& args)
+        void ExecuteVertexCommand(const VertexCommandArguments& args)
         {
             m_VerticesX.push_back(args.X);
             m_VerticesY.push_back(args.Y);
@@ -131,7 +131,7 @@ namespace yap
             // );
         }
 
-        void ProcessStrokePolygonCommand(const StrokePolygonRenderingCommandArguments& args)
+        void ExecuteStrokePolygonCommand(const StrokePolygonRenderingCommandArguments& args)
         {
             if (m_VerticesX.size() < 2)
             {
@@ -143,7 +143,7 @@ namespace yap
             // printf("StrokePolygon()\n");
         }
 
-        void ProcessFillPolygonCommand(const FillPolygonRenderingCommandArguments& args)
+        void ExecuteFillPolygonCommand(const FillPolygonRenderingCommandArguments& args)
         {
             if (m_VerticesX.size() < 3)
             {
@@ -155,7 +155,7 @@ namespace yap
             // printf("FillPolygon()\n");
         }
 
-        void ProcessTextCommand(const TextRenderingCommandArguments& args)
+        void ExecuteTextCommand(const TextRenderingCommandArguments& args)
         {
             CV::text(args.X, args.Y, args.Text);
 

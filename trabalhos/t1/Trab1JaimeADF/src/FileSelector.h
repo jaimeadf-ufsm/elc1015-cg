@@ -40,13 +40,13 @@ namespace yap
 
             m_Items = std::make_shared<Box>();
 
-            m_FileIcon = std::make_shared<Bitmap>(BMP::Load("YAP/assets/file-24x24.bmp"));
-            m_FolderIcon = std::make_shared<Bitmap>(BMP::Load("YAP/assets/folder-24x24.bmp"));
+            m_FileIcon = std::make_shared<Bitmap>(BMP::Load("Trab1JaimeADF/assets/file-24x24.bmp"));
+            m_FolderIcon = std::make_shared<Bitmap>(BMP::Load("Trab1JaimeADF/assets/folder-24x24.bmp"));
 
             auto controls = std::make_shared<Box>();
 
-            auto previousButton = CreateControlButton(std::make_shared<Bitmap>(BMP::Load("YAP/assets/chevron-left-24x24.bmp")));
-            auto nextButton = CreateControlButton(std::make_shared<Bitmap>(BMP::Load("YAP/assets/chevron-right-24x24.bmp")));
+            auto previousButton = CreateControlButton(std::make_shared<Bitmap>(BMP::Load("Trab1JaimeADF/assets/chevron-left-24x24.bmp")));
+            auto nextButton = CreateControlButton(std::make_shared<Bitmap>(BMP::Load("Trab1JaimeADF/assets/chevron-right-24x24.bmp")));
                 
             m_PathInput->SetValue(".");
 
