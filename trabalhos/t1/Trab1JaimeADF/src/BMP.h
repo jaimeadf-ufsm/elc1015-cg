@@ -120,30 +120,39 @@ namespace yap
             return bitmap;
         }
 
-        static void Save(const std::string& path, const Bitmap& bitmap)
+        static void Save(const std::string& path, const Bitmap& bitmap, bool withAlpha = false)
         {
             Header header;
             InfoHeader infoHeader;
-
-            int rowSize = ((bitmap.GetWidth() * 3 + 3) / 4) * 4;
+            
+            uint16_t bitsPerPixel = withAlpha ? 32 : 24;
+            int bytesPerPixel = bitsPerPixel / 8;
+            int rowSize = ((bitmap.GetWidth() * bytesPerPixel + 3) / 4) * 4;
 
             header.Type = 0x4D42;
-            header.Size = 14 + 40 + rowSize * bitmap.GetHeight();
+            header.Size = 14 + (withAlpha ? 56 : 40) + rowSize * bitmap.GetHeight();
             header.Reserved1 = 0;
             header.Reserved2 = 0;
-            header.Offset = 14 + 40;
+            header.Offset = 14 + (withAlpha ? 56 : 40);
             
-            infoHeader.Size = 40;
+            infoHeader.Size = withAlpha ? 56 : 40;
             infoHeader.Width = bitmap.GetWidth();
             infoHeader.Height = bitmap.GetHeight();
             infoHeader.Planes = 1;
-            infoHeader.BitsPerPixel = 24;
-            infoHeader.Compression = 0;
+            infoHeader.BitsPerPixel = bitsPerPixel;
+            infoHeader.Compression = withAlpha ? 3 : 0; // 3 is BI_BITFIELDS for alpha
             infoHeader.ImageSize = rowSize * bitmap.GetHeight();
             infoHeader.XPixelsPerMeter = 0;
             infoHeader.YPixelsPerMeter = 0;
             infoHeader.ColorUsed = 0;
             infoHeader.ColorImportant = 0;
+            
+            if (withAlpha) {
+                infoHeader.RedMask = 0x00FF0000;
+                infoHeader.GreenMask = 0x0000FF00;
+                infoHeader.BlueMask = 0x000000FF;
+                infoHeader.AlphaMask = 0xFF000000;
+            }
 
             std::ofstream file(path, std::ios::binary);
 
@@ -169,24 +178,46 @@ namespace yap
             file.write(reinterpret_cast<const char*>(&infoHeader.YPixelsPerMeter), sizeof(infoHeader.YPixelsPerMeter));
             file.write(reinterpret_cast<const char*>(&infoHeader.ColorUsed), sizeof(infoHeader.ColorUsed));
             file.write(reinterpret_cast<const char*>(&infoHeader.ColorImportant), sizeof(infoHeader.ColorImportant));
+            
+            if (withAlpha) {
+                file.write(reinterpret_cast<const char*>(&infoHeader.RedMask), sizeof(infoHeader.RedMask));
+                file.write(reinterpret_cast<const char*>(&infoHeader.GreenMask), sizeof(infoHeader.GreenMask));
+                file.write(reinterpret_cast<const char*>(&infoHeader.BlueMask), sizeof(infoHeader.BlueMask));
+                file.write(reinterpret_cast<const char*>(&infoHeader.AlphaMask), sizeof(infoHeader.AlphaMask));
+            }
 
             for (int y = bitmap.GetHeight() - 1; y >= 0; y--)
             {
                 for (int x = 0; x < bitmap.GetWidth(); x++)
                 {
                     ColorRGBA color = bitmap.GetPixel(x, y);
-                    uint8_t b = static_cast<uint8_t>(color.B * 255 * color.A);
-                    uint8_t g = static_cast<uint8_t>(color.G * 255 * color.A);
-                    uint8_t r = static_cast<uint8_t>(color.R * 255 * color.A);
+                    uint8_t b = static_cast<uint8_t>(color.B * 255);
+                    uint8_t g = static_cast<uint8_t>(color.G * 255);
+                    uint8_t r = static_cast<uint8_t>(color.R * 255);
+
+                    if (!withAlpha) {
+                        // Premultiply alpha if saving without alpha channel
+                        b = static_cast<uint8_t>(color.B * 255 * color.A);
+                        g = static_cast<uint8_t>(color.G * 255 * color.A);
+                        r = static_cast<uint8_t>(color.R * 255 * color.A);
+                    }
 
                     file.write(reinterpret_cast<const char*>(&b), sizeof(b));
                     file.write(reinterpret_cast<const char*>(&g), sizeof(g));
                     file.write(reinterpret_cast<const char*>(&r), sizeof(r));
+                    
+                    if (withAlpha) {
+                        uint8_t a = static_cast<uint8_t>(color.A * 255);
+                        file.write(reinterpret_cast<const char*>(&a), sizeof(a));
+                    }
                 }
 
                 uint32_t padding = 0;
-
-                file.write(reinterpret_cast<const char*>(&padding), rowSize - bitmap.GetWidth() * 3);
+                int paddingSize = rowSize - bitmap.GetWidth() * bytesPerPixel;\
+                
+                if (paddingSize > 0) {
+                    file.write(reinterpret_cast<const char*>(&padding), paddingSize);
+                }
             }
 
             file.close();

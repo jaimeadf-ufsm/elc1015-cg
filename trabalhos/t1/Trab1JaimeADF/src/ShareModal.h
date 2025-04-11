@@ -4,6 +4,7 @@
 #include "BMP.h"
 
 #include "Modal.h"
+#include "Checkbox.h"
 #include "FileSelector.h"
 
 namespace yap
@@ -18,35 +19,54 @@ namespace yap
 
             auto fileSelector = std::make_shared<FileSelector>();
 
-            auto field = std::make_shared<Box>();
+            auto nameField = std::make_shared<Box>();
 
-            auto label = std::make_shared<Text>();
+            auto nameLabel = std::make_shared<Text>();
             auto nameInput = std::make_shared<TextInput>();
+
+            auto alphaField = std::make_shared<Box>();
+            auto alphaCheckbox = std::make_shared<Checkbox>();
+            auto alphaLabel = std::make_shared<Text>();
 
             auto buttons = std::make_shared<Box>();
 
             auto cancelButton = CreateTextButton("Cancelar");
             auto openButton = CreateTextButton("Exportar");
 
-            label->Content = "Nome do arquivo: ";
+            nameLabel->Content = "Nome do arquivo: ";
 
             nameInput->SetValue("imagem.bmp");
 
-            field->SetStyle(
+            nameField->SetStyle(
                 StyleSheet()
                     .WithSize(AxisSizingRule::Fill(), AxisSizingRule::Fit())
                     .WithDirection(BoxDirection::Column)
                     .WithGap(8)
             );
 
-            field->AddChild(label);
-            field->AddChild(nameInput);
+            nameField->AddChild(nameLabel);
+            nameField->AddChild(nameInput);
+
+            alphaField->SetStyle(
+                StyleSheet()
+                    .WithSize(AxisSizingRule::Fill(), AxisSizingRule::Fit())
+                    .WithDirection(BoxDirection::Row)
+                    .WithAlignment(BoxAxisAlignment::Start, BoxAxisAlignment::Center)
+                    .WithGap(8)
+            );
+
+            alphaLabel->Content = "Alfa";
+
+            alphaCheckbox->SetChecked(true);
+
+            alphaField->AddChild(alphaCheckbox);
+            alphaField->AddChild(alphaLabel);
 
             cancelButton->OnMousePress = [this](Element& e) {
                 Close();
             };
 
-            openButton->OnMousePress = [this, project, fileSelector, nameInput](Element& e) {
+            openButton->OnMousePress = [this, project, fileSelector, nameInput, alphaCheckbox](Element& e) {
                 std::string basePath = fileSelector->GetPath();
                 std::string fileName = nameInput->GetValue();
 
@@ -59,7 +79,7 @@ namespace yap
 
                 const Bitmap& bitmap = *project->RenderCanvas();
 
-                BMP::Save(path, bitmap);
+                BMP::Save(path, bitmap, alphaCheckbox->IsChecked());
 
                 Close();
             };
@@ -74,7 +94,8 @@ namespace yap
             buttons->AddChild(openButton);
 
             body->AddChild(fileSelector);
-            body->AddChild(field);
+            body->AddChild(nameField);
+            body->AddChild(alphaField);
             body->AddChild(buttons);
 
             OnMount = [this, fileSelector](Element& element)
