@@ -10,9 +10,9 @@ namespace yap
     class BMP
     {
     public:
-        static Bitmap Load(const char* fileName)
+        static Bitmap Load(const std::string& path)
         {
-            std::ifstream file(fileName, std::ios::binary);
+            std::ifstream file(path, std::ios::binary);
 
             if (!file)
             {
@@ -120,7 +120,7 @@ namespace yap
             return bitmap;
         }
 
-        static void Save(const char* fileName, const Bitmap& bitmap)
+        static void Save(const std::string& path, const Bitmap& bitmap)
         {
             Header header;
             InfoHeader infoHeader;
@@ -145,11 +145,11 @@ namespace yap
             infoHeader.ColorUsed = 0;
             infoHeader.ColorImportant = 0;
 
-            std::ofstream file(fileName, std::ios::binary);
+            std::ofstream file(path, std::ios::binary);
 
             if (!file)
             {
-                throw std::runtime_error("Failed to open file for writing");
+                throw std::runtime_error("Unable to open file for writing: " + path);
             }
 
             file.write(reinterpret_cast<const char*>(&header.Type), sizeof(header.Type));

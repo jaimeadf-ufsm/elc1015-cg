@@ -102,7 +102,10 @@ namespace yap
 
             if (m_Hovered)
             {
-                Focus();
+                if (!m_Focused)
+                {
+                    Focus();
+                }
 
                 if (button == MouseButton::Left)
                 {
@@ -333,6 +336,11 @@ namespace yap
         bool IsPressed() const
         {
             return m_Pressed;
+        }
+
+        bool IsFocused() const
+        {
+            return m_Focused;
         }
 
         void ToggleTrait(const std::string& trait, bool enable = false)

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <chrono>
+
 #include "Box.h"
 #include "Text.h"
 
@@ -16,8 +18,9 @@ namespace yap
 
     public:
         std::function<void(TextInput&, const std::string&)> OnChange;
-        std::function<void(TextInput&, const std::string&)> OnSubmit;
-        std::function<void(TextInput&, const std::string&)> OnCancel;
+        std::function<void(TextInput&)> OnSubmit;
+        std::function<void(TextInput&)> OnCancel;
+        std::function<void(TextInput&)> OnLeave;
 
         TextInput()
         {
@@ -26,7 +29,7 @@ namespace yap
 
             m_Cursor->SetStyle(
                 StyleSheet()
-                    .WithSize(AxisSizingRule::Fixed(1.0f), AxisSizingRule::Fixed(10.0f))
+                    .WithSize(AxisSizingRule::Fixed(1.0f), AxisSizingRule::Fixed(12.0f))
                     .WithBackground(BoxBackground::Solid(ColorRGB(255, 255, 255)))
                     .WithVisibility(false)
             );
@@ -35,31 +38,44 @@ namespace yap
                 StyleSheet()
                     .WithSize(AxisSizingRule::Fill(), AxisSizingRule::Fixed(24))
                     .WithAlignment(BoxAxisAlignment::Start, BoxAxisAlignment::Center)
-                    .WithBackground(BoxBackground::Solid(ColorRGB(56, 56, 56)))
+                    .WithBackground(BoxBackground::Solid(ColorRGB(30, 30, 30)))
                     .WithForeground(ColorRGB(255, 255, 255))
-                    .WithPadding(BoxPadding(4, 0))
+                    .WithBorder(BoxBorder::Solid(ColorRGB(68, 68, 68), 1.0f))
+                    .WithPadding(BoxPadding(8, 0))
             );
 
             SetStyle(
                 ":focus",
                 StyleSheet()
-                    .WithBorder(BoxBorder::Solid(ColorRGB(74, 80, 124), 1.0f))
+                    .WithBorder(BoxBorder::Solid(ColorRGB(255, 255, 255), 1.0f))
             );
 
-            OnFocus = [this](Element& element)
+            OnAnimate = [this](Element& element)
             {
-                m_Cursor->SetStyle(
-                    m_Cursor->GetStyle()
-                        .WithVisibility(true)
-                );
+                if (IsFocused())
+                {
+                    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
+                    m_Cursor->SetStyle(
+                        m_Cursor->GetStyle()
+                            .WithVisibility(ms % 1000 < 500)
+                    );
+                }
+                else
+                {
+                    m_Cursor->SetStyle(
+                        m_Cursor->GetStyle()
+                            .WithVisibility(false)
+                    );
+                }
             };
 
             OnUnfocus = [this](Element& element)
             {
-                m_Cursor->SetStyle(
-                    m_Cursor->GetStyle()
-                        .WithVisibility(false)
-                );
+                if (OnLeave)
+                {
+                    OnLeave(*this);
+                }
             };
 
             OnKeyboardDown = [this](Element& element, KeyboardKey key)
@@ -93,21 +109,21 @@ namespace yap
                 }
                 else if (key == 13) // Enter
                 {
-                    Unfocus();
-
                     if (OnSubmit)
                     {
-                        OnSubmit(*this, m_Value);
+                        OnSubmit(*this);
                     }
+
+                    Unfocus();
                 }
                 else if (key == 27) // Escape
                 {
-                    Unfocus();
-
                     if (OnCancel)
                     {
-                        OnCancel(*this, m_Value);
+                        OnCancel(*this);
                     }
+
+                    Unfocus();
                 }
 
                 RefreshText();

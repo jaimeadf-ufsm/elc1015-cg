@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <memory>
+#include <queue>
 
 #include "Vec2.h"
 #include "Bitmap.h"
@@ -76,6 +77,91 @@ namespace yap
             m_Bitmap->FlipVertically();
         }
 
+        void Fill(Vec2 position, const ColorRGBA& color)
+        {
+            int x = static_cast<int>(position.X);
+            int y = static_cast<int>(position.Y);
+
+            int width = m_Bitmap->GetWidth();
+            int height = m_Bitmap->GetHeight();
+
+            ColorRGBA targetColor = GetPixel(x, y);
+
+            if (targetColor == color)
+            {
+                return;
+            }
+
+            std::queue<std::pair<int, int>> q;
+
+            SetPixel(x, y, color);
+            q.push({x, y});
+
+            int dx[4] = {-1, 1, 0, 0};
+            int dy[4] = {0, 0, -1, 1};
+
+            while (!q.empty()) {
+                auto c = q.front();
+                int cx = c.first;
+                int cy = c.second;
+
+                q.pop();
+
+                for (int i = 0; i < 4; ++i) {
+                    int nx = cx + dx[i];
+                    int ny = cy + dy[i];
+
+                    if (nx >= 0 && ny >= 0 && nx < width && ny < height) {
+                        if (GetPixel(nx, ny) == targetColor)
+                        {
+                            SetPixel(nx, ny, color);
+                            q.push({nx, ny});
+                        }
+                    }
+                }
+            }
+        }
+
+        void Rotate(float angle, const Vec2& pivot = Vec2())
+        {
+            Vec2 size = GetSize();
+            Vec2 position = GetPosition();
+
+            std::vector<Vec2> corners = {
+                position,
+                position + Vec2(size.X, 0.0f),
+                position + Vec2(0.0f, size.Y),
+                position + size
+            };
+
+            for (auto& point : corners)
+            {
+                point.Rotate(angle, pivot);
+                point.Floor();
+            }
+
+            Vec2 newTopLeft = corners[0];
+            Vec2 newBottomRight = corners[0];
+
+            for (const auto& point : corners)
+            {
+                newTopLeft.X = std::min(newTopLeft.X, point.X);
+                newTopLeft.Y = std::min(newTopLeft.Y, point.Y);
+                newBottomRight.X = std::max(newBottomRight.X, point.X);
+                newBottomRight.Y = std::max(newBottomRight.Y, point.Y);
+            }
+
+            Vec2 newSize = newBottomRight - newTopLeft;
+            Vec2 newPosition = newTopLeft;
+
+            std::shared_ptr<Bitmap> output = std::make_shared<Bitmap>(static_cast<int>(newSize.X), static_cast<int>(newSize.Y));
+
+            Bitmap::Rotate(*m_Bitmap, *output, angle, pivot - position, position - newPosition);
+
+            m_Bitmap = output;
+            SetPosition(newPosition);
+        }
+
         void Scale(const Vec2& newSize, ScalingMethod method = ScalingMethod::NearestNeighbor)
         {
             Scale(static_cast<int>(newSize.X), static_cast<int>(newSize.Y), method);
@@ -83,11 +169,11 @@ namespace yap
 
         void Scale(float newWidth, float newHeight, ScalingMethod method = ScalingMethod::NearestNeighbor)
         {
-            std::shared_ptr<Bitmap> outputBitmap = std::make_shared<Bitmap>(static_cast<int>(newWidth), static_cast<int>(newHeight));
+            std::shared_ptr<Bitmap> output = std::make_shared<Bitmap>(static_cast<int>(newWidth), static_cast<int>(newHeight));
 
-            Bitmap::Scale(*m_Bitmap, *outputBitmap, method);
+            Bitmap::Scale(*m_Bitmap, *output, method);
 
-            m_Bitmap = outputBitmap;
+            m_Bitmap = output;
         }
 
         Vec2 GetSize() const

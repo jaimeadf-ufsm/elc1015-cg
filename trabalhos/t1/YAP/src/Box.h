@@ -191,7 +191,7 @@ namespace yap
             remainingSecondarySize -= ComputedStyle.Padding.GetTotalPaddingAlongAxis(secondaryAxis);
 
             int staticChildrenCount = 0;
-            int staticFillableChildrenCount = 0;
+            int remainingFillableChildrenCount = 0;
 
             for (const auto& child : Children)
             {
@@ -205,7 +205,7 @@ namespace yap
 
                 if (child->ComputedStyle.Size.GetSizeAlongAxis(primaryAxis).IsFill())
                 {
-                    staticFillableChildrenCount++;
+                    remainingFillableChildrenCount++;
                 }
             }
 
@@ -217,9 +217,16 @@ namespace yap
                 {
                     if (child->ComputedStyle.Size.GetSizeAlongAxis(primaryAxis).IsFill())
                     {
+                        float fillSize = std::ceil(
+                            remainingPrimarySize / remainingFillableChildrenCount
+                        );
+
+                        remainingPrimarySize -= fillSize;
+                        remainingFillableChildrenCount--;
+
                         child->Size.SetValueAlongAxis(
                             primaryAxis,
-                            remainingPrimarySize / staticFillableChildrenCount
+                            fillSize
                         );
                     }
 
@@ -393,6 +400,21 @@ namespace yap
             }
         }
 
+        void RemoveChild(const std::shared_ptr<Element>& child)
+        {
+            auto it = std::find(Children.begin(), Children.end(), child);
+
+            if (it != Children.end())
+            {
+                if (GetScreen())
+                {
+                    child->Unmount();
+                }
+
+                Children.erase(it);
+            }
+        }
+
         std::shared_ptr<Element> GetChild(size_t index) const
         {
             if (index < 0 || index >= Children.size())
@@ -401,19 +423,6 @@ namespace yap
             }
 
             return Children[index];
-        }
-
-        void RemoveChild(const std::shared_ptr<Element>& child)
-        {
-            if (GetScreen())
-            {
-                child->Unmount();
-            }
-
-            Children.erase(
-                std::remove(Children.begin(), Children.end(), child),
-                Children.end()
-            );
         }
 
         void ClearChildren()

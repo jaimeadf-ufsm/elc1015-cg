@@ -131,7 +131,7 @@ namespace yap
 
             textWrapper->SetStyle(
                 StyleSheet()
-                    .WithSize(AxisSizingRule::Fixed(60), AxisSizingRule::Fit())
+                    .WithSize(AxisSizingRule::Fixed(80), AxisSizingRule::Fit())
                     .WithAlignment(BoxAxisAlignment::End, BoxAxisAlignment::Center)
             );
 
@@ -242,8 +242,8 @@ namespace yap
 
             form->AddChild(CreateLabel("Gamma:"));
             form->AddChild(CreateSlider(
-                0.1f,
-                5.0f,
+                0.0f,
+                10.0f,
                 0.01f,
                 m_Gamma,
                 [this](float value) {
@@ -357,7 +357,7 @@ namespace yap
             form->AddChild(CreateLabel("Raio do desfoque:"));
             form->AddChild(CreateSlider(
                 0.1f,
-                10.0f,
+                100.0f,
                 0.1f,
                 m_Radius,
                 [this](float value) {
@@ -366,7 +366,7 @@ namespace yap
                 },
                 [](float value) {
                     std::stringstream ss;
-                    ss << std::fixed << std::setprecision(1) << value;
+                    ss << std::fixed << std::setprecision(1) << value << " px";
                     return ss.str();
                 })
             );

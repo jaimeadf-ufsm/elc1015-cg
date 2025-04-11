@@ -4,6 +4,7 @@
 
 #include "Math.h"
 #include "Color.h"
+#include "Vec2.h"
 
 namespace yap
 {
@@ -87,6 +88,28 @@ namespace yap
         int GetHeight() const
         {
             return m_Height;
+        }
+
+        static void Rotate(const Bitmap& source, Bitmap& destination, float radians, Vec2 pivot, Vec2 offset)
+        {
+            destination.Clear();
+            
+            for (int y = 0; y < destination.GetHeight(); ++y)
+            {
+                for (int x = 0; x < destination.GetWidth(); ++x)
+                {
+                    Vec2 sourcePosition = Vec2(x, y) - offset;
+                    sourcePosition.Rotate(-radians, pivot);
+
+                    int sourceX = static_cast<int>(sourcePosition.X);
+                    int sourceY = static_cast<int>(sourcePosition.Y);
+
+                    if (sourceX >= 0 && sourceX < source.GetWidth() && sourceY >= 0 && sourceY < source.GetHeight())
+                    {
+                        destination.SetPixel(x, y, source.GetPixel(sourceX, sourceY));
+                    }
+                }
+            }
         }
         
         static void Scale(const Bitmap& source, Bitmap& destination, ScalingMethod method = ScalingMethod::NearestNeighbor)

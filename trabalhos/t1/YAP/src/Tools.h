@@ -412,11 +412,9 @@ namespace yap
                         break;
                 }
 
-                // Prevent flipping and enforce minimum size
                 if (newSize.X < minSize)
                 {
                     newSize.X = minSize;
-                    // Lock position on X axis if shrinking past limit
                     if (location == AnchorLocation::TopLeft ||
                         location == AnchorLocation::MiddleLeft ||
                         location == AnchorLocation::BottomLeft)
@@ -428,7 +426,6 @@ namespace yap
                 if (newSize.Y < minSize)
                 {
                     newSize.Y = minSize;
-                    // Lock position on Y axis if shrinking past limit
                     if (location == AnchorLocation::TopLeft ||
                         location == AnchorLocation::TopMiddle ||
                         location == AnchorLocation::TopRight)
@@ -439,6 +436,209 @@ namespace yap
 
                 m_TargetCanvasPosition = newPosition;
                 m_TargetCanvasSize = newSize;
+            }
+        };
+    };
+
+    class RotateTool : public Tool
+    {
+    public:
+        RotateTool(const std::shared_ptr<Project>& project, const std::shared_ptr<ViewportSpace>& viewportSpace)
+            : Tool(project, viewportSpace)
+        {
+        }
+
+        std::shared_ptr<Element> CreateOverlay() override
+        {
+            return std::make_shared<RotateToolOverlay>(m_Project, m_ViewportSpace);
+        }
+
+        std::shared_ptr<Element> CreateOptions() override
+        {
+            return std::make_shared<Box>();
+        }
+    
+    private:
+        class RotateToolOverlay : public Element
+        {
+        private:
+            std::shared_ptr<Project> m_Project;
+            std::shared_ptr<ViewportSpace> m_ViewportSpace;
+
+            std::vector<Vec2> m_CanvasCorners;
+
+            Vec2 m_CanvasTopLeft;
+            Vec2 m_CanvasBottomRight;
+
+            std::vector<Vec2> m_ScreenCorners;
+
+            Vec2 m_CanvasPivot;
+            float m_CanvasRotation = 0.0f;
+
+            Vec2 m_LastMousePosition;
+
+        public:
+            RotateToolOverlay(std::shared_ptr<Project> project, std::shared_ptr<ViewportSpace> viewportSpace)
+                : m_Project(project), m_ViewportSpace(viewportSpace), m_CanvasCorners(4), m_ScreenCorners(4)
+            {
+                SetStyle(
+                    StyleSheet()
+                        .WithSize(AxisSizingRule::Fill(), AxisSizingRule::Fill())
+                );
+
+                OnAnimate = [this](Element& element)
+                {
+                    std::shared_ptr<Layer> activeLayer = m_Project->GetActiveLayer();
+
+                    if (activeLayer)
+                    {
+                        m_CanvasPivot = activeLayer->GetPosition() + activeLayer->GetSize() / 2.0f;
+                        RefreshBounds();
+                    }
+                };
+
+                OnMousePress = [this](Element& element)
+                {
+                    const Mouse& mouse = element.GetScreen()->GetMouse();
+
+                    std::shared_ptr<Layer> activeLayer = m_Project->GetActiveLayer();
+
+                    if (activeLayer)
+                    {
+                        m_CanvasPivot = activeLayer->GetPosition() + activeLayer->GetSize() / 2.0f;
+                        m_CanvasRotation = 0.0f;
+                        m_LastMousePosition = mouse.Position;
+                    }
+                };
+
+                OnMouseMove = [this](Element& element)
+                {
+                    const Mouse& mouse = element.GetScreen()->GetMouse();
+                    const Keyboard& keyboard = element.GetScreen()->GetKeyboard();
+
+                    if (element.IsPressed())
+                    {
+                        std::shared_ptr<Layer> activeLayer = m_Project->GetActiveLayer();
+
+                        if (activeLayer)
+                        {
+                            Vec2 currentMousePosition = mouse.Position;
+
+                            Vec2 startCanvasPosition = m_ViewportSpace->ConvertScreenToCanvasCoordinates(m_LastMousePosition) - m_CanvasPivot;
+                            Vec2 endCanvasPosition = m_ViewportSpace->ConvertScreenToCanvasCoordinates(currentMousePosition) - m_CanvasPivot;
+
+                            startCanvasPosition.Normalize();
+                            endCanvasPosition.Normalize();
+
+                            m_CanvasRotation = endCanvasPosition.Angle() - startCanvasPosition.Angle();
+
+                            if (keyboard.IsModifierEnabled(KeyboardModifier::Shift))
+                            {
+                                m_CanvasRotation = std::round(m_CanvasRotation / 15.0f) * 15.0f;
+                            }
+                        }
+                    }
+                };
+
+                OnMouseRelease = [this](Element& element)
+                {
+                    std::shared_ptr<Layer> activeLayer = m_Project->GetActiveLayer();
+
+                    if (activeLayer)
+                    {
+                        activeLayer->Rotate(m_CanvasRotation, m_CanvasPivot);
+                        m_CanvasRotation = 0.0f;
+                    }
+                };
+            }
+
+            void Draw(RenderingContext& context) override
+            {
+                std::shared_ptr<Layer> activeLayer = m_Project->GetActiveLayer();
+
+                if (!activeLayer)
+                {
+                    return;
+                }
+
+                Vec2 pivotScreenPosition = m_ViewportSpace->ConvertCanvasToScreenCoordinates(m_CanvasPivot);
+                pivotScreenPosition.Floor();
+
+                Vec2 horizontalDirection(1.0f, 0.0f);
+                Vec2 verticalDirection(0.0f, 1.0f);
+
+                horizontalDirection.Rotate(m_CanvasRotation);
+                verticalDirection.Rotate(m_CanvasRotation);
+
+                Vec2 horizontalStart = pivotScreenPosition - horizontalDirection * 32.0f;
+                Vec2 horizontalEnd = pivotScreenPosition + horizontalDirection * 32.0f;
+
+                Vec2 verticalStart = pivotScreenPosition - verticalDirection * 32.0f;
+                Vec2 verticalEnd = pivotScreenPosition + verticalDirection * 32.0f;
+
+                Vec2 screenTopLeft = m_ViewportSpace->ConvertCanvasToScreenCoordinates(m_CanvasTopLeft) - Vec2(2.0f);
+                Vec2 screenBottomRight = m_ViewportSpace->ConvertCanvasToScreenCoordinates(m_CanvasBottomRight) + Vec2(2.0f);
+
+                m_ScreenCorners[0] = m_ViewportSpace->ConvertCanvasToScreenCoordinates(m_CanvasCorners[0]) - horizontalDirection - verticalDirection;
+                m_ScreenCorners[1] = m_ViewportSpace->ConvertCanvasToScreenCoordinates(m_CanvasCorners[1]) + horizontalDirection - verticalDirection;
+                m_ScreenCorners[2] = m_ViewportSpace->ConvertCanvasToScreenCoordinates(m_CanvasCorners[2]) - horizontalDirection + verticalDirection;
+                m_ScreenCorners[3] = m_ViewportSpace->ConvertCanvasToScreenCoordinates(m_CanvasCorners[3]) + horizontalDirection + verticalDirection;
+
+                context.Color(ColorRGB(200, 64, 33));
+
+                context.StrokeRectangle(
+                    screenTopLeft,
+                    screenBottomRight - screenTopLeft,
+                    2.0f
+                );
+
+                context.Color(ColorRGB(12, 140, 233));
+                context.Line(horizontalStart, horizontalEnd, 2.0f);
+                context.Line(verticalStart, verticalEnd, 2.0f);
+
+                context.Line(m_ScreenCorners[0], m_ScreenCorners[1], 2.0f);
+                context.Line(m_ScreenCorners[1], m_ScreenCorners[3], 2.0f);
+                context.Line(m_ScreenCorners[3], m_ScreenCorners[2], 2.0f);
+                context.Line(m_ScreenCorners[2], m_ScreenCorners[0], 2.0f);
+            }
+
+        private:
+            void RefreshBounds()
+            {
+                std::shared_ptr<Layer> activeLayer = m_Project->GetActiveLayer();
+
+                if (activeLayer)
+                {
+                    Vec2 layerSize = activeLayer->GetSize();
+                    Vec2 layerPosition = activeLayer->GetPosition();
+
+                    m_CanvasCorners.clear();
+
+                    m_CanvasCorners.push_back(layerPosition);
+                    m_CanvasCorners.push_back(layerPosition + Vec2(layerSize.X, 0.0f));
+                    m_CanvasCorners.push_back(layerPosition + Vec2(0.0f, layerSize.Y));
+                    m_CanvasCorners.push_back(layerPosition + layerSize);
+
+                    for (auto& corner : m_CanvasCorners)
+                    {
+                        corner.Rotate(m_CanvasRotation, m_CanvasPivot);
+                        corner.Floor();
+                    }
+
+                    m_CanvasTopLeft = m_CanvasCorners[0];
+                    m_CanvasBottomRight = m_CanvasCorners[0];
+
+                    for (const auto& corner : m_CanvasCorners)
+                    {
+                        m_CanvasTopLeft.X = std::min(m_CanvasTopLeft.X, corner.X);
+                        m_CanvasTopLeft.Y = std::min(m_CanvasTopLeft.Y, corner.Y);
+                        m_CanvasBottomRight.X = std::max(m_CanvasBottomRight.X, corner.X);
+                        m_CanvasBottomRight.Y = std::max(m_CanvasBottomRight.Y, corner.Y);
+                    }
+
+                    m_CanvasTopLeft.Floor();
+                    m_CanvasBottomRight.Floor();
+                }
             }
         };
     };
@@ -505,7 +705,6 @@ namespace yap
                 {
                     const Mouse& mouse = element.GetScreen()->GetMouse();
 
-
                     if (element.IsPressed())
                     {
                         Vec2 currentMousePosition = mouse.Position;
@@ -568,6 +767,129 @@ namespace yap
                 AddChild(sizeLabel);
                 AddChild(sizeSlider);
                 AddChild(sizeValue);
+            }
+        };
+    };
+
+    class BucketTool : public Tool
+    {
+    private:
+        std::shared_ptr<ColorPalette> m_ColorPalette;
+
+
+    public:
+        BucketTool(const std::shared_ptr<Project>& project, const std::shared_ptr<ViewportSpace>& viewportSpace, const std::shared_ptr<ColorPalette>& colorPalette)
+            : Tool(project, viewportSpace), m_ColorPalette(colorPalette)
+        {
+        }
+
+        std::shared_ptr<Element> CreateOverlay() override
+        {
+            return std::make_shared<BucketToolOverlay>(m_Project, m_ViewportSpace, m_ColorPalette);
+        }
+
+        std::shared_ptr<Element> CreateOptions() override
+        {
+            return std::make_shared<Box>();
+        }
+
+    private:
+        class BucketToolOverlay : public Box
+        {
+        private:
+            std::shared_ptr<Project> m_Project;
+            std::shared_ptr<ViewportSpace> m_ViewportSpace;
+
+            std::shared_ptr<ColorPalette> m_ColorPalette;
+
+        public:
+            BucketToolOverlay(std::shared_ptr<Project> project, std::shared_ptr<ViewportSpace> viewportSpace, std::shared_ptr<ColorPalette> colorPalette)
+                : m_Project(project), m_ViewportSpace(viewportSpace), m_ColorPalette(colorPalette)
+            {
+                SetStyle(
+                    StyleSheet()
+                        .WithSize(AxisSizingRule::Fill(), AxisSizingRule::Fill())
+                );
+
+                OnMousePress = [this](Element& element)
+                {
+                    const Mouse& mouse = element.GetScreen()->GetMouse();
+
+                    std::shared_ptr<Layer> activeLayer = m_Project->GetActiveLayer();
+
+                    if (activeLayer)
+                    {
+                        Vec2 canvasPosition = m_ViewportSpace->ConvertScreenToCanvasCoordinates(mouse.Position);
+                        canvasPosition.Floor();
+
+                        ColorRGB fillColor = m_ColorPalette->GetGlobalColor();
+
+                        activeLayer->Fill(canvasPosition, fillColor);
+                    }
+                };
+
+                AddChild(std::make_shared<LayerBoundary>(m_Project, m_ViewportSpace));
+            }
+        };
+    };
+    
+    class ColorPickerTool : public Tool
+    {
+    private:
+        std::shared_ptr<ColorPalette> m_ColorPalette;
+
+    public:
+        ColorPickerTool(const std::shared_ptr<Project>& project, const std::shared_ptr<ViewportSpace>& viewportSpace, const std::shared_ptr<ColorPalette>& colorPalette)
+            : Tool(project, viewportSpace), m_ColorPalette(colorPalette)
+        {
+        }
+
+        std::shared_ptr<Element> CreateOverlay() override
+        {
+            return std::make_shared<ColorPickerToolOverlay>(m_Project, m_ViewportSpace, m_ColorPalette);
+        }
+
+        std::shared_ptr<Element> CreateOptions() override
+        {
+            return std::make_shared<Box>();
+        }
+    
+    private:
+        class ColorPickerToolOverlay : public Box
+        {
+        private:
+            std::shared_ptr<Project> m_Project;
+            std::shared_ptr<ViewportSpace> m_ViewportSpace;
+            std::shared_ptr<ColorPalette> m_ColorPalette;
+
+        public:
+            ColorPickerToolOverlay(std::shared_ptr<Project> project, std::shared_ptr<ViewportSpace> viewportSpace, std::shared_ptr<ColorPalette> colorPalette)
+                : m_Project(project), m_ViewportSpace(viewportSpace), m_ColorPalette(colorPalette)
+            {
+                SetStyle(
+                    StyleSheet()
+                        .WithSize(AxisSizingRule::Fill(), AxisSizingRule::Fill())
+                );
+
+                OnMousePress = [this](Element& element)
+                {
+                    const Mouse& mouse = element.GetScreen()->GetMouse();
+
+                    std::shared_ptr<const Bitmap> canvas = m_Project->GetCanvas();
+
+                    Vec2 canvasPosition = m_ViewportSpace->ConvertScreenToCanvasCoordinates(mouse.Position);
+                    canvasPosition.Floor();
+
+                    if (canvasPosition.X < 0 || canvasPosition.Y < 0 ||
+                        canvasPosition.X >= canvas->GetWidth() || canvasPosition.Y >= canvas->GetHeight())
+                    {
+                        return;
+                    }
+
+                    ColorRGBA color = canvas->GetPixel(canvasPosition.X, canvasPosition.Y);
+
+                    m_ColorPalette->SetGlobalColor(color);
+                };
             }
         };
     };

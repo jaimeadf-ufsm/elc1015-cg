@@ -13,6 +13,30 @@ namespace yap
         Vec2(float x, float y) : X(x), Y(y) {}
         Vec2(const Vec2& other) : X(other.X), Y(other.Y) {}
 
+        void Rotate(float angle)
+        {
+            float cosAngle = cos(angle);
+            float sinAngle = sin(angle);
+
+            float newX = X * cosAngle - Y * sinAngle;
+            float newY = X * sinAngle + Y * cosAngle;
+
+            X = newX;
+            Y = newY;
+        }
+
+        void Rotate(float angle, const Vec2& pivot)
+        {
+            float cosAngle = cos(angle);
+            float sinAngle = sin(angle);
+
+            float newX = (X - pivot.X) * cosAngle - (Y - pivot.Y) * sinAngle + pivot.X;
+            float newY = (X - pivot.X) * sinAngle + (Y - pivot.Y) * cosAngle + pivot.Y;
+
+            X = newX;
+            Y = newY;
+        }
+
         void Normalize()
         {
             float length = Length();
@@ -27,18 +51,6 @@ namespace yap
             Y /= length;
         }
 
-        void Clamp(float min, float max)
-        {
-            X = std::max(min, std::min(X, max));
-            Y = std::max(min, std::min(Y, max));
-        }
-
-        void Floor()
-        {
-            X = floor(X);
-            Y = floor(Y);
-        }
-
         float Length() const
         {
             return sqrt(X * X + Y * Y);
@@ -49,9 +61,26 @@ namespace yap
             return X * X + Y * Y;
         }
 
+        float Angle() const
+        {
+            return atan2(Y, X);
+        }
+
         float Dot(const Vec2& other) const
         {
             return X * other.X + Y * other.Y;
+        }
+
+        void Clamp(float min, float max)
+        {
+            X = std::max(min, std::min(X, max));
+            Y = std::max(min, std::min(Y, max));
+        }
+
+        void Floor()
+        {
+            X = floor(X);
+            Y = floor(Y);
         }
 
         Vec2& operator+=(const Vec2& other)
@@ -110,6 +139,11 @@ namespace yap
             return *this;
         }
 
+        Vec2 operator-() const
+        {
+            return Vec2(-X, -Y);
+        }
+
         Vec2 operator+(const Vec2& other) const
         {
             return Vec2(X + other.X, Y + other.Y);
@@ -161,6 +195,22 @@ namespace yap
         {
             Vec2 result = v;
             result.Normalize();
+
+            return result;
+        }
+
+        static Vec2 Rotate(const Vec2& v, float angle)
+        {
+            Vec2 result = v;
+            result.Rotate(angle);
+
+            return result;
+        }
+
+        static Vec2 Rotate(const Vec2& v, float angle, const Vec2& pivot)
+        {
+            Vec2 result = v;
+            result.Rotate(angle, pivot);
 
             return result;
         }
