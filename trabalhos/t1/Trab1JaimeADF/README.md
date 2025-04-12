@@ -24,10 +24,10 @@ com canal alfa.
 - Contraste (até 0.5 pt).
 - Desfoque Gaussiano (até 2 pt).
 - Redimensionamento e movimentação (até 2 pt).
-- Rotação de qualquer o ângulo com mouse (até 2 pt).
+- Rotação de qualquer o ângulo com o mouse (até 2 pt).
 - Diferentes tipos de pincel/formas para desenhar com o mouse (até 2 pts).
 - Salvar e carregar estado atual do programa, incluindo imagens, posição,
-- ordem e visibilidade, entre outras variáveis (até 3 pt).
+ordem e visibilidade, entre outras variáveis (até 3 pt).
   
 ### Requisitos extras não-especificados
 (Efeitos)
@@ -52,28 +52,30 @@ com canal alfa.
 
 ### Quickstart
 
-Ao iniciar o programa, você se deparará com um projeto vazio. Você pode abrir a
-imagens como camadas clicando no botão com o ícone de um arquivo no canto superior direito.
-Ao selecionar arquivos ".bmp", você abrirá uma imagem como uma nova camada e,
-ao abrir arquivos ".yap", você abrirá um estado anterior do programa. Na pasta
-imagens, encontra-se um arquivo de projeto "demo.yap" para ser aberto, que
-contêm as imagens "a.bmp", "b.bmp" e "c.bmp" previamente importadas.
+Ao iniciar o programa, você se deparará com um projeto vazio. Você pode abrir
+imagens como camadas clicando no botão com o ícone de um arquivo no canto
+superior direito. Ao selecionar arquivos ".bmp", você abrirá uma imagem como
+uma nova camada e, ao abrir arquivos ".yap", você abrirá um estado anterior do
+programa. Na pasta imagens, encontra-se um arquivo de projeto "demo.yap" para
+ser aberto, que contêm as imagens "a.bmp", "b.bmp" e "c.bmp" previamente
+importadas.
 
 OBS: No explorador de arquivos, o item ".." serve para navegar para a pasta
-anterior e também é possível digitar manualmente o caminho na caixa de texto.
+anterior e também é possível digitar manualmente o caminho na caixa de texto,
+apertando a tecla enter para confirmar.
 
 Para ativar uma camada, basta clicar sobre ela no menu lateral direito. Tendo uma
 camada selecionada, é possível clicar sobre uma das ferramentas no menu lateral
-esquerdo para selecioná-la e aplicá-la pressionando e arrastando o mouse na viewport.
-A cor utilizada pode ser alterado no seletor no menu lateral direito.
+esquerdo para selecioná-la e utilizá-la pressionando ou arrastando o mouse na
+viewport. A cor utilizada pode ser alterada no seletor no menu lateral direito.
 
-As ações sobre a camada como flip horizontal, flip vertical e efeitos se encontram
-no canto inferior esquerdo e podem ser aplicadas sob demanda.
+As ações sobre a camada como flip horizontal, flip vertical e efeitos se
+encontram no canto inferior esquerdo e podem ser aplicadas sob demanda.
 
 Para mais informações, refira-se a seção da barra de ferramentas da interface.
 
 Para salvar um projeto como um arquivo ".yap", basta clicar no botão com o ícone
-de disquete no cabeçalho, navegar para o local desejado e digitar o nome e,
+de disquete no cabeçalho, navegar para o local desejado, digitar o nome e,
 por fim, pressionar o botão de salvar.
 
 Para exportar um projeto como um arquivo ".bmp", basta clicar no botão com o ícone
@@ -88,7 +90,7 @@ A interface do programa é subdividida em quatro regiões:
 - Viewport
 - Menu lateral
 
-Cada região
+Cada região será individualmente descrita a seguir:
 
 #### Cabeçalho
 
@@ -96,11 +98,12 @@ No cabeçalho, encontram-se os botões para importar arquivos ou exportar arquiv
 do projetos. Na ordem da direita para esquerda, os botões são:
 
 - Abrir arquivo (Ícone de um arquivo): Abre um popup para carregar imagens .bmp
-ou projetos .yap. O usuário deve navegar pelo explorador de arquivos e selecionar
-o item que deseja carregar. Ao clicar em "Abrir" com um arquivo com a extensão ".bmp"
-selecionado, o programa irá carregar a imagem como uma nova camada. Por outro lado, ao
-realizar a mesma ação com um arquivo co am extensão ".yap", o programa carregará
-um projeto do editor, substituindo o estado atual do programa.
+ou projetos .yap. O usuário deve navegar pelo explorador de arquivos e
+selecionar o item que deseja carregar. Ao clicar em "Abrir" com um arquivo com
+a extensão ".bmp" selecionado, o programa irá carregar a imagem como uma nova
+camada. Por outro lado, ao realizar a mesma ação com um arquivo co am extensão
+".yap", o programa carregará um projeto do editor, substituindo o estado atual
+do programa.
 
 - Salvar projeto (Ícone de um disquete): Abre um popup com um explorador de
 arquivos. O usuário deverá navegar para o diretório onde deseja salvar o projeto 
@@ -108,7 +111,7 @@ e digitar o nome do arquivo no campo de texto. Ao clicar em "Salvar", o projeto
 será escrito no local indicado.
 
 - Exportar projeto (Ícone de compartilhar): Abre um popup com o explorador de
-arquivos similar ao "Salvar projeto". 
+arquivos similar ao "Salvar projeto" para salvar o projeto em uma imagem BMP. 
 
 OBS: No explorador de arquivos, é possível digitar manualmente o caminho na barra
 superior. No entanto, somente caminhos relativos são suportados. Observe também
@@ -135,17 +138,17 @@ o mouse para redimensionar a imagem na direção desejada.
 - **Rotação** (Ícone de rotação): Aperte em qualquer lugar da viewport e arraste
 com o mouse para rotacionar a camada.
 
-- **Pincél** (Ícone de pincel): Clique ou arraste sobre o região da da camada ativa
-para pintar com a cor selecionado no menu lateral. É possível modificar o tamanho
-píncel e o formato na barra superior da viewport.
+- **Pineél** (Ícone de pincel): Clique ou arraste sobre o região da da camada
+ativa para pintar com a cor selecionado no menu lateral. É possível modificar o
+tamanho pincel e o formato na barra superior da viewport.
 
-- **Borracha** (Ícone de borracha): Possui o mesmo modo de uso do píncel.
+- **Borracha** (Ícone de borracha): Possui o mesmo modo de uso do pincel.
 
-- **Lata de tinta** (Ícone de lata): Aplica o algoritmo flood fill substituindo
-a cor da posição pressionada na camada pela seleciona no menu lateral.
+- **Lata de tinta** (Ícone de lata): Aplica o algoritmo flood fill, substituindo
+a cor da posição pressionada na camada pela selecionada no menu lateral.
 
 - Seletor de cor (Ícone de conta gotas): Modifica a cor do seletor pela a da
-posição selecionada. Note que essa opção não exige uma camada.
+posição selecionada. Note que essa opção não exige uma camada ativa.
 
 Entre as ações, temos na ordem de cima para baixo:
 
@@ -153,9 +156,10 @@ Entre as ações, temos na ordem de cima para baixo:
 
 - **Flip vertical**: Aplica um espelho vertical na camada ativa.
 
-- **Efeitos**: Abre o popup para aplicar efeitos no qual o efeito é escolhido
+- **Efeitos**: Abre o popup para aplicar efeitos. Nele, o efeito é escolhido
 utilizando os botões de chevron (< e >) na parte superior do popup. Cada efeito
-possui suas opções e é somente aplicado na camada ao pressionar o botão "Aplicar".
+possui suas opções e é somente aplicado na camada ao pressionar o botão
+"Aplicar".
 
 #### Viewport
 
@@ -164,23 +168,25 @@ nessa região sobre a qual as ferramentas atuam.
 
 #### Menu Lateral
 
-O menu lateral é composto pelo seletor de cores HSVA na parte superior e o
-controle das camadas na parte inferior.
+O menu lateral localizado na direita é composto pelo seletor de cores HSVA na
+parte superior e o controle das camadas na parte inferior.
 
 O seletor possui um retângulo principal para controlar a saturação e o valor e 
 dois sliders para controlar a matiz e o canal alfa, respectivamente. 
 
-No painél das camadas, é possível ocultar ou mostrar uma camada clicando sobre
+No painel das camadas, é possível ocultar ou mostrar uma camada clicando sobre
 o checkbox na sua parte esquerda e a ativar clicando sobre sua parte direita. 
 
-As camadas são controlados pelos botões na parte inferior do painél, descritos
+As camadas são controladas pelos botões na parte inferior do painal, descritos
 abaixo da direita para a esquerda:
 
-- Criar camada (Ícone de mais): Crie uma camada vazia do mesmo tamanho do canvas.
+- Criar camada (Ícone de mais): Cria uma camada vazia do mesmo tamanho do canvas.
 
 - **Excluir camada** (Ícone de X): Remove a camada ativa.
 
-- **Mover para cima** (Ícone de chevron para cima): Reordena a camada para cima.
+- **Mover para cima** (Ícone de chevron para cima): Reordena a camada ativa
+para cima.
 
-- **Mover para baixo** (Ícone de chevron para baixo): Reordena a camada ativa para baixo.
+- **Mover para baixo** (Ícone de chevron para baixo): Reordena a camada ativa
+para baixo.
 
