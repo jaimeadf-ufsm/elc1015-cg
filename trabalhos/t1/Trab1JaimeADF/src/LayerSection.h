@@ -1,37 +1,25 @@
-// Summary:
-// This file defines the `LayerSection` class, which represents a UI component for managing layers in a project.
-// It provides functionality to display, create, delete, and reorder layers, as well as update the UI when layers are modified.
-
 #pragma once
 
 #include "BMP.h"
+
 #include "Project.h"
+
 #include "Box.h"
 #include "Text.h"
 #include "LayerItem.h"
 
 namespace yap
 {
-    /**
-     * @class LayerSection
-     * @brief Represents a UI component for managing layers in a project.
-     * 
-     * The `LayerSection` class is a specialized `Box` that contains a header, a list of layers, 
-     * and controls for managing layers. It interacts with a `Project` object to handle layer-related events.
-     */
     class LayerSection : public Box
     {
     private:
-        std::shared_ptr<Project> m_Project; ///< The project associated with this layer section.
-        std::shared_ptr<Box> m_Header; ///< The header section of the UI.
-        std::shared_ptr<Box> m_List; ///< The list section displaying the layers.
-        std::shared_ptr<Box> m_Controls; ///< The controls section for managing layers.
+        std::shared_ptr<Project> m_Project;
+
+        std::shared_ptr<Box> m_Header;
+        std::shared_ptr<Box> m_List;
+        std::shared_ptr<Box> m_Controls;
 
     public:
-        /**
-         * @brief Constructs a `LayerSection` object.
-         * @param project A shared pointer to the `Project` object associated with this layer section.
-         */
         LayerSection(std::shared_ptr<Project> project) : m_Project(project)
         {
             m_Header = CreateHeader();
@@ -68,12 +56,8 @@ namespace yap
 
             RefreshLayers();
         }
-
+    
     private:
-        /**
-         * @brief Creates the header section of the layer UI.
-         * @return A shared pointer to the header `Box`.
-         */
         std::shared_ptr<Box> CreateHeader()
         {
             auto header = std::make_shared<Box>();
@@ -90,10 +74,6 @@ namespace yap
             return header;
         }
 
-        /**
-         * @brief Creates the list section of the layer UI.
-         * @return A shared pointer to the list `Box`.
-         */
         std::shared_ptr<Box> CreateList()
         {
             auto list = std::make_shared<Box>();
@@ -108,10 +88,6 @@ namespace yap
             return list;
         }
 
-        /**
-         * @brief Creates the controls section of the layer UI.
-         * @return A shared pointer to the controls `Box`.
-         */
         std::shared_ptr<Box> CreateControls()
         {
             auto controls = std::make_shared<Box>();
@@ -160,12 +136,6 @@ namespace yap
             return controls;
         }
 
-        /**
-         * @brief Creates a control button with a bitmap and an associated action.
-         * @param bitmap A shared pointer to the bitmap to display on the button.
-         * @param action A function to execute when the button is pressed.
-         * @return A shared pointer to the control `Box`.
-         */
         std::shared_ptr<Box> CreateControl(std::shared_ptr<const Bitmap> bitmap, std::function<void(Element&)> action = nullptr)
         {
             auto control = std::make_shared<Box>();
@@ -194,11 +164,6 @@ namespace yap
             return control;
         }
 
-        /**
-         * @brief Refreshes the list of layers displayed in the UI.
-         * 
-         * Clears the current list and repopulates it with the layers from the associated project.
-         */
         void RefreshLayers()
         {
             m_List->ClearChildren();

@@ -1,75 +1,62 @@
-// Summary:
-// This file defines various tools for a graphical editing application, including MoveTool, TransformTool, RotateTool, BrushTool, BucketTool, and ColorPickerTool. 
-// Each tool provides specific functionalities for interacting with and manipulating layers in a project. 
-// The tools are implemented as classes inheriting from the base Tool class, and they include methods for creating overlays and options for user interaction.
-
 #pragma once
 
 #include "Project.h"
 #include "ViewportSpace.h"
 #include "ColorPalette.h"
 #include "Brush.h"
+
 #include "Screen.h"
 #include "Text.h"
 #include "Slider.h"
+
 #include "LayerBoundary.h"
 
 namespace yap
 {
-    // Base class for all tools.
     class Tool
     {
     protected:
-        std::shared_ptr<Project> m_Project; // Reference to the project.
-        std::shared_ptr<ViewportSpace> m_ViewportSpace; // Reference to the viewport space.
+        std::shared_ptr<Project> m_Project;
+        std::shared_ptr<ViewportSpace> m_ViewportSpace;
 
     public:
-        // Constructor: Initializes the tool with a project and viewport space.
         Tool(const std::shared_ptr<Project>& project, const std::shared_ptr<ViewportSpace>& viewportSpace)
             : m_Project(project), m_ViewportSpace(viewportSpace)
         {
         }
 
-        // Creates the overlay for the tool. Must be implemented by derived classes.
         virtual std::shared_ptr<Element> CreateOverlay() = 0;
-
-        // Creates the options panel for the tool. Must be implemented by derived classes.
         virtual std::shared_ptr<Element> CreateOptions() = 0;
     };
 
-    // Tool for moving layers.
     class MoveTool : public Tool
     {
     public:
-        // Constructor: Initializes the MoveTool with a project and viewport space.
         MoveTool(const std::shared_ptr<Project>& project, const std::shared_ptr<ViewportSpace>& viewportSpace)
             : Tool(project, viewportSpace)
         {
         }
 
-        // Creates the overlay for the MoveTool.
         std::shared_ptr<Element> CreateOverlay() override
         {
             return std::make_shared<MoveToolOverlay>(m_Project, m_ViewportSpace);
         }
 
-        // Creates the options panel for the MoveTool (empty in this case).
         std::shared_ptr<Element> CreateOptions() override
         {
             return std::make_shared<Box>();
         }
     
     private:
-        // Overlay class for handling move interactions.
         class MoveToolOverlay : public Box
         {
         private:
-            std::shared_ptr<Project> m_Project; // Reference to the project.
-            std::shared_ptr<ViewportSpace> m_ViewportSpace; // Reference to the viewport space.
-            Vec2 m_CanvasOffset; // Offset for moving the layer.
+            std::shared_ptr<Project> m_Project;
+            std::shared_ptr<ViewportSpace> m_ViewportSpace;
+
+            Vec2 m_CanvasOffset;
 
         public:
-            // Constructor: Initializes the overlay with project and viewport space.
             MoveToolOverlay(std::shared_ptr<Project> project, std::shared_ptr<ViewportSpace> viewportSpace)
                 : m_Project(project), m_ViewportSpace(viewportSpace)
             {
@@ -122,51 +109,55 @@ namespace yap
         };
     };
 
-    // Tool for transforming layers (scaling and resizing).
     class TransformTool : public Tool
     {
     public:
-        // Constructor: Initializes the TransformTool with a project and viewport space.
         TransformTool(const std::shared_ptr<Project>& project, const std::shared_ptr<ViewportSpace>& viewportSpace)
             : Tool(project, viewportSpace)
         {
         }
 
-        // Creates the overlay for the TransformTool.
         std::shared_ptr<Element> CreateOverlay() override
         {
             return std::make_shared<TransformToolOverlay>(m_Project, m_ViewportSpace);
         }
 
-        // Creates the options panel for the TransformTool (empty in this case).
         std::shared_ptr<Element> CreateOptions() override
         {
             return std::make_shared<Box>();
         }
     
     private:
-        // Enum for anchor locations used during scaling.
         enum class AnchorLocation
         {
-            TopLeft, TopMiddle, TopRight, MiddleRight, BottomRight, BottomMiddle, BottomLeft, MiddleLeft
+            TopLeft,
+            TopMiddle,
+            TopRight,
+            MiddleRight,
+            BottomRight,
+            BottomMiddle,
+            BottomLeft,
+            MiddleLeft
         };
 
-        // Overlay class for handling transform interactions.
         class TransformToolOverlay : public Box
         {
         private:
-            std::shared_ptr<Project> m_Project; // Reference to the project.
-            std::shared_ptr<ViewportSpace> m_ViewportSpace; // Reference to the viewport space.
-            std::shared_ptr<Box> m_Boundary; // Boundary box for the layer.
-            std::vector<std::shared_ptr<Box>> m_Anchors; // Anchors for resizing.
-            bool m_Scaling = false; // Indicates if scaling is active.
-            AnchorLocation m_ScalingLocation = AnchorLocation::TopLeft; // Current scaling anchor location.
-            Vec2 m_TargetCanvasPosition; // Target position during scaling.
-            Vec2 m_TargetCanvasSize; // Target size during scaling.
-            Vec2 m_MouseStartCanvasPosition; // Mouse position at the start of scaling.
+            std::shared_ptr<Project> m_Project;
+            std::shared_ptr<ViewportSpace> m_ViewportSpace;
+
+            std::shared_ptr<Box> m_Boundary;
+            std::vector<std::shared_ptr<Box>> m_Anchors;
+
+            bool m_Scaling = false;
+            AnchorLocation m_ScalingLocation = AnchorLocation::TopLeft;
+
+            Vec2 m_TargetCanvasPosition;
+            Vec2 m_TargetCanvasSize;
+
+            Vec2 m_MouseStartCanvasPosition;
 
         public:
-            // Constructor: Initializes the overlay with project and viewport space.
             TransformToolOverlay(std::shared_ptr<Project> project, std::shared_ptr<ViewportSpace> viewportSpace)
                 : m_Project(project), m_ViewportSpace(viewportSpace)
             {
@@ -202,7 +193,6 @@ namespace yap
             }
 
         private:
-            // Initializes the boundary box.
             void InitBoundary()
             {
                 m_Boundary = std::make_shared<Box>();
@@ -239,7 +229,6 @@ namespace yap
                 AddChild(m_Boundary);
             }
 
-            // Initializes an anchor for resizing.
             void InitAnchor(AnchorLocation location)
             {
                 auto anchor = std::make_shared<Box>();
@@ -318,7 +307,6 @@ namespace yap
                 AddChild(anchor);
             }
 
-            // Computes the canvas position of an anchor.
             Vec2 ComputeAnchorCanvasPosition(AnchorLocation location)
             {
                 switch (location)
@@ -365,7 +353,6 @@ namespace yap
                 return Vec2(0.0f, 0.0f);
             }
 
-            // Scales the layer from a specific anchor.
             void ScaleFromAnchor(AnchorLocation location, const Vec2& canvasDeltaPosition)
             {
                 std::shared_ptr<Layer> layer = m_Project->GetActiveLayer();
@@ -453,45 +440,44 @@ namespace yap
         };
     };
 
-    // Tool for rotating layers.
     class RotateTool : public Tool
     {
     public:
-        // Constructor: Initializes the RotateTool with a project and viewport space.
         RotateTool(const std::shared_ptr<Project>& project, const std::shared_ptr<ViewportSpace>& viewportSpace)
             : Tool(project, viewportSpace)
         {
         }
 
-        // Creates the overlay for the RotateTool.
         std::shared_ptr<Element> CreateOverlay() override
         {
             return std::make_shared<RotateToolOverlay>(m_Project, m_ViewportSpace);
         }
 
-        // Creates the options panel for the RotateTool (empty in this case).
         std::shared_ptr<Element> CreateOptions() override
         {
             return std::make_shared<Box>();
         }
     
     private:
-        // Overlay class for handling rotation interactions.
         class RotateToolOverlay : public Element
         {
         private:
-            std::shared_ptr<Project> m_Project; // Reference to the project.
-            std::shared_ptr<ViewportSpace> m_ViewportSpace; // Reference to the viewport space.
-            std::vector<Vec2> m_CanvasCorners; // Corners of the layer in canvas space.
-            Vec2 m_CanvasTopLeft; // Top-left corner of the layer.
-            Vec2 m_CanvasBottomRight; // Bottom-right corner of the layer.
-            std::vector<Vec2> m_ScreenCorners; // Corners of the layer in screen space.
-            Vec2 m_CanvasPivot; // Pivot point for rotation.
-            float m_CanvasRotation = 0.0f; // Current rotation angle.
-            Vec2 m_LastMousePosition; // Last mouse position.
+            std::shared_ptr<Project> m_Project;
+            std::shared_ptr<ViewportSpace> m_ViewportSpace;
+
+            std::vector<Vec2> m_CanvasCorners;
+
+            Vec2 m_CanvasTopLeft;
+            Vec2 m_CanvasBottomRight;
+
+            std::vector<Vec2> m_ScreenCorners;
+
+            Vec2 m_CanvasPivot;
+            float m_CanvasRotation = 0.0f;
+
+            Vec2 m_LastMousePosition;
 
         public:
-            // Constructor: Initializes the overlay with project and viewport space.
             RotateToolOverlay(std::shared_ptr<Project> project, std::shared_ptr<ViewportSpace> viewportSpace)
                 : m_Project(project), m_ViewportSpace(viewportSpace), m_CanvasCorners(4), m_ScreenCorners(4)
             {
@@ -566,7 +552,6 @@ namespace yap
                 };
             }
 
-            // Draws the rotation overlay.
             void Draw(RenderingContext& context) override
             {
                 std::shared_ptr<Layer> activeLayer = m_Project->GetActiveLayer();
@@ -618,7 +603,6 @@ namespace yap
             }
 
         private:
-            // Refreshes the bounds of the layer.
             void RefreshBounds()
             {
                 std::shared_ptr<Layer> activeLayer = m_Project->GetActiveLayer();
@@ -659,43 +643,39 @@ namespace yap
         };
     };
 
-    // Tool for drawing with a brush.
     class BrushTool : public Tool
     {
     private:
-        std::shared_ptr<Brush> m_Brush; // Reference to the brush.
+        std::shared_ptr<Brush> m_Brush;
 
     public:
-        // Constructor: Initializes the BrushTool with a project, viewport space, and brush.
         BrushTool(const std::shared_ptr<Project>& project, const std::shared_ptr<ViewportSpace>& viewportSpace, const std::shared_ptr<Brush>& brush)
             : Tool(project, viewportSpace), m_Brush(brush)
         {
         }
 
-        // Creates the overlay for the BrushTool.
         std::shared_ptr<Element> CreateOverlay() override
         {
             return std::make_shared<BrushToolOverlay>(m_Project, m_ViewportSpace, m_Brush);
         }
 
-        // Creates the options panel for the BrushTool.
         std::shared_ptr<Element> CreateOptions() override
         {
             return std::make_shared<BrushToolOptions>(m_Brush);
         }
    
     private:
-        // Overlay class for handling brush interactions.
         class BrushToolOverlay : public Box
         {
         private:
-            std::shared_ptr<Project> m_Project; // Reference to the project.
-            std::shared_ptr<ViewportSpace> m_ViewportSpace; // Reference to the viewport space.
-            std::shared_ptr<Brush> m_Brush; // Reference to the brush.
-            Vec2 m_LastMousePosition; // Last mouse position.
+            std::shared_ptr<Project> m_Project;
+            std::shared_ptr<ViewportSpace> m_ViewportSpace;
+
+            std::shared_ptr<Brush> m_Brush;
+
+            Vec2 m_LastMousePosition;
 
         public:
-            // Constructor: Initializes the overlay with project, viewport space, and brush.
             BrushToolOverlay(std::shared_ptr<Project> project, std::shared_ptr<ViewportSpace> viewportSpace, std::shared_ptr<Brush> brush)
                 : m_Project(project), m_ViewportSpace(viewportSpace), m_Brush(brush)
             {
@@ -747,11 +727,9 @@ namespace yap
             }
         };
 
-        // Options panel for configuring the brush.
         class BrushToolOptions : public Box
         {
         public:
-            // Constructor: Initializes the options panel with a brush.
             BrushToolOptions(std::shared_ptr<Brush> brush)
             {
                 auto sizeLabel = std::make_shared<Text>();
@@ -835,7 +813,6 @@ namespace yap
             }
         
         private:
-            // Creates a button for selecting a brush shape.
             std::shared_ptr<Box> CreateShapeButton(const std::shared_ptr<const Bitmap>& icon, const std::shared_ptr<PencilBrush> brush, PencilShape shape)
             {
                 auto button = std::make_shared<Box>();
@@ -874,43 +851,38 @@ namespace yap
         };
     };
 
-    // Tool for filling areas with a color.
     class BucketTool : public Tool
     {
     private:
-        std::shared_ptr<ColorPalette> m_ColorPalette; // Reference to the color palette.
+        std::shared_ptr<ColorPalette> m_ColorPalette;
 
 
     public:
-        // Constructor: Initializes the BucketTool with a project, viewport space, and color palette.
         BucketTool(const std::shared_ptr<Project>& project, const std::shared_ptr<ViewportSpace>& viewportSpace, const std::shared_ptr<ColorPalette>& colorPalette)
             : Tool(project, viewportSpace), m_ColorPalette(colorPalette)
         {
         }
 
-        // Creates the overlay for the BucketTool.
         std::shared_ptr<Element> CreateOverlay() override
         {
             return std::make_shared<BucketToolOverlay>(m_Project, m_ViewportSpace, m_ColorPalette);
         }
 
-        // Creates the options panel for the BucketTool (empty in this case).
         std::shared_ptr<Element> CreateOptions() override
         {
             return std::make_shared<Box>();
         }
 
     private:
-        // Overlay class for handling bucket fill interactions.
         class BucketToolOverlay : public Box
         {
         private:
-            std::shared_ptr<Project> m_Project; // Reference to the project.
-            std::shared_ptr<ViewportSpace> m_ViewportSpace; // Reference to the viewport space.
-            std::shared_ptr<ColorPalette> m_ColorPalette; // Reference to the color palette.
+            std::shared_ptr<Project> m_Project;
+            std::shared_ptr<ViewportSpace> m_ViewportSpace;
+
+            std::shared_ptr<ColorPalette> m_ColorPalette;
 
         public:
-            // Constructor: Initializes the overlay with project, viewport space, and color palette.
             BucketToolOverlay(std::shared_ptr<Project> project, std::shared_ptr<ViewportSpace> viewportSpace, std::shared_ptr<ColorPalette> colorPalette)
                 : m_Project(project), m_ViewportSpace(viewportSpace), m_ColorPalette(colorPalette)
             {
@@ -941,42 +913,36 @@ namespace yap
         };
     };
     
-    // Tool for picking colors from the canvas.
     class ColorPickerTool : public Tool
     {
     private:
-        std::shared_ptr<ColorPalette> m_ColorPalette; // Reference to the color palette.
+        std::shared_ptr<ColorPalette> m_ColorPalette;
 
     public:
-        // Constructor: Initializes the ColorPickerTool with a project, viewport space, and color palette.
         ColorPickerTool(const std::shared_ptr<Project>& project, const std::shared_ptr<ViewportSpace>& viewportSpace, const std::shared_ptr<ColorPalette>& colorPalette)
             : Tool(project, viewportSpace), m_ColorPalette(colorPalette)
         {
         }
 
-        // Creates the overlay for the ColorPickerTool.
         std::shared_ptr<Element> CreateOverlay() override
         {
             return std::make_shared<ColorPickerToolOverlay>(m_Project, m_ViewportSpace, m_ColorPalette);
         }
 
-        // Creates the options panel for the ColorPickerTool (empty in this case).
         std::shared_ptr<Element> CreateOptions() override
         {
             return std::make_shared<Box>();
         }
     
     private:
-        // Overlay class for handling color picking interactions.
         class ColorPickerToolOverlay : public Box
         {
         private:
-            std::shared_ptr<Project> m_Project; // Reference to the project.
-            std::shared_ptr<ViewportSpace> m_ViewportSpace; // Reference to the viewport space.
-            std::shared_ptr<ColorPalette> m_ColorPalette; // Reference to the color palette.
+            std::shared_ptr<Project> m_Project;
+            std::shared_ptr<ViewportSpace> m_ViewportSpace;
+            std::shared_ptr<ColorPalette> m_ColorPalette;
 
         public:
-            // Constructor: Initializes the overlay with project, viewport space, and color palette.
             ColorPickerToolOverlay(std::shared_ptr<Project> project, std::shared_ptr<ViewportSpace> viewportSpace, std::shared_ptr<ColorPalette> colorPalette)
                 : m_Project(project), m_ViewportSpace(viewportSpace), m_ColorPalette(colorPalette)
             {

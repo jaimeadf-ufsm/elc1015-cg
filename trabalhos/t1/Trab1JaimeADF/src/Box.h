@@ -1,9 +1,3 @@
-// Summary:
-// This file defines the `Box` class, which represents a container element in a graphical user interface. 
-// The `Box` class extends the `Element` class and provides functionality for layout management, 
-// event handling, rendering, and child element management. It supports various background styles, 
-// responsive dimensions, and alignment options.
-
 #pragma once
 
 #include <vector>
@@ -15,29 +9,18 @@
 
 namespace yap
 {
-    /**
-     * @class Box
-     * @brief Represents a container element that can hold child elements, manage layout, and handle rendering.
-     */
     class Box : public Element
     {
     private:
-        std::shared_ptr<Bitmap> m_BufferBitmap; ///< Buffer for rendering background images.
+        std::shared_ptr<Bitmap> m_BufferBitmap;
 
     public:
-        std::vector<std::shared_ptr<Element>> Children; ///< List of child elements.
+        std::vector<std::shared_ptr<Element>> Children;
 
-        /**
-         * @brief Constructs a `Box` object with an empty buffer bitmap.
-         */
         Box() : m_BufferBitmap(std::make_shared<Bitmap>(0, 0))
         {
         }
 
-        /**
-         * @brief Processes mouse move events and propagates them to child elements.
-         * @param mouse The mouse object containing event data.
-         */
         void ProcessMouseMove(Mouse& mouse) override
         {
             Element::ProcessMouseMove(mouse);
@@ -48,11 +31,6 @@ namespace yap
             }
         }
 
-        /**
-         * @brief Processes mouse button release events and propagates them to child elements.
-         * @param mouse The mouse object containing event data.
-         * @param button The button that was released.
-         */
         void ProcessMouseUp(Mouse& mouse, MouseButton button) override
         {
             Element::ProcessMouseUp(mouse, button);
@@ -63,11 +41,6 @@ namespace yap
             }
         }
 
-        /**
-         * @brief Processes mouse button press events and propagates them to child elements.
-         * @param mouse The mouse object containing event data.
-         * @param button The button that was pressed.
-         */
         void ProcessMouseDown(Mouse& mouse, MouseButton button) override
         {
             Element::ProcessMouseDown(mouse, button);
@@ -78,11 +51,6 @@ namespace yap
             }
         }
 
-        /**
-         * @brief Processes mouse scroll events and propagates them to child elements.
-         * @param mouse The mouse object containing event data.
-         * @param direction The direction of the scroll.
-         */
         void ProcessMouseScroll(Mouse& mouse, MouseScrollDirection direction) override
         {
             Element::ProcessMouseScroll(mouse, direction);
@@ -93,11 +61,6 @@ namespace yap
             }
         }
 
-        /**
-         * @brief Processes keyboard key press events and propagates them to child elements.
-         * @param keyboard The keyboard object containing event data.
-         * @param key The key that was pressed.
-         */
         void ProcessKeyboardDown(Keyboard& keyboard, KeyboardKey key) override
         {
             Element::ProcessKeyboardDown(keyboard, key);
@@ -108,11 +71,6 @@ namespace yap
             }
         }
 
-        /**
-         * @brief Processes keyboard key release events and propagates them to child elements.
-         * @param keyboard The keyboard object containing event data.
-         * @param key The key that was released.
-         */
         void ProcessKeyboardUp(Keyboard& keyboard, KeyboardKey key) override
         {
             Element::ProcessKeyboardUp(keyboard, key);
@@ -123,10 +81,6 @@ namespace yap
             }
         }
 
-        /**
-         * @brief Mounts the `Box` and its children to a screen.
-         * @param screen The screen to mount to.
-         */
         void Mount(const std::shared_ptr<Screen>& screen) override
         {
             Element::Mount(screen);
@@ -137,9 +91,6 @@ namespace yap
             }
         }
 
-        /**
-         * @brief Unmounts the `Box` and its children from the screen.
-         */
         void Unmount() override
         {
             Element::Unmount();
@@ -150,9 +101,6 @@ namespace yap
             }
         }
 
-        /**
-         * @brief Animates the `Box` and its children.
-         */
         void Animate() override
         {
             Element::Animate();
@@ -163,10 +111,6 @@ namespace yap
             }
         }
 
-        /**
-         * @brief Computes the style of the `Box` based on the parent style and propagates it to children.
-         * @param parentStyle The computed style of the parent element.
-         */
         void ComputeStyle(const ComputedStyleSheet& parentStyle)
         {
             Element::ComputeStyle(parentStyle);
@@ -177,9 +121,6 @@ namespace yap
             }
         }
 
-        /**
-         * @brief Computes the independent dimensions of the `Box` and its children.
-         */
         void ComputeIndependentDimensions() override
         {
             Element::ComputeIndependentDimensions();
@@ -236,9 +177,6 @@ namespace yap
             }
         }
 
-        /**
-         * @brief Computes the responsive dimensions of the `Box` and its children.
-         */
         void ComputeResponsiveDimensions() override
         {
             Element::ComputeResponsiveDimensions();
@@ -317,9 +255,6 @@ namespace yap
             }
         }
 
-        /**
-         * @brief Computes the position of the `Box` and its children.
-         */
         void ComputePosition() override
         {
             Element::ComputePosition();
@@ -422,10 +357,6 @@ namespace yap
             }
         }
 
-        /**
-         * @brief Draws the `Box` and its children on the rendering context.
-         * @param context The rendering context.
-         */
         void Draw(RenderingContext& context) override
         {
             if (!ComputedStyle.Visibility)
@@ -457,10 +388,6 @@ namespace yap
             }
         }
 
-        /**
-         * @brief Adds a child element to the `Box`.
-         * @param child The child element to add.
-         */
         void AddChild(const std::shared_ptr<Element>& child)
         {
             Children.push_back(child);
@@ -473,10 +400,6 @@ namespace yap
             }
         }
 
-        /**
-         * @brief Removes a child element from the `Box`.
-         * @param child The child element to remove.
-         */
         void RemoveChild(const std::shared_ptr<Element>& child)
         {
             auto it = std::find(Children.begin(), Children.end(), child);
@@ -492,11 +415,6 @@ namespace yap
             }
         }
 
-        /**
-         * @brief Retrieves a child element by its index.
-         * @param index The index of the child element.
-         * @return The child element at the specified index, or `nullptr` if the index is invalid.
-         */
         std::shared_ptr<Element> GetChild(size_t index) const
         {
             if (index < 0 || index >= Children.size())
@@ -507,9 +425,6 @@ namespace yap
             return Children[index];
         }
 
-        /**
-         * @brief Removes all child elements from the `Box`.
-         */
         void ClearChildren()
         {
             if (GetScreen())
@@ -523,48 +438,28 @@ namespace yap
             Children.clear();
         }
 
-        /**
-         * @brief Retrieves the list of child elements.
-         * @return A constant reference to the list of child elements.
-         */
         const std::vector<std::shared_ptr<Element>>& GetChildren() const
         {
             return Children;
         }
-
+    
     private:
-        /**
-         * @brief Determines the primary axis based on the direction of the `Box`.
-         * @return The primary axis.
-         */
         Axis GetDirectionPrimaryAxis()
         {
             return (ComputedStyle.Direction == BoxDirection::Row ? Axis::X : Axis::Y);
         }
 
-        /**
-         * @brief Determines the secondary axis based on the direction of the `Box`.
-         * @return The secondary axis.
-         */
         Axis GetDirectionSecondaryAxis()
         {
             return GetComplementAxis(GetDirectionPrimaryAxis());
         }
 
-        /**
-         * @brief Draws a solid background for the `Box`.
-         * @param context The rendering context.
-         */
         void DrawSolidBackground(RenderingContext& context)
         {
             context.Color(ComputedStyle.Background.GetColor());
             context.FillRectangle(Position, Size);
         }
 
-        /**
-         * @brief Draws an image background for the `Box`.
-         * @param context The rendering context.
-         */
         void DrawImageBackground(RenderingContext& context)
         {
             auto bitmap = ComputedStyle.Background.GetBitmap().get();

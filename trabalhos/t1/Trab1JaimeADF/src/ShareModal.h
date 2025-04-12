@@ -1,10 +1,5 @@
 #pragma once
 
-// Summary:
-// This file defines the `ShareModal` class, which represents a modal dialog for exporting a project.
-// The modal allows the user to select a file path, specify a file name, and choose whether to include alpha transparency.
-// The exported file is saved in BMP format.
-
 #include "Project.h"
 #include "BMP.h"
 
@@ -14,28 +9,9 @@
 
 namespace yap
 {
-    /**
-     * @class ShareModal
-     * @brief A modal dialog for exporting a project to a BMP file.
-     *
-     * The `ShareModal` class provides a user interface for selecting a file path, specifying a file name,
-     * and choosing whether to include alpha transparency in the exported BMP file. It uses various UI components
-     * such as text inputs, checkboxes, and buttons to facilitate the export process.
-     */
     class ShareModal : public Modal
     {
     public:
-        /**
-         * @brief Constructs a `ShareModal` instance.
-         * 
-         * @param project A shared pointer to the `Project` object representing the current project.
-         * 
-         * This constructor initializes the modal dialog with UI components, including:
-         * - A file selector for choosing the export directory.
-         * - A text input for specifying the file name.
-         * - A checkbox for enabling or disabling alpha transparency.
-         * - Buttons for canceling or confirming the export.
-         */
         ShareModal(const std::shared_ptr<Project>& project)
         {
             auto header = CreateHeader("Exportar Projeto");
@@ -86,19 +62,10 @@ namespace yap
             alphaField->AddChild(alphaCheckbox);
             alphaField->AddChild(alphaLabel);
 
-            /**
-             * @brief Closes the modal when the cancel button is pressed.
-             */
             cancelButton->OnMousePress = [this](Element& e) {
                 Close();
             };
 
-            /**
-             * @brief Exports the project to a BMP file when the export button is pressed.
-             * 
-             * The method retrieves the file path and name from the UI components, renders the project's canvas,
-             * and saves it as a BMP file. The alpha transparency option is determined by the checkbox state.
-             */
             openButton->OnMousePress = [this, project, fileSelector, nameInput, alphaCheckbox](Element& e) {
                 std::string basePath = fileSelector->GetPath();
                 std::string fileName = nameInput->GetValue();
@@ -131,11 +98,6 @@ namespace yap
             body->AddChild(alphaField);
             body->AddChild(buttons);
 
-            /**
-             * @brief Sets the default path for the file selector when the modal is mounted.
-             * 
-             * The default path is set to the `images` directory within the project folder.
-             */
             OnMount = [this, fileSelector](Element& element)
             {
                 fileSelector->SetPath("./Trab1JaimeADF/images");

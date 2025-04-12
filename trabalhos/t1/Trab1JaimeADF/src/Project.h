@@ -1,61 +1,34 @@
-/**
- * @file Project.h
- * @brief Defines the `Project` class, which manages a collection of layers and a canvas bitmap for rendering.
- * 
- * The `Project` class provides functionality for creating, deleting, and manipulating layers, as well as rendering
- * the final composite image on a canvas. It also supports saving and loading project data to and from files.
- */
-
 #pragma once
 
 #include "Layer.h"
 
 namespace yap
 {
-    /**
-     * @class Project
-     * @brief Manages a collection of layers and a canvas bitmap for rendering.
-     * 
-     * The `Project` class provides methods for creating, deleting, and manipulating layers, rendering the canvas,
-     * and saving/loading project data. It also supports event callbacks for layer operations.
-     */
     class Project
     {
     private:
-        int m_NextLayerId = 0; ///< ID to assign to the next created layer.
-        std::shared_ptr<Layer> m_ActiveLayer; ///< The currently active layer.
-        std::vector<std::shared_ptr<Layer>> m_Layers; ///< Collection of all layers in the project.
-        std::shared_ptr<Bitmap> m_CanvasBitmap; ///< The canvas bitmap used for rendering.
+        int m_NextLayerId = 0;
+
+        std::shared_ptr<Layer> m_ActiveLayer;
+        std::vector<std::shared_ptr<Layer>> m_Layers;
+
+        std::shared_ptr<Bitmap> m_CanvasBitmap;
 
     public:
-        // Event callbacks
-        std::function<void(Project&, std::shared_ptr<Layer>)> OnLayerCreated = nullptr; ///< Callback for layer creation.
-        std::function<void(Project&, std::shared_ptr<Layer>)> OnLayerDeleted = nullptr; ///< Callback for layer deletion.
-        std::function<void(Project&, std::shared_ptr<Layer>)> OnLayerMoved = nullptr; ///< Callback for layer movement.
-        std::function<void(Project&, std::shared_ptr<Layer>)> OnLayerSelected = nullptr; ///< Callback for layer selection.
-
-        /**
-         * @brief Constructs a `Project` with a specified canvas size.
-         * @param width Width of the canvas.
-         * @param height Height of the canvas.
-         */
+        std::function<void(Project&, std::shared_ptr<Layer>)> OnLayerCreated = nullptr;
+        std::function<void(Project&, std::shared_ptr<Layer>)> OnLayerDeleted = nullptr;
+        std::function<void(Project&, std::shared_ptr<Layer>)> OnLayerMoved = nullptr;
+        std::function<void(Project&, std::shared_ptr<Layer>)> OnLayerSelected = nullptr;
+        
         Project(int width, int height) : m_CanvasBitmap(std::make_shared<Bitmap>(width, height))
         {
         }
 
-        /**
-         * @brief Gets the canvas bitmap.
-         * @return A shared pointer to the canvas bitmap.
-         */
         std::shared_ptr<Bitmap> GetCanvas() const
         {
             return m_CanvasBitmap;
         }
 
-        /**
-         * @brief Renders the canvas by compositing all visible layers.
-         * @return A shared pointer to the rendered canvas bitmap.
-         */
         std::shared_ptr<const Bitmap> RenderCanvas()
         {
             for (int x = 0; x < m_CanvasBitmap->GetWidth(); ++x)
@@ -79,10 +52,6 @@ namespace yap
             return m_CanvasBitmap;
         }
 
-        /**
-         * @brief Sets the active layer.
-         * @param layer The layer to set as active.
-         */
         void SetActiveLayer(std::shared_ptr<Layer> layer)
         {
             m_ActiveLayer = layer;
@@ -93,18 +62,11 @@ namespace yap
             }
         }
 
-        /**
-         * @brief Gets the currently active layer.
-         * @return A shared pointer to the active layer.
-         */
         std::shared_ptr<Layer> GetActiveLayer() const
         {
             return m_ActiveLayer;
         }
 
-        /**
-         * @brief Deletes the currently active layer.
-         */
         void DeleteActiveLayer()
         {
             if (m_ActiveLayer)
@@ -113,36 +75,21 @@ namespace yap
             }
         }
 
-        /**
-         * @brief Moves the active layer up in the layer stack.
-         */
         void MoveActiveLayerUp()
         {
             MoveLayerUp(m_ActiveLayer);
         }
 
-        /**
-         * @brief Moves the active layer down in the layer stack.
-         */
         void MoveActiveLayerDown()
         {
             MoveLayerDown(m_ActiveLayer);
         }
 
-        /**
-         * @brief Creates a new layer with the same size as the canvas.
-         * @return A shared pointer to the newly created layer.
-         */
         std::shared_ptr<Layer> CreateLayer()
         {
             return CreateLayer(Bitmap(m_CanvasBitmap->GetWidth(), m_CanvasBitmap->GetHeight()));
         }
 
-        /**
-         * @brief Creates a new layer with a specified bitmap.
-         * @param bitmap The bitmap to use for the new layer.
-         * @return A shared pointer to the newly created layer.
-         */
         std::shared_ptr<Layer> CreateLayer(const Bitmap& bitmap)
         {
             auto layer = std::make_shared<Layer>(++m_NextLayerId, bitmap);
@@ -153,10 +100,6 @@ namespace yap
             return layer;
         }
 
-        /**
-         * @brief Deletes a specified layer.
-         * @param layer The layer to delete.
-         */
         void DeleteLayer(std::shared_ptr<Layer> layer)
         {
             auto it = std::find(m_Layers.begin(), m_Layers.end(), layer);
@@ -185,10 +128,6 @@ namespace yap
             }
         }
 
-        /**
-         * @brief Moves a specified layer up in the layer stack.
-         * @param layer The layer to move up.
-         */
         void MoveLayerUp(std::shared_ptr<Layer> layer)
         {
             auto it = std::find(m_Layers.begin(), m_Layers.end(), layer);
@@ -204,10 +143,6 @@ namespace yap
             }
         }
 
-        /**
-         * @brief Moves a specified layer down in the layer stack.
-         * @param layer The layer to move down.
-         */
         void MoveLayerDown(std::shared_ptr<Layer> layer)
         {
             auto it = std::find(m_Layers.begin(), m_Layers.end(), layer);
@@ -223,11 +158,6 @@ namespace yap
             }
         }
 
-        /**
-         * @brief Saves the project to a file.
-         * @param path The file path to save the project to.
-         * @throws std::runtime_error If the file cannot be opened for writing.
-         */
         void Save(const std::string& path)
         {
             std::ofstream file(path, std::ios::binary);
@@ -285,11 +215,6 @@ namespace yap
             }
         }
 
-        /**
-         * @brief Loads a project from a file.
-         * @param path The file path to load the project from.
-         * @throws std::runtime_error If the file cannot be opened or the format is invalid.
-         */
         void Load(const std::string& path)
         {
             std::ifstream file(path, std::ios::binary);
@@ -377,48 +302,27 @@ namespace yap
             }
         }
 
-        /**
-         * @brief Gets all layers in the project.
-         * @return A vector of shared pointers to the layers.
-         */
         const std::vector<std::shared_ptr<Layer>> GetLayers() const
         {
             return m_Layers;
         }
 
-        /**
-         * @brief Sets the size of the canvas.
-         * @param width The new width of the canvas.
-         * @param height The new height of the canvas.
-         */
         void SetSize(int width, int height)
         {
             m_CanvasBitmap->Reallocate(width, height);
         }
 
-        /**
-         * @brief Gets the width of the canvas.
-         * @return The width of the canvas.
-         */
         int GetWidth() const
         {
             return m_CanvasBitmap->GetWidth();
         }
 
-        /**
-         * @brief Gets the height of the canvas.
-         * @return The height of the canvas.
-         */
         int GetHeight() const
         {
             return m_CanvasBitmap->GetHeight();
         }
     
     private:
-        /**
-         * @brief Registers a new layer in the project.
-         * @param layer The layer to register.
-         */
         void RegisterLayer(std::shared_ptr<Layer> layer)
         {
             m_Layers.push_back(layer);

@@ -1,10 +1,3 @@
-/*
- * Summary:
- * This file defines a set of classes for creating a graphical color picker component. 
- * The `ColorPicker` class provides a user interface for selecting colors in HSVA (Hue, Saturation, Value, Alpha) format. 
- * It includes specialized components such as `SaturationPad`, `HuePad`, and `AlphaPad` for adjusting individual color properties.
- */
-
 #pragma once
 
 #include "Box.h"
@@ -12,26 +5,19 @@
 
 namespace yap
 {
-    /**
-     * @class ColorPad
-     * @brief Base class for interactive color adjustment pads.
-     * 
-     * Provides a foundation for creating color adjustment components such as saturation, hue, and alpha sliders.
-     */
     class ColorPad : public Box
     {
     protected:
-        ColorHSVA m_Color; ///< Current color value in HSVA format.
-        std::shared_ptr<Bitmap> m_AreaBackground; ///< Bitmap for rendering the pad's background.
-        std::shared_ptr<Box> m_Area; ///< The interactive area of the pad.
-        std::shared_ptr<Box> m_Thumb; ///< The draggable thumb indicator.
+        ColorHSVA m_Color;
 
+        std::shared_ptr<Bitmap> m_AreaBackground;
+
+        std::shared_ptr<Box> m_Area;
+        std::shared_ptr<Box> m_Thumb;
+    
     public:
-        std::function<void(ColorPad&, const ColorHSVA&)> OnChange; ///< Callback triggered when the color changes.
+        std::function<void(ColorPad&, const ColorHSVA&)> OnChange;
 
-        /**
-         * @brief Constructor. Initializes the color pad and its components.
-         */
         ColorPad()
         {
             m_AreaBackground = std::make_shared<Bitmap>();
@@ -67,10 +53,6 @@ namespace yap
             AddChild(m_Thumb);
         }
 
-        /**
-         * @brief Sets the current color of the pad.
-         * @param color The new color in HSVA format.
-         */
         void SetColor(const ColorHSVA& color)
         {
             m_Color = color;
@@ -79,19 +61,12 @@ namespace yap
             RefreshThumb();
         }
 
-        /**
-         * @brief Gets the current color of the pad.
-         * @return The current color in HSVA format.
-         */
         ColorHSVA GetColor() const
         {
             return m_Color;
         }
         
     protected: 
-        /**
-         * @brief Updates the position and style of the thumb based on the current color.
-         */
         virtual void RefreshThumb()
         {
             Vec2 position = ConvertColorToProportionalPosition(m_Color);
@@ -105,32 +80,15 @@ namespace yap
             );
         }
 
-        /**
-         * @brief Updates the background of the pad based on the current color.
-         */
         virtual void RefreshArea()
         {
             m_AreaBackground->Reallocate(m_Area->Size.X, m_Area->Size.Y);
         }
 
-        /**
-         * @brief Converts a proportional position on the pad to a color.
-         * @param position The proportional position (0.0 to 1.0).
-         * @return The corresponding color in HSVA format.
-         */
         virtual ColorHSVA ConvertProportionalPositionToColor(const Vec2& position) = 0;
-
-        /**
-         * @brief Converts a color to a proportional position on the pad.
-         * @param color The color in HSVA format.
-         * @return The corresponding proportional position (0.0 to 1.0).
-         */
         virtual Vec2 ConvertColorToProportionalPosition(const ColorHSVA& color) = 0;
 
     private:
-        /**
-         * @brief Initializes the thumb component.
-         */
         void InitThumb()
         {
             m_Thumb = std::make_shared<Box>();
@@ -142,9 +100,6 @@ namespace yap
             );
         }
 
-        /**
-         * @brief Initializes the interactive area component.
-         */
         void InitArea()
         {
             m_Area = std::make_shared<Box>();
@@ -172,9 +127,6 @@ namespace yap
             };
         }
 
-        /**
-         * @brief Synchronizes the color with the mouse position when interacting with the pad.
-         */
         void SyncColorToMousePosition()
         {
             const Mouse& mouse = GetScreen()->GetMouse();
@@ -192,16 +144,9 @@ namespace yap
         }
     };
 
-    /**
-     * @class SaturationPad
-     * @brief A color pad for adjusting saturation and value.
-     */
     class SaturationPad : public ColorPad
     {
     public:
-        /**
-         * @brief Constructor. Initializes the saturation pad.
-         */
         SaturationPad() : ColorPad()
         {
             SetStyle(
@@ -251,16 +196,9 @@ namespace yap
         }
     };
 
-    /**
-     * @class HuePad
-     * @brief A color pad for adjusting hue.
-     */
     class HuePad : public ColorPad
     {
     public:
-        /**
-         * @brief Constructor. Initializes the hue pad.
-         */
         HuePad() : ColorPad()
         {
             SetStyle(
@@ -309,19 +247,12 @@ namespace yap
         }
     };
 
-    /**
-     * @class AlphaPad
-     * @brief A color pad for adjusting alpha (transparency).
-     */
     class AlphaPad : public ColorPad
     {
     private:
-        std::shared_ptr<Bitmap> m_ThumbBackground; ///< Bitmap for rendering the thumb's background.
+        std::shared_ptr<Bitmap> m_ThumbBackground;
 
     public:
-        /**
-         * @brief Constructor. Initializes the alpha pad.
-         */
         AlphaPad()
         {
             m_ThumbBackground = std::make_shared<Bitmap>();
@@ -396,24 +327,18 @@ namespace yap
         }
     };
 
-    /**
-     * @class ColorPicker
-     * @brief A graphical component for selecting colors in HSVA format.
-     */
     class ColorPicker : public Box
     {
     private:
-        ColorHSVA m_Color; ///< Current color in HSVA format.
-        std::shared_ptr<ColorPad> m_SaturationPad; ///< Pad for adjusting saturation and value.
-        std::shared_ptr<ColorPad> m_HuePad; ///< Pad for adjusting hue.
-        std::shared_ptr<ColorPad> m_AlphaPad; ///< Pad for adjusting alpha.
+        ColorHSVA m_Color;
 
+        std::shared_ptr<ColorPad> m_SaturationPad;
+        std::shared_ptr<ColorPad> m_HuePad;
+        std::shared_ptr<ColorPad> m_AlphaPad;
+    
     public:
-        std::function<void(ColorPicker&, const ColorHSVA&)> OnChange; ///< Callback triggered when the color changes.
+        std::function<void(ColorPicker &element, const ColorHSVA&)> OnChange;
 
-        /**
-         * @brief Constructor. Initializes the color picker and its components.
-         */
         ColorPicker() : m_Color(0.0f, 1.0f, 1.0f, 1.0f)
         {
             auto sliders = std::make_shared<Box>();
@@ -460,10 +385,6 @@ namespace yap
             };
         }
 
-        /**
-         * @brief Sets the current color of the picker.
-         * @param color The new color in HSVA format.
-         */
         void SetColor(const ColorHSVA& color)
         {
             if (color == m_Color)
@@ -476,20 +397,12 @@ namespace yap
             RefreshPads();
         }
 
-        /**
-         * @brief Gets the current color of the picker.
-         * @return The current color in HSVA format.
-         */
         ColorHSVA GetColor() const
         {
             return m_Color;
         }
 
     private:
-        /**
-         * @brief Updates the color and triggers the OnChange callback.
-         * @param color The new color in HSVA format.
-         */
         void ChangeColor(const ColorHSVA& color)
         {
             SetColor(color);
@@ -500,9 +413,6 @@ namespace yap
             }
         }
 
-        /**
-         * @brief Refreshes the state of all pads to match the current color.
-         */
         void RefreshPads()
         {
             m_SaturationPad->SetColor(m_Color);

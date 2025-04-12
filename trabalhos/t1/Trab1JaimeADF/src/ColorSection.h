@@ -3,46 +3,25 @@
 #include "ColorPalette.h"
 #include "ColorPicker.h"
 
-/**
- * @file ColorSection.h
- * @brief Defines the ColorSection class, which provides a UI component for displaying and editing colors.
- * 
- * The ColorSection class is a graphical user interface (GUI) component that allows users to view and modify
- * colors using a color palette, a color picker, and text fields for RGBA values. It also includes a preview
- * of the selected color.
- */
-
 namespace yap
 {
-    /**
-     * @class ColorSection
-     * @brief A UI component for managing and displaying color-related elements.
-     * 
-     * The ColorSection class provides a header with RGBA value displays, a color preview, and a body containing
-     * a color picker. It synchronizes with a global color palette and updates its elements dynamically.
-     */
     class ColorSection : public Box
     {
     private:
-        ColorRGBA m_CurrentColor; ///< The currently selected color in RGBA format.
+        ColorRGBA m_CurrentColor;
 
-        std::shared_ptr<ColorPalette> m_ColorPalette; ///< Shared pointer to the global color palette.
+        std::shared_ptr<ColorPalette> m_ColorPalette;
 
-        std::shared_ptr<Bitmap> m_PreviewBackground; ///< Bitmap used for the color preview background.
+        std::shared_ptr<Bitmap> m_PreviewBackground;
 
-        std::shared_ptr<ColorPicker> m_ColorPicker; ///< Shared pointer to the color picker component.
+        std::shared_ptr<ColorPicker> m_ColorPicker;
 
-        std::shared_ptr<Text> m_RedText;   ///< Text field for displaying the red (R) component.
-        std::shared_ptr<Text> m_GreenText; ///< Text field for displaying the green (G) component.
-        std::shared_ptr<Text> m_BlueText;  ///< Text field for displaying the blue (B) component.
-        std::shared_ptr<Text> m_AlphaText; ///< Text field for displaying the alpha (A) component.
+        std::shared_ptr<Text> m_RedText;
+        std::shared_ptr<Text> m_GreenText;
+        std::shared_ptr<Text> m_BlueText;
+        std::shared_ptr<Text> m_AlphaText;
 
     public:
-        /**
-         * @brief Constructs a ColorSection object.
-         * 
-         * @param colorPalette A shared pointer to the global color palette.
-         */
         ColorSection(const std::shared_ptr<ColorPalette>& colorPalette)
             : m_ColorPalette(colorPalette)
         {
@@ -72,11 +51,6 @@ namespace yap
             };
         }
 
-        /**
-         * @brief Initializes the header section of the ColorSection.
-         * 
-         * The header contains the color preview and RGBA value displays.
-         */
         void InitHeader()
         {
             auto header = std::make_shared<Box>();
@@ -111,11 +85,6 @@ namespace yap
             AddChild(header);
         }
 
-        /**
-         * @brief Initializes the body section of the ColorSection.
-         * 
-         * The body contains the color picker component.
-         */
         void InitBody()
         {
             auto body = std::make_shared<Box>();
@@ -136,13 +105,6 @@ namespace yap
             AddChild(body);
         }
 
-        /**
-         * @brief Creates a container for displaying a color value.
-         * 
-         * @param value A reference to the text field that will display the value.
-         * @param title The title of the color value (e.g., "R:", "G:", "B:", "A:").
-         * @return A shared pointer to the created container.
-         */
         std::shared_ptr<Box> CreateColorValue(std::shared_ptr<Text>& value, const std::string& title)
         {
             auto container = std::make_shared<Box>();
@@ -165,17 +127,11 @@ namespace yap
             return container;
         }
 
-        /**
-         * @brief Refreshes the color preview to reflect the current color.
-         */
         void RefreshPreview()
         {
             m_PreviewBackground->Clear(m_CurrentColor);
         }
 
-        /**
-         * @brief Updates the RGBA text fields to display the current color values.
-         */
         void RefreshTexts()
         {
             m_RedText->Content = std::to_string(static_cast<int>(m_CurrentColor.R * 255.0f));
@@ -184,9 +140,6 @@ namespace yap
             m_AlphaText->Content = std::to_string(static_cast<int>(m_CurrentColor.A * 255.0f));
         }
 
-        /**
-         * @brief Synchronizes the color picker with the current color.
-         */
         void RefreshColorPicker()
         {
             if (m_CurrentColor != m_ColorPicker->GetColor().ToRGBA())

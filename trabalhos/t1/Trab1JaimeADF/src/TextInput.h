@@ -5,57 +5,23 @@
 #include "Box.h"
 #include "Text.h"
 
-/**
- * @file TextInput.h
- * @brief Defines the TextInput class, a UI component for text input with cursor and event handling.
- */
-
 namespace yap
 {
-    /**
-     * @class TextInput
-     * @brief A UI component for text input, supporting cursor visibility, keyboard input, and event handling.
-     * 
-     * The TextInput class extends the Box class and provides functionality for handling user input,
-     * displaying a cursor, and triggering events such as OnChange, OnSubmit, OnCancel, and OnLeave.
-     */
     class TextInput : public Box
     {
     private:
-        std::string m_Value; ///< The current value of the text input.
+        std::string m_Value;
 
-        std::shared_ptr<Text> m_Text; ///< The text element displaying the input value.
-        std::shared_ptr<Box> m_Cursor; ///< The cursor element for the text input.
+        std::shared_ptr<Text> m_Text;
+        std::shared_ptr<Box> m_Cursor;
+        
 
     public:
-        /**
-         * @brief Event triggered when the text value changes.
-         * @param TextInput& Reference to the TextInput instance.
-         * @param const std::string& The new value of the text input.
-         */
         std::function<void(TextInput&, const std::string&)> OnChange;
-
-        /**
-         * @brief Event triggered when the user submits the input (e.g., presses Enter).
-         * @param TextInput& Reference to the TextInput instance.
-         */
         std::function<void(TextInput&)> OnSubmit;
-
-        /**
-         * @brief Event triggered when the user cancels the input (e.g., presses Escape).
-         * @param TextInput& Reference to the TextInput instance.
-         */
         std::function<void(TextInput&)> OnCancel;
-
-        /**
-         * @brief Event triggered when the text input loses focus.
-         * @param TextInput& Reference to the TextInput instance.
-         */
         std::function<void(TextInput&)> OnLeave;
 
-        /**
-         * @brief Constructs a new TextInput instance with default styles and event handlers.
-         */
         TextInput()
         {
             m_Text = std::make_shared<Text>();
@@ -167,10 +133,6 @@ namespace yap
             AddChild(m_Cursor);
         }
 
-        /**
-         * @brief Sets the value of the text input.
-         * @param value The new value to set.
-         */
         void SetValue(const std::string& value)
         {
             m_Value = value;
@@ -183,19 +145,12 @@ namespace yap
             }
         }
 
-        /**
-         * @brief Gets the current value of the text input.
-         * @return const std::string& The current value.
-         */
         const std::string& GetValue()
         {
             return m_Value;
         }
     
     private:
-        /**
-         * @brief Updates the displayed text to match the current value.
-         */
         void RefreshText()
         {
             m_Text->Content = m_Value;

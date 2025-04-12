@@ -3,37 +3,24 @@
 #include "Modal.h"
 #include "Effects.h"
 
-/**
- * @file EffectModal.h
- * @brief Defines the EffectModal class, which provides a user interface for applying visual effects to a layer in a project.
- */
-
 namespace yap
 {
-    /**
-     * @class EffectModal
-     * @brief A modal dialog for managing and applying visual effects to a layer in a project.
-     */
     class EffectModal : public Modal
     {
     private:
-        std::shared_ptr<Project> m_Project; ///< The project associated with this modal.
-        std::shared_ptr<Layer> m_WorkLayer; ///< The active layer to which effects will be applied.
+        std::shared_ptr<Project> m_Project;
+        std::shared_ptr<Layer> m_WorkLayer;
 
-        std::shared_ptr<Bitmap> m_PreviewBitmap; ///< A bitmap used to preview the effect.
+        std::shared_ptr<Bitmap> m_PreviewBitmap;
 
-        std::vector<std::shared_ptr<Effect>> m_Effects; ///< List of available effects.
+        std::vector<std::shared_ptr<Effect>> m_Effects;
 
-        int m_CurrentEffectIndex = -1; ///< Index of the currently selected effect.
+        int m_CurrentEffectIndex = -1;
 
-        std::shared_ptr<Box> m_CurrentEffectOptions; ///< UI container for the current effect's options.
-        std::shared_ptr<Text> m_CurrentEffectName; ///< UI element displaying the name of the current effect.
+        std::shared_ptr<Box> m_CurrentEffectOptions;
+        std::shared_ptr<Text> m_CurrentEffectName;
 
     public:
-        /**
-         * @brief Constructs an EffectModal instance.
-         * @param project The project to which this modal belongs.
-         */
         EffectModal(const std::shared_ptr<Project>& project) : m_Project(project)
         {
             m_WorkLayer = m_Project->GetActiveLayer();
@@ -199,26 +186,16 @@ namespace yap
         }
 
     private:
-        /**
-         * @brief Selects the next effect in the list.
-         */
         void NextEffect()
         {
             SelectEffect(m_CurrentEffectIndex + 1);
         }
 
-        /**
-         * @brief Selects the previous effect in the list.
-         */
         void PreviousEffect()
         {
             SelectEffect(m_CurrentEffectIndex - 1);
         }
 
-        /**
-         * @brief Selects an effect by its index.
-         * @param index The index of the effect to select.
-         */
         void SelectEffect(int index)
         {
             if (m_CurrentEffectIndex != -1)
@@ -237,9 +214,6 @@ namespace yap
             };
         }
 
-        /**
-         * @brief Updates the UI to reflect the details of the currently selected effect.
-         */
         void RefreshCurrentEffectDetails()
         {
             m_CurrentEffectName->Content = m_Effects[m_CurrentEffectIndex]->CreateName();
@@ -247,9 +221,6 @@ namespace yap
             m_CurrentEffectOptions->AddChild(m_Effects[m_CurrentEffectIndex]->CreateOptions());
         }
 
-        /**
-         * @brief Renders the preview bitmap for the currently selected effect.
-         */
         void RenderCurrentEffectPreviewBitmap()
         {
             auto effect = m_Effects[m_CurrentEffectIndex];
