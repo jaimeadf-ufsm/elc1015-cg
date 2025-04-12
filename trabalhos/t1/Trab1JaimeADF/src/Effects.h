@@ -8,8 +8,17 @@
 #include "Box.h"
 #include "Text.h"
 
+/**
+ * @file Effects.h
+ * @brief Defines a set of image processing effects that can be applied to bitmaps.
+ */
+
 namespace yap
 {
+    /**
+     * @class Effect
+     * @brief Base class for all image effects.
+     */
     class Effect
     {
     private:
@@ -152,6 +161,10 @@ namespace yap
         }
     };
 
+    /**
+     * @class BrightnessContrastEffect
+     * @brief Adjusts the brightness and contrast of an image.
+     */
     class BrightnessContrastEffect : public Effect
     {
     private:
@@ -226,6 +239,10 @@ namespace yap
         }
     };
 
+    /**
+     * @class GammaCorrectionEffect
+     * @brief Applies gamma correction to an image.
+     */
     class GammaCorrectionEffect : public Effect
     {
     private:
@@ -280,6 +297,10 @@ namespace yap
         }
     };
 
+    /**
+     * @class GrayscaleEffect
+     * @brief Converts an image to grayscale.
+     */
     class GrayscaleEffect : public Effect
     {
     public:
@@ -305,7 +326,10 @@ namespace yap
         }
     };
 
-
+    /**
+     * @class SepiaEffect
+     * @brief Applies a sepia tone to an image.
+     */
     class SepiaEffect : public Effect
     {
     public:
@@ -340,6 +364,10 @@ namespace yap
         }
     };
 
+    /**
+     * @class GaussianBlurEffect
+     * @brief Applies a Gaussian blur to an image.
+     */
     class GaussianBlurEffect : public Effect
     {
     private:
@@ -433,6 +461,10 @@ namespace yap
         }
     };
 
+    /**
+     * @class PixelateEffect
+     * @brief Pixelates an image by grouping pixels into blocks.
+     */
     class PixelateEffect : public Effect
     {
     private:
@@ -499,6 +531,10 @@ namespace yap
         }
     };
 
+    /**
+     * @class RandomNoiseEffect
+     * @brief Adds random noise to an image.
+     */
     class RandomNoiseEffect : public Effect
     {
     private:

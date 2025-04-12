@@ -7,8 +7,17 @@
 #include "Vec2.h"
 #include "Bitmap.h"
 
+/**
+ * @file Layer.h
+ * @brief Defines the Layer class, which represents a drawable layer with position, visibility, and bitmap manipulation capabilities.
+ */
+
 namespace yap
 {
+    /**
+     * @class Layer
+     * @brief Represents a drawable layer that can manipulate a bitmap, including transformations, pixel operations, and visibility control.
+     */
     class Layer
     {
     private:

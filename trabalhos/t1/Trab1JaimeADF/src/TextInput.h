@@ -5,8 +5,20 @@
 #include "Box.h"
 #include "Text.h"
 
+/**
+ * @file TextInput.h
+ * @brief Defines the TextInput class, a UI component for text input with cursor and event handling.
+ */
+
 namespace yap
 {
+    /**
+     * @class TextInput
+     * @brief A UI component for text input, supporting cursor visibility, keyboard input, and event handling.
+     * 
+     * The TextInput class extends the Box class and provides functionality for handling user input,
+     * displaying a cursor, and triggering events such as OnChange, OnSubmit, OnCancel, and OnLeave.
+     */
     class TextInput : public Box
     {
     private:

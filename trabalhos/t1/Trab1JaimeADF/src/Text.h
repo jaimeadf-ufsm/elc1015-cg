@@ -4,8 +4,25 @@
 
 #include "Element.h"
 
+/**
+ * @file Text.h
+ * @brief Defines the Text class, which represents a text element in the rendering system.
+ * 
+ * The Text class is a specialized type of Element that handles rendering and measuring
+ * text content. It provides methods for computing dimensions based on the text content
+ * and drawing the text on the screen.
+ */
+
 namespace yap
 {
+    /**
+     * @class Text
+     * @brief Represents a text element in the rendering system.
+     * 
+     * The Text class extends the Element class and provides functionality for rendering
+     * text content. It supports automatic dimension computation based on the text size
+     * and allows customization of text content and style.
+     */
     class Text : public Element
     {
     public:

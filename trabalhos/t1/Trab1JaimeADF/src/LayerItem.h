@@ -4,8 +4,21 @@
 #include "Text.h"
 #include "Checkbox.h"
 
+/**
+ * @file LayerItem.h
+ * @brief Defines the LayerItem class, which represents a UI element for managing and displaying a layer in a project.
+ */
+
 namespace yap
 {
+    /**
+     * @class LayerItem
+     * @brief A UI component representing a layer in a project.
+     * 
+     * The LayerItem class extends the Box class and provides a structured layout for displaying
+     * layer-related information, such as visibility, name, and preview. It also handles user interactions
+     * like toggling visibility and selecting the active layer.
+     */
     class LayerItem : public Box
     {
     private:

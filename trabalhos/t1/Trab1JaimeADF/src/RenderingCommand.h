@@ -4,8 +4,19 @@
 
 #include "Color.h"
 
+/**
+ * @file RenderingCommand.h
+ * @brief Defines structures and classes for rendering commands used in a graphics rendering pipeline.
+ * 
+ * This file contains argument structures for various rendering commands, an enumeration for command types,
+ * and the `RenderingCommand` class, which encapsulates a rendering command and its associated arguments.
+ */
+
 namespace yap
 {
+    /**
+     * @brief Arguments for setting the rendering color.
+     */
     struct ColorRenderingCommandArguments
     {
         float R;
@@ -13,12 +24,18 @@ namespace yap
         float B;
     };
 
+    /**
+     * @brief Arguments for rendering a filled point.
+     */
     struct FillPointRenderingCommandArguments
     {
         float X;
         float Y;
     };
 
+    /**
+     * @brief Arguments for rendering a stroked rectangle.
+     */
     struct StrokeRectangleRenderingCommandArguments
     {
         float X;
@@ -28,6 +45,9 @@ namespace yap
         float StrokeWidth;
     };
 
+    /**
+     * @brief Arguments for rendering a filled rectangle.
+     */
     struct FillRectangleRenderingCommandArguments
     {
         float X;
@@ -36,24 +56,39 @@ namespace yap
         float Height;
     };
 
+    /**
+     * @brief Arguments for beginning a polygon rendering.
+     */
     struct BeginPolygonRenderingCommandArguments
     {
     };
 
+    /**
+     * @brief Arguments for adding a vertex to a polygon.
+     */
     struct VertexCommandArguments
     {
         float X;
         float Y;
     };
 
+    /**
+     * @brief Arguments for rendering a stroked polygon.
+     */
     struct StrokePolygonRenderingCommandArguments
     {
     };
 
+    /**
+     * @brief Arguments for rendering a filled polygon.
+     */
     struct FillPolygonRenderingCommandArguments
     {
     };
 
+    /**
+     * @brief Arguments for rendering text.
+     */
     struct TextRenderingCommandArguments
     {
         float X;
@@ -61,6 +96,9 @@ namespace yap
         const char* Text;
     };
 
+    /**
+     * @brief Enumeration of rendering command types.
+     */
     enum class RenderingCommandKind
     {
         Color,
@@ -74,6 +112,9 @@ namespace yap
         Text
     };
 
+    /**
+     * @brief Represents a rendering command with associated arguments.
+     */
     class RenderingCommand
     {
     private:

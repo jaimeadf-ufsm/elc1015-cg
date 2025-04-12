@@ -2,8 +2,18 @@
 
 #include "Vec2.h"
 
+/**
+ * @file PositioningRule.h
+ * @brief Defines the PositioningRule class, which provides rules for positioning elements
+ * using different modes (Static, Relative, Absolute) and offsets.
+ */
+
 namespace yap
 {
+    /**
+     * @enum PositioningMode
+     * @brief Represents the different modes of positioning.
+     */
     enum class PositioningMode
     {
         Static,
@@ -11,6 +21,10 @@ namespace yap
         Absolute
     };
 
+    /**
+     * @class PositioningRule
+     * @brief Encapsulates positioning rules, including mode and offset, for elements.
+     */
     class PositioningRule
     {
     public:

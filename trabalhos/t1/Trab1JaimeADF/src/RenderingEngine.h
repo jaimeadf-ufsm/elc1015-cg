@@ -5,8 +5,18 @@
 #include "gl_canvas2d.h"
 #include "RenderingCommand.h"
 
+/**
+ * @file RenderingEngine.h
+ * @brief Defines the RenderingEngine class, which processes and executes rendering commands
+ * for graphical output using the Canvas 2D library.
+ */
+
 namespace yap
 {
+    /**
+     * @class RenderingEngine
+     * @brief A class responsible for executing a series of rendering commands to produce graphical output.
+     */
     class RenderingEngine
     {
     private:

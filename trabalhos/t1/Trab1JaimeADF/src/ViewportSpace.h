@@ -3,8 +3,21 @@
 #include "Project.h"
 #include "Element.h"
 
+/**
+ * @file ViewportSpace.h
+ * @brief Defines the ViewportSpace class, which provides functionality to convert coordinates
+ * between screen space and canvas space within a viewport.
+ */
+
 namespace yap
 {
+    /**
+     * @class ViewportSpace
+     * @brief Manages the relationship between screen space and canvas space for a viewport.
+     * 
+     * This class provides methods to convert coordinates between screen space and canvas space,
+     * using the position of a viewport preview element.
+     */
     class ViewportSpace
     {
     private:

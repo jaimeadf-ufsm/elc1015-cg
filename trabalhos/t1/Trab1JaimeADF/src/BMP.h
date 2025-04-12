@@ -5,8 +5,25 @@
 
 #include "Bitmap.h"
 
+/**
+ * @file BMP.h
+ * @brief Provides functionality for loading and saving BMP image files.
+ * 
+ * This file defines the BMP class, which includes methods for reading BMP files
+ * into a Bitmap object and saving Bitmap objects as BMP files. It supports both
+ * 24-bit and 32-bit BMP formats, with optional alpha channel handling.
+ */
+
 namespace yap
 {
+    /**
+     * @class BMP
+     * @brief Handles loading and saving BMP image files.
+     * 
+     * The BMP class provides static methods to load BMP files into Bitmap objects
+     * and save Bitmap objects as BMP files. It supports 24-bit and 32-bit BMP formats,
+     * with optional alpha channel support for 32-bit BMPs.
+     */
     class BMP
     {
     public:

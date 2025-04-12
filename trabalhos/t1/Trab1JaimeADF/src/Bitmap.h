@@ -6,14 +6,27 @@
 #include "Color.h"
 #include "Vec2.h"
 
+/**
+ * @file Bitmap.h
+ * @brief Provides the Bitmap class for image manipulation, including operations like flipping, scaling, and rotating.
+ */
+
 namespace yap
 {
+    /**
+     * @enum ScalingMethod
+     * @brief Specifies the scaling method to be used when resizing a bitmap.
+     */
     enum class ScalingMethod
     {
         NearestNeighbor,
         Bilinear
     };
 
+    /**
+     * @class Bitmap
+     * @brief Represents a 2D image with pixel manipulation capabilities.
+     */
     class Bitmap
     {
     private:

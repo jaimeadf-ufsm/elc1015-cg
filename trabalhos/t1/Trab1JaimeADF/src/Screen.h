@@ -7,8 +7,22 @@
 #include "Mouse.h"
 #include "Keyboard.h"
 
+/**
+ * @file Screen.h
+ * @brief Defines the `Screen` class, which serves as the main interface for managing user interactions,
+ * rendering, and event processing in a graphical application.
+ */
+
 namespace yap
 {
+    /**
+     * @class Screen
+     * @brief Represents the main interface for managing graphical elements, user input, and rendering.
+     * 
+     * The `Screen` class is responsible for handling user input (mouse and keyboard), managing the root
+     * graphical element (`Box`), and rendering the graphical interface. It also provides mechanisms for
+     * scheduling callbacks to be executed in the next frame.
+     */
     class Screen : public std::enable_shared_from_this<Screen>
     {
     private:

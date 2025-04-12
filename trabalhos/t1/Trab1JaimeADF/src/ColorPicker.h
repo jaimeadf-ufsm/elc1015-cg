@@ -3,8 +3,19 @@
 #include "Box.h"
 #include "Text.h"
 
+/**
+ * @file ColorPicker.h
+ * @brief Defines a set of classes for creating a graphical color picker component.
+ */
+
 namespace yap
 {
+    /**
+     * @class ColorPad
+     * @brief Base class for interactive color adjustment pads.
+     * 
+     * Provides a foundation for creating color adjustment components such as saturation, hue, and alpha sliders.
+     */
     class ColorPad : public Box
     {
     protected:
@@ -144,6 +155,10 @@ namespace yap
         }
     };
 
+    /**
+     * @class SaturationPad
+     * @brief A color pad for adjusting saturation and value.
+     */
     class SaturationPad : public ColorPad
     {
     public:
@@ -196,6 +211,10 @@ namespace yap
         }
     };
 
+    /**
+     * @class HuePad
+     * @brief A color pad for adjusting hue.
+     */
     class HuePad : public ColorPad
     {
     public:
@@ -247,6 +266,10 @@ namespace yap
         }
     };
 
+    /**
+     * @class AlphaPad
+     * @brief A color pad for adjusting alpha (transparency).
+     */
     class AlphaPad : public ColorPad
     {
     private:
@@ -327,6 +350,10 @@ namespace yap
         }
     };
 
+    /**
+     * @class ColorPicker
+     * @brief A UI component for selecting colors in HSVA format.
+     */
     class ColorPicker : public Box
     {
     private:

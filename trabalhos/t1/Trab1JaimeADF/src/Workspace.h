@@ -12,8 +12,21 @@
 #include "SaveModal.h"
 #include "ShareModal.h"
 
+/*
+ * @file Workspace.h
+ * @brief Defines the Workspace class, which represents the main user interface workspace for the application. 
+*/
+
 namespace yap
 {
+    /**
+     * @class Workspace
+     * @brief Represents the main user interface workspace for the application.
+     * 
+     * The `Workspace` class is responsible for managing the layout and behavior of the application's UI components,
+     * including the header, toolbar, sidebar, viewport, and modals. It also provides methods for initializing and
+     * interacting with these components.
+     */
     class Workspace : public Box
     {
     private:

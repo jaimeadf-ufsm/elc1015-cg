@@ -7,8 +7,20 @@
 
 #include "gl_canvas2d.h"
 
+/**
+ * @file RenderingContext.h
+ * @brief Defines the RenderingContext class, which provides an interface for managing and issuing rendering commands.
+ * 
+ * The RenderingContext class allows users to define various rendering operations such as drawing shapes, text, and polygons.
+ * Commands are stored in a queue and can be retrieved or cleared as needed.
+ */
+
 namespace yap
 {
+    /**
+     * @class RenderingContext
+     * @brief Manages a collection of rendering commands and provides methods to define rendering operations.
+     */
     class RenderingContext
     {
     private:

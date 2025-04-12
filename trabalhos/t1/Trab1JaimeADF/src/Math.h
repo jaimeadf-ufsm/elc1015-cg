@@ -1,5 +1,10 @@
 #pragma once
 
+/**
+ * @file Math.h
+ * @brief Contains utility mathematical functions for common operations,
+ */
+
 namespace yap
 {
     template<typename T>

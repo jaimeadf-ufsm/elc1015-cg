@@ -7,8 +7,21 @@
 #include "Checkbox.h"
 #include "FileSelector.h"
 
+/**
+ * @file ShareModal.h
+ * @brief Defines the ShareModal class, which provides a modal interface for exporting a project to a BMP file.
+ */
+
 namespace yap
 {
+    /**
+     * @class ShareModal
+     * @brief A modal dialog for exporting a project to a BMP file.
+     *
+     * The `ShareModal` class provides a user interface for selecting a file path, specifying a file name,
+     * and choosing whether to include alpha transparency in the exported BMP file. It uses various UI components
+     * such as text inputs, checkboxes, and buttons to facilitate the export process.
+     */
     class ShareModal : public Modal
     {
     public:

@@ -2,6 +2,12 @@
 
 #include "Math.h"
 
+/**
+ * @file Color.h
+ * @brief Defines color classes and conversions between RGB, RGBA, HSV, and HSVA
+ * color spaces.
+ */
+
 namespace yap
 {
     class ColorRGB;

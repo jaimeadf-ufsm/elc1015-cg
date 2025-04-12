@@ -8,8 +8,21 @@
 #include "Text.h"
 #include "LayerItem.h"
 
+/**
+ * @file LayerSection.h
+ * @brief Defines the LayerSection class, which represents a UI component for managing layers in a project.
+ */
+
 namespace yap
 {
+    /**
+     * @class LayerItem
+     * @brief A UI component representing a layer in a project.
+     * 
+     * The LayerItem class extends the Box class and provides a structured layout for displaying
+     * layer-related information, such as visibility, name, and preview. It also handles user interactions
+     * like toggling visibility and selecting the active layer.
+     */
     class LayerSection : public Box
     {
     private:

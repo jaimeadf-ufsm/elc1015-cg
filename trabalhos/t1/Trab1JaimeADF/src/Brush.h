@@ -5,8 +5,24 @@
 #include "Layer.h"
 #include "ColorPalette.h"
 
+/**
+ * @file Brush.h
+ * @brief Defines the Brush base class and its derived PencilBrush class for drawing on layers.
+ * 
+ * This file contains the Brush base class, which provides a common interface for brushes,
+ * and the PencilBrush class, which implements a specific type of brush with customizable shapes.
+ * Brushes are used to apply colors to layers and perform strokes.
+ */
+
 namespace yap
 {
+     /**
+     * @class Brush
+     * @brief Abstract base class for brushes used to draw on layers.
+     * 
+     * The Brush class provides a common interface for applying colors to layers
+     * and performing strokes. Derived classes must implement the `Apply` and `Stroke` methods.
+     */
     class Brush
     {
     private:
@@ -38,6 +54,10 @@ namespace yap
         }
     };
 
+    /**
+     * @enum PencilShape
+     * @brief Enum representing the shape of the PencilBrush.
+     */
     enum class PencilShape
     {
         Circle,
@@ -45,6 +65,13 @@ namespace yap
         Triangle
     };
 
+    /**
+     * @class PencilBrush
+     * @brief A brush that applies colors in different shapes (circle, square, triangle).
+     * 
+     * The PencilBrush class extends the Brush class and provides functionality
+     * for applying colors in customizable shapes. It supports circle, square, and triangle shapes.
+     */
     class PencilBrush : public Brush
     {
     private:

@@ -2,8 +2,20 @@
 
 #include "Modal.h"
 
+/**
+ * @file ModalStack.h
+ * @brief Defines the ModalStack class, which manages a stack of modals and handles their lifecycle.
+ */
+
 namespace yap
 {
+    /**
+     * @class ModalStack
+     * @brief A stack-based manager for modals, allowing for push and pop operations with lifecycle handling.
+     *
+     * The ModalStack class maintains a stack of modals, providing functionality to add (push) and remove (pop) modals.
+     * It also supports a callback mechanism to notify when the active modal changes.
+     */
     class ModalStack
     {
     private:

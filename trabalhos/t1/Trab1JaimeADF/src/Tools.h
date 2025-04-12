@@ -11,8 +11,17 @@
 
 #include "LayerBoundary.h"
 
+/**
+ * @file Tools.h
+ * @brief Defines the Tool class and its derived classes for various tools in the application.
+ */
+
 namespace yap
 {
+    /**
+     * @class Tool
+     * @brief Abstract base class for tools used in the application.
+     */
     class Tool
     {
     protected:
@@ -29,6 +38,10 @@ namespace yap
         virtual std::shared_ptr<Element> CreateOptions() = 0;
     };
 
+    /**
+     * @class MoveTool
+     * @brief Tool for moving layers in the canvas.
+    */
     class MoveTool : public Tool
     {
     public:
@@ -109,6 +122,10 @@ namespace yap
         };
     };
 
+    /**
+     * @class TransformTool
+     * @brief Tool for scaling layers in the canvas..
+     */
     class TransformTool : public Tool
     {
     public:
@@ -440,6 +457,10 @@ namespace yap
         };
     };
 
+    /**
+     * @class RotateTool
+     * @brief Tool for rotating layers in the canvas.
+     */
     class RotateTool : public Tool
     {
     public:
@@ -643,6 +664,10 @@ namespace yap
         };
     };
 
+    /**
+     * @class BrushTool
+     * @brief Tool for applying brush strokes on layers.
+     */
     class BrushTool : public Tool
     {
     private:
@@ -851,6 +876,10 @@ namespace yap
         };
     };
 
+    /**
+     * @class BucketTool
+     * @brief Tool for filling areas with a color.
+     */
     class BucketTool : public Tool
     {
     private:
@@ -913,6 +942,10 @@ namespace yap
         };
     };
     
+    /**
+     * @class ColorPickerTool
+     * @brief Tool for picking colors from the canvas.
+     */
     class ColorPickerTool : public Tool
     {
     private:

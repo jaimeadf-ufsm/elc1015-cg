@@ -9,8 +9,20 @@
 
 #include "TextInput.h"
 
+/**
+ * @file FileSelector.h
+ * @brief Provides a graphical file selector component for navigating directories and selecting files.
+ * 
+ * This class allows users to navigate through directories, view files, and select a file or folder.
+ * It supports pagination for large directories and provides a graphical interface with icons for files and folders.
+ */
+
 namespace yap
 {
+    /**
+     * @class FileSelector
+     * @brief A graphical component for navigating directories and selecting files or folders.
+     */
     class FileSelector : public Box
     {
     private:

@@ -7,8 +7,17 @@
 #include "Element.h"
 #include "StyleSheet.h"
 
+/**
+ * @file Box.h
+ * @brief Defines the base layout element.
+ */
+
 namespace yap
 {
+    /**
+     * @class Box
+     * @brief Represents a container element that can hold child elements, manage layout, and handle rendering.
+     */
     class Box : public Element
     {
     private:

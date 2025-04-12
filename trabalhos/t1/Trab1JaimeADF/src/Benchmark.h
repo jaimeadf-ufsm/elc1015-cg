@@ -2,8 +2,26 @@
 
 #include <chrono>
 
+/**
+ * @file Benchmark.h
+ * @brief Provides a utility class for benchmarking code execution time.
+ * 
+ * This file defines the `yap::Benchmark` class, which allows measuring the 
+ * execution time of code blocks. It supports starting, stopping, resetting, 
+ * and retrieving timing statistics such as total time, average time, and 
+ * the number of samples.
+ */
+
 namespace yap
 {
+    /**
+     * @class Benchmark
+     * @brief A utility class for measuring code execution time.
+     * 
+     * The `Benchmark` class provides methods to start and stop a timer, 
+     * accumulate timing data, and retrieve statistics such as the total 
+     * elapsed time, average time per sample, and the number of samples.
+     */
     class Benchmark
     {
     private:

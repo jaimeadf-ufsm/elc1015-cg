@@ -3,8 +3,20 @@
 #include "Box.h"
 #include "Text.h"
 
+/**
+ * @file Modals.h
+ * @brief Defines the UI component to create a modal dialog.
+ */
+
 namespace yap
 {
+    /**
+     * @class Modal
+     * @brief Represents a modal dialog box with customizable header, body, and buttons.
+     * 
+     * The `Modal` class extends the `Box` class to provide a modal dialog with a header, body, and buttons.
+     * It supports keyboard and mouse interactions, including closing the modal via the Escape key or a close button.
+     */
     class Modal : public Box
     {
     public:

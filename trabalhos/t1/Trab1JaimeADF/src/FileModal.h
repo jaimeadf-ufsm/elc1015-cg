@@ -5,8 +5,20 @@
 
 #include "FileSelector.h"
 
+/**
+ * @file FileModal.h
+ * @brief Defines the FileModal class, which provides a modal dialog for selecting and opening files in the project.
+ */
+
 namespace yap
 {
+    /**
+     * @class FileModal
+     * @brief A modal dialog for selecting and opening files in the project.
+     * 
+     * The FileModal class provides a user interface for selecting files from the file system
+     * and opening them in the context of the project. It supports `.bmp` and `.yap` file formats.
+     */
     class FileModal : public Modal
     {
     public:

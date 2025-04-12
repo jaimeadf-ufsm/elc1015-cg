@@ -6,8 +6,24 @@
 #include <sstream>
 #include <algorithm>
 
+/**
+ * @file Path.h
+ * @brief Provides utility functions for manipulating and analyzing file paths.
+ * 
+ * This header defines the `yap::Path` class, which includes static methods for
+ * splitting, joining, normalizing, and extracting components of file paths.
+ */
+
 namespace yap
 {
+    /**
+     * @class Path
+     * @brief A utility class for handling file path operations.
+     * 
+     * The `Path` class provides static methods to manipulate and analyze file paths,
+     * including splitting paths into components, joining components into a path,
+     * normalizing paths, and extracting directory names, base names, and extensions.
+     */
     class Path
     {
     public:

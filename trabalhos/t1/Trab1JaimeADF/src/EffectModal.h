@@ -3,8 +3,17 @@
 #include "Modal.h"
 #include "Effects.h"
 
+/**
+ * @file EffectModal.h
+ * @brief Defines the EffectModal class, which provides a UI component for applying visual effects to a layer in a project.
+ */
+
 namespace yap
 {
+    /**
+     * @class EffectModal
+     * @brief A modal dialog for managing and applying visual effects to a layer in a project.
+     */
     class EffectModal : public Modal
     {
     private:

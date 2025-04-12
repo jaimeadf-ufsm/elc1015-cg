@@ -2,8 +2,21 @@
 
 #include "Axis.h"
 
+/**
+ * @file BoxPadding.h
+ * @brief Defines a class to represent the padding values for a box element.
+ */
+
 namespace yap
 {
+    /**
+     * @class BoxPadding
+     * @brief Represents padding values for a rectangular box.
+     *
+     * The `BoxPadding` class provides a way to define and manipulate padding values for a box.
+     * Padding values can be specified for each side (top, right, bottom, left) individually or uniformly.
+     * The class also provides utility methods to retrieve total, start, and end padding along a specific axis.
+     */
     class BoxPadding
     {
     public:

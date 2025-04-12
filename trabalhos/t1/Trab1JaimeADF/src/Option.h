@@ -3,8 +3,27 @@
 #include <utility>
 #include <cassert>
 
+/**
+ * @file Option.h
+ * @brief Provides a lightweight implementation of an optional value container.
+ * 
+ * The `yap::Option` class is a custom implementation of an optional value container
+ * that can hold a value of type `T` or represent the absence of a value. It avoids
+ * dynamic memory allocation by using an internal buffer to store the value.
+ */
+
 namespace yap
 {
+    /**
+     * @class Option
+     * @brief A lightweight optional value container.
+     * 
+     * The `Option` class provides a way to store an optional value of type `T`.
+     * It uses an internal buffer to store the value and avoids dynamic memory allocation.
+     * The class supports copy and move semantics, as well as manual resetting of the value.
+     * 
+     * @tparam T The type of the value to be stored.
+     */
     template <typename T>
     class Option {
     private:

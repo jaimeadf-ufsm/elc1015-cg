@@ -2,8 +2,25 @@
 
 #include "Axis.h"
 
+/**
+ * @file Vec2.h
+ * @brief Defines a 2D vector class with various mathematical operations and utilities.
+ * 
+ * This file contains the `Vec2` struct, which represents a 2D vector with `X` and `Y` components.
+ * It provides a wide range of methods for vector manipulation, including rotation, normalization,
+ * clamping, and arithmetic operations.
+ */
+
 namespace yap
 {
+    /**
+     * @struct Vec2
+     * @brief Represents a 2D vector with `X` and `Y` components.
+     * 
+     * The `Vec2` struct provides methods for common vector operations such as rotation,
+     * normalization, dot product, and more. It also supports operator overloading for
+     * arithmetic operations.
+     */
     struct Vec2
     {
         float X, Y;

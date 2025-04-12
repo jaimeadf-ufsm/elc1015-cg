@@ -5,8 +5,22 @@
 
 #include "Box.h"
 
+/**
+ * @file LayerBoundary.h
+ * @brief Defines the UI component responsible for displaying the boundary of a
+ * layer in the viewport.
+ */
+
 namespace yap
 {
+    /**
+     * @class LayerBoundary
+     * @brief Represents a visual boundary for a layer in the application.
+     * 
+     * The `LayerBoundary` class inherits from `Box` and is responsible for dynamically
+     * updating its size, position, and visibility based on the active layer's properties
+     * and the viewport space. It uses a lambda function to handle animations and updates.
+     */
     class LayerBoundary : public Box
     {
     private:

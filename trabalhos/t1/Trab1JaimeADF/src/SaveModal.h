@@ -6,8 +6,21 @@
 #include "Modal.h"
 #include "FileSelector.h"
 
+/**
+ * @file SaveModal.h
+ * @brief Defines the SaveModal class, which provides a modal interface for saving a project.
+ */
+
 namespace yap
 {
+    /**
+     * @class SaveModal
+     * @brief A modal dialog for saving a project.
+     * 
+     * The SaveModal class provides a user interface for saving a project. It includes a file
+     * selector for choosing the save location, a text input for specifying the file name, and
+     * buttons for confirming or canceling the save operation.
+     */
     class SaveModal : public Modal
     {
     public:

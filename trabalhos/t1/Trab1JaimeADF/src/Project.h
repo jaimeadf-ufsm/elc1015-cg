@@ -2,8 +2,23 @@
 
 #include "Layer.h"
 
+/**
+ * @file Project.h
+ * @brief Defines the `Project` class, which manages a collection of layers and a canvas bitmap for rendering.
+ * 
+ * The `Project` class provides functionality for creating, deleting, and manipulating layers, as well as rendering
+ * the final composite image on a canvas. It also supports saving and loading project data to and from files.
+ */
+
 namespace yap
 {
+    /**
+     * @class Project
+     * @brief Manages a collection of layers and a canvas bitmap for rendering.
+     * 
+     * The `Project` class provides methods for creating, deleting, and manipulating layers, rendering the canvas,
+     * and saving/loading project data. It also supports event callbacks for layer operations.
+     */
     class Project
     {
     private:

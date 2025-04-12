@@ -10,8 +10,22 @@
 #include "BoxAlignment.h"
 #include "BoxPadding.h"
 
+/**
+ * @file StyleSheet.h
+ * @brief Defines the `StyleSheet` and `ComputedStyleSheet` classes for managing UI styles.
+ * 
+ * The `StyleSheet` class provides a flexible way to define optional style properties for UI elements.
+ * The `ComputedStyleSheet` class represents the resolved styles after applying inheritance and overrides.
+ */
+
 namespace yap
 {
+    /**
+     * @brief Represents a collection of optional style properties for UI elements.
+     * 
+     * The `StyleSheet` class allows defining styles such as visibility, size, position, alignment, padding,
+     * background, border, and more. Each property is optional and can be set using the provided `With*` methods.
+     */
     struct StyleSheet
     {
         Option<bool> Visibility;
@@ -132,6 +146,12 @@ namespace yap
         }
     };
 
+    /**
+     * @brief Represents the resolved styles for a UI element after inheritance and overrides.
+     * 
+     * The `ComputedStyleSheet` class contains the final computed styles for a UI element, including
+     * visibility, size, position, alignment, padding, background, border, and more.
+     */
     struct ComputedStyleSheet
     {
         bool Visibility = true;

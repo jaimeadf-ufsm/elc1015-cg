@@ -5,8 +5,25 @@
 #include "Box.h"
 #include "Screen.h"
 
-namespace yap
+/**
+ * @file Slider.h
+ * @brief Defines the Slider class, a UI component for selecting a value within a range.
+ * 
+ * The Slider class provides a graphical user interface element that allows users to select
+ * a value by moving a thumb along a track. It supports customization of range, step size,
+ * and event handling for value changes.
+ */
+
+ namespace yap
 {
+    /**
+     * @class Slider
+     * @brief A UI component for selecting a value within a specified range.
+     * 
+     * The Slider class inherits from Box and provides functionality for a track and a thumb
+     * that can be moved to select a value. It supports event callbacks for value changes and
+     * end-of-interaction events.
+     */
     class Slider : public Box
     {
     private:

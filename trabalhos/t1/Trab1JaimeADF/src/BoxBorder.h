@@ -2,14 +2,28 @@
 
 #include "Color.h"
 
+/**
+ * @file BoxBorder.h
+ * @brief Provides a class to represent the border of a box element with
+ * customizable color and width.
+ */
+
 namespace yap
 {
+    /**
+     * @enum BoxBorderKind
+     * @brief Represents the type of a box border.
+     */
     enum class BoxBorderKind
     {
         None,
         Solid
     };
 
+    /**
+     * @class BoxBorder
+     * @brief Represents a box border with a specific kind, color, and width.
+     */
     class BoxBorder
     {
     private:

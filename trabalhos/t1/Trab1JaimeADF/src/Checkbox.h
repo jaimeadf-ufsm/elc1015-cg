@@ -2,8 +2,21 @@
 
 #include "Box.h"
 
+/**
+ * @file Checkbox.h
+ * @brief Defines the UI component to represent a toggleable checkbox.
+ */
+
 namespace yap
 {
+    /**
+     * @class Checkbox
+     * @brief A UI component representing a toggleable checkbox.
+     * 
+     * The `Checkbox` class extends the `Box` class and provides functionality for creating
+     * a checkbox with customizable styles, handling user interactions, and triggering events
+     * when the checkbox state changes.
+     */
     class Checkbox : public Box
     {
     private:

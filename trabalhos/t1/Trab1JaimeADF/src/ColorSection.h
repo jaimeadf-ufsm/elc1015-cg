@@ -3,8 +3,21 @@
 #include "ColorPalette.h"
 #include "ColorPicker.h"
 
+/**
+ * @file ColorSection.h
+ * @brief Defines the ColorSection class, which provides a UI component for
+ * displaying and editing the color palette.
+ */
+
 namespace yap
 {
+    /**
+     * @class ColorSection
+     * @brief A UI component for managing and displaying color-related elements.
+     * 
+     * The ColorSection class provides a header with RGBA value displays, a color preview, and a body containing
+     * a color picker. It synchronizes with a global color palette and updates its elements dynamically.
+     */
     class ColorSection : public Box
     {
     private:

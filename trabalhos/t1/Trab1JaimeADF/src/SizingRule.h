@@ -1,7 +1,16 @@
 #pragma once
 
+/**
+ * @file SizingRule.h
+ * @brief Defines the SizingRule class, which provides rules for sizing elements along different axes.
+ */
+
 namespace yap
 {
+    /**
+     * @enum AxisSizingMode
+     * @brief Represents the sizing mode for an axis.
+     */
     enum class AxisSizingMode
     {
         Fixed,
@@ -9,6 +18,11 @@ namespace yap
         Fill
     };
 
+    /**
+     * @class AxisSizingRule
+     * @brief  Represents a sizing rule for a single axis, including the
+     * sizing mode and an optional value.
+     */
     class AxisSizingRule
     {
     private:

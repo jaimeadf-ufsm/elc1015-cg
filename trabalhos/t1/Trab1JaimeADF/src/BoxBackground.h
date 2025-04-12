@@ -6,14 +6,27 @@
 #include "Color.h"
 #include "Bitmap.h"
 
+/**
+ * @file BoxBackground.h
+ * @brief Defines classes and utilities for configuring background properties such as sizing, positioning, transparency, and kind.
+ */
+
 namespace yap
 {
+    /**
+     * @enum BoxBackgroundSizingMode
+     * @brief Defines the sizing mode for a box background.
+     */
     enum class BoxBackgroundSizingMode
     {
         Fixed,
         Contain
     };
 
+    /**
+     * @class BoxBackgroundSizingRule
+     * @brief Represents rules for sizing a box background.
+     */
     class BoxBackgroundSizingRule
     {
     private:
@@ -53,12 +66,20 @@ namespace yap
         }
     };
 
+    /**
+     * @enum BoxBackgroundPositioningMode
+     * @brief Defines the positioning mode for a box background.
+     */
     enum class BoxBackgroundPositioningMode
     {
         Fixed,
         Center
     };
 
+    /**
+     * @class BoxBackgroundPositioningRule
+     * @brief Represents rules for positioning a box background.
+     */
     class BoxBackgroundPositioningRule
     {
     private:
@@ -98,12 +119,20 @@ namespace yap
         }
     };
 
+    /**
+     * @enum BoxBackgroundTransparencyMode
+     * @brief Defines the transparency mode for a box background.
+     */
     enum class BoxBackgroundTransparencyMode
     {
         Static,
         Checkerboard
     };
 
+    /**
+     * @class BoxBackgroundTransparencyReference
+     * @brief Represents transparency settings for a box background.
+     */
     class BoxBackgroundTransparencyReference
     {
     private:
@@ -170,6 +199,10 @@ namespace yap
         }
     };
 
+    /**
+     * @enum BoxBackgroundKind
+     * @brief Defines the kind of box background.
+     */
     enum class BoxBackgroundKind
     {
         None,
@@ -177,6 +210,10 @@ namespace yap
         Image
     };
 
+    /**
+     * @class BoxBackground
+     * @brief Represents a box background with various properties.
+     */
     class BoxBackground
     {
     private:

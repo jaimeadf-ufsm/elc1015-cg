@@ -12,10 +12,19 @@
 
 #include "RenderingContext.h"
 
+/**
+ * @file Element.h
+ * @brief Defines the Element class, which serves as a base class for UI components in the rendering system.
+ */
+
 namespace yap
 {
     class Screen;
 
+    /**
+     * @class Element
+     * @brief Represents a UI element that can handle user interactions, animations, and rendering.
+     */
     class Element
     {
     private:
