@@ -92,8 +92,6 @@ namespace yap
 
             OnKeyboardDown = [this](Element& element, KeyboardKey key)
             {
-                printf("Key: %d\n", key);
-
                 if (key > 31 && key < 127)
                 {
                     m_Value += static_cast<char>(key);
