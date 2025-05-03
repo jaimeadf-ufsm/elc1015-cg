@@ -22,10 +22,28 @@
 
 #include "gl_canvas2d.h"
 
-int screenWidth = 500, screenHeight = 500;
+
+#include "DrawingContext.h"
+#include "DrawingEngine.h"
+
+int screenWidth = 1280, screenHeight = 720;
+
+DrawingContext drawingContext;
+DrawingEngine drawingEngine;
 
 void render()
 {
+   drawingContext.ClearCommands();
+
+   drawingContext.Color(ColorRGB::Red);
+   drawingContext.BeginPolygon();
+   drawingContext.Vertex(Vector2(0, 0));
+   drawingContext.Vertex(Vector2(100, 0));
+   drawingContext.Vertex(Vector2(100, 100));
+   drawingContext.Vertex(Vector2(0, 100));
+   drawingContext.FillPolygon();
+
+   drawingEngine.ExecuteCommands(drawingContext.GetCommands());
 }
 
 //funcao chamada toda vez que uma tecla for pressionada.

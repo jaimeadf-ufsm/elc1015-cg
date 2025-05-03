@@ -1,59 +1,25 @@
-#ifndef __VECTOR_2_H__
-#define __VECTOR_2_H__
+#pragma once
 
-
-class Vector2
+struct Vector2
 {
-public:
-   float x, y;
+    float X;
+    float Y;
 
-   Vector2()
-   {
-      x = y = 0;
-   }
+    Vector2();
+    Vector2(float x, float y);
+    
+    Vector2 operator-() const;
 
-   Vector2(float _x, float _y)
-   {
-       x = _x;
-       y = _y;
-   }
+    Vector2 operator+(const Vector2& other) const;
+    Vector2 operator-(const Vector2& other) const;
+    Vector2 operator*(const Vector2& other) const;
+    Vector2 operator/(const Vector2& other) const;
 
-   void set(float _x, float _y)
-   {
-       x = _x;
-       y = _y;
-   }
+    Vector2 operator*(float scalar) const;
+    Vector2 operator/(float scalar) const;
 
-   void normalize()
-   {
-       float norm = (float)sqrt(x*x + y*y);
-
-       if(norm==0.0)
-       {
-          printf("\n\nNormalize::Divisao por zero");
-          x = 1;
-          y = 1;
-          return;
-       }
-       x /= norm;
-       y /= norm;
-   }
-
-   Vector2 operator - (const Vector2& v)
-   {
-        Vector2 aux( x - v.x, y - v.y);
-        return( aux );
-   }
-
-   Vector2 operator + (const Vector2& v)
-   {
-       Vector2 aux( x + v.x, y + v.y);
-       return( aux );
-   }
-
-   //Adicionem os demais overloads de operadores aqui.
-
-
+    Vector2& operator+=(const Vector2& other);
+    Vector2& operator-=(const Vector2& other);
+    Vector2& operator*=(float scalar);
+    Vector2& operator/=(float scalar);
 };
-
-#endif
