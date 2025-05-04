@@ -3,6 +3,7 @@
 enum class DrawingCommandKind
 {
     Color,
+    FillRectangle,
     BeginPolygon,
     Vertex,
     StrokePolygon,
@@ -14,6 +15,14 @@ struct ColorDrawingCommandArgs
     float R;
     float G;
     float B;
+};
+
+struct FillRectangleDrawingCommandArgs
+{
+    float X;
+    float Y;
+    float Width;
+    float Height;
 };
 
 struct BeginPolygonDrawingCommandArgs
@@ -45,6 +54,7 @@ private:
     union
     {
         ColorDrawingCommandArgs ColorArgs;
+        FillRectangleDrawingCommandArgs FillRectangleArgs;
         BeginPolygonDrawingCommandArgs BeginPolygonArgs;
         VertexDrawingCommandArgs VertexArgs;
         StrokePolygonDrawingCommandArgs StrokePolygonArgs;
@@ -53,6 +63,7 @@ private:
 
 public:
     DrawingCommand(ColorDrawingCommandArgs args);
+    DrawingCommand(FillRectangleDrawingCommandArgs args);
     DrawingCommand(BeginPolygonDrawingCommandArgs args);
     DrawingCommand(VertexDrawingCommandArgs args);
     DrawingCommand(StrokePolygonDrawingCommandArgs args);
@@ -61,6 +72,7 @@ public:
     DrawingCommandKind GetKind() const;
 
     ColorDrawingCommandArgs GetColorArgs() const;
+    FillRectangleDrawingCommandArgs GetFillRectangleArgs() const;
     BeginPolygonDrawingCommandArgs GetBeginPolygonArgs() const;
     VertexDrawingCommandArgs GetVertexArgs() const;
     StrokePolygonDrawingCommandArgs GetStrokePolygonArgs() const;

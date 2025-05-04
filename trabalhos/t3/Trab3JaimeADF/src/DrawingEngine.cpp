@@ -11,6 +11,9 @@ void DrawingEngine::ExecuteCommands(const std::vector<DrawingCommand>& commands)
             case DrawingCommandKind::Color:
                 ExecuteColorCommand(command.GetColorArgs());
                 break;
+            case DrawingCommandKind::FillRectangle:
+                ExecuteFillRectangleCommand(command.GetFillRectangleArgs());
+                break;
             case DrawingCommandKind::BeginPolygon:
                 ExecuteBeginPolygonCommand(command.GetBeginPolygonArgs());
                 break;
@@ -30,6 +33,11 @@ void DrawingEngine::ExecuteCommands(const std::vector<DrawingCommand>& commands)
 void DrawingEngine::ExecuteColorCommand(const ColorDrawingCommandArgs& args)
 {
     CV::color(args.R, args.G, args.B);
+}
+
+void DrawingEngine::ExecuteFillRectangleCommand(const FillRectangleDrawingCommandArgs& args)
+{
+    CV::rectFill(args.X, args.Y, args.X + args.Width, args.Y + args.Height);
 }
 
 void DrawingEngine::ExecuteBeginPolygonCommand(const BeginPolygonDrawingCommandArgs& args)

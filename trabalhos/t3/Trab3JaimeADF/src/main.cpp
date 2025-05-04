@@ -22,26 +22,49 @@
 
 #include "gl_canvas2d.h"
 
-
 #include "DrawingContext.h"
 #include "DrawingEngine.h"
+#include "Tesselator.h"
 
 int screenWidth = 1280, screenHeight = 720;
+float mx, my; //coordenadas do mouse
 
 DrawingContext drawingContext;
 DrawingEngine drawingEngine;
+
+PolyLine polyline;
+std::vector<Triangle> triangles;
 
 void render()
 {
    drawingContext.ClearCommands();
 
-   drawingContext.Color(ColorRGB::Red);
-   drawingContext.BeginPolygon();
-   drawingContext.Vertex(Vector2(0, 0));
-   drawingContext.Vertex(Vector2(100, 0));
-   drawingContext.Vertex(Vector2(100, 100));
-   drawingContext.Vertex(Vector2(0, 100));
-   drawingContext.FillPolygon();
+   polyline.Close();
+
+   Tesselator::Stroke(polyline, triangles, 10.0f, 0.0f);
+
+   for (const auto& triangle : triangles)
+   {
+      drawingContext.Color(ColorRGB::Red);
+      drawingContext.BeginPolygon();
+      drawingContext.Vertex(triangle.A);
+      drawingContext.Vertex(triangle.B);
+      drawingContext.Vertex(triangle.C);
+      drawingContext.FillPolygon();
+
+      // drawingContext.Color(ColorRGB::Blue);
+      // drawingContext.BeginPolygon();
+      // drawingContext.Vertex(triangle.A);
+      // drawingContext.Vertex(triangle.B);
+      // drawingContext.Vertex(triangle.C);
+      // drawingContext.StrokePolygon();
+   }
+
+   for (const auto& vertex : polyline.GetPoints())
+   {
+      drawingContext.Color(ColorRGB::Black);
+      drawingContext.FillRectangle(vertex - Vector2(2, 2), Vector2(4, 4));
+   }
 
    drawingEngine.ExecuteCommands(drawingContext.GetCommands());
 }
@@ -62,6 +85,14 @@ void keyboardUp(int key)
 void mouse(int button, int state, int wheel, int direction, int x, int y)
 {
    printf("\nmouse %d %d %d %d %d %d", button, state, wheel, direction,  x, y);
+
+   if (button == 0 && state == 0) //botao esquerdo pressionado
+   {
+      polyline.AddPoint(Vector2(x, y));
+   }
+
+   mx = x;
+   my = y;
 }
 
 int main(void)

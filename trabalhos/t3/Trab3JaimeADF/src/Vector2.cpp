@@ -1,7 +1,52 @@
+#include <cmath>
+
 #include "Vector2.h"
 
 Vector2::Vector2() : X(0), Y(0) {}
 Vector2::Vector2(float x, float y) : X(x), Y(y) {}
+
+float Vector2::ProjectOnto(const Vector2& other) const
+{
+    float dotProduct = Dot(other);
+    float otherMagnitudeSquared = other.MagnitudeSquared();
+    if (otherMagnitudeSquared == 0.0f)
+    {
+        return 0.0f; // Avoid division by zero
+    }
+    return dotProduct / otherMagnitudeSquared;
+}
+
+float Vector2::Dot(const Vector2& other) const
+{
+    return X * other.X + Y * other.Y;
+}
+
+float Vector2::Cross(const Vector2& other) const
+{
+    return X * other.Y - Y * other.X;
+}
+
+float Vector2::Magnitude() const
+{
+    return std::sqrt(X * X + Y * Y);
+}
+
+float Vector2::MagnitudeSquared() const
+{
+    return X * X + Y * Y;
+}
+
+Vector2 Vector2::Normalize() const
+{
+    float magnitude = Magnitude();
+
+    if (magnitude == 0.0f)
+    {
+        return Vector2(0, 0); // Avoid division by zero
+    }
+
+    return Vector2(X / magnitude, Y / magnitude);
+}
 
 Vector2 Vector2::operator-() const
 {
@@ -66,5 +111,17 @@ Vector2& Vector2::operator/=(float scalar)
     return *this;
 }
 
+bool Vector2::operator==(const Vector2& other) const
+{
+    return (X == other.X && Y == other.Y);
+}
 
+Vector2 operator*(float scalar, const Vector2& vector)
+{
+    return Vector2(vector.X * scalar, vector.Y * scalar);
+}
 
+Vector2 operator/(float scalar, const Vector2& vector)
+{
+    return Vector2(scalar / vector.X, scalar / vector.Y);
+}

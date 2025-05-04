@@ -15,6 +15,7 @@ public:
 
 private:
     void ExecuteColorCommand(const ColorDrawingCommandArgs& args);
+    void ExecuteFillRectangleCommand(const FillRectangleDrawingCommandArgs& args);
     void ExecuteBeginPolygonCommand(const BeginPolygonDrawingCommandArgs& args);
     void ExecuteVertexCommand(const VertexDrawingCommandArgs& args);
     void ExecuteStrokePolygonCommand(const StrokePolygonDrawingCommandArgs& args);

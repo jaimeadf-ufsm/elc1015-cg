@@ -6,6 +6,12 @@ DrawingCommand::DrawingCommand(ColorDrawingCommandArgs args)
     ColorArgs = args;
 }
 
+DrawingCommand::DrawingCommand(FillRectangleDrawingCommandArgs args)
+{
+    Kind = DrawingCommandKind::FillRectangle;
+    FillRectangleArgs = args;
+}
+
 DrawingCommand::DrawingCommand(BeginPolygonDrawingCommandArgs args)
 {
     Kind = DrawingCommandKind::BeginPolygon;
@@ -38,6 +44,11 @@ DrawingCommandKind DrawingCommand::GetKind() const
 ColorDrawingCommandArgs DrawingCommand::GetColorArgs() const
 {
     return ColorArgs;
+}
+
+FillRectangleDrawingCommandArgs DrawingCommand::GetFillRectangleArgs() const
+{
+    return FillRectangleArgs;
 }
 
 BeginPolygonDrawingCommandArgs DrawingCommand::GetBeginPolygonArgs() const
