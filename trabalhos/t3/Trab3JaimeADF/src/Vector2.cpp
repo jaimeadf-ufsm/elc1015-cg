@@ -116,6 +116,11 @@ bool Vector2::operator==(const Vector2& other) const
     return (X == other.X && Y == other.Y);
 }
 
+bool Vector2::operator!=(const Vector2& other) const
+{
+    return !(*this == other);
+}
+
 Vector2 operator*(float scalar, const Vector2& vector)
 {
     return Vector2(vector.X * scalar, vector.Y * scalar);
@@ -124,4 +129,10 @@ Vector2 operator*(float scalar, const Vector2& vector)
 Vector2 operator/(float scalar, const Vector2& vector)
 {
     return Vector2(scalar / vector.X, scalar / vector.Y);
+}
+
+std::ostream& operator<<(std::ostream& os, const Vector2& vector)
+{
+    os << '(' << vector.X << ", " << vector.Y << ')';
+    return os;
 }

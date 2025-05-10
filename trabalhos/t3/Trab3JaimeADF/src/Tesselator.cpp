@@ -53,21 +53,21 @@ Vector2 SolveIntersection(const Vector2& a, const Vector2& v, const Vector2& b, 
 }
 
 
-void Tesselator::Stroke(const PolyLine& polyLine, std::vector<Triangle>& triangles, float width, float miterLimit)
+void Tesselator::Stroke(const Path& path, std::vector<Triangle>& triangles, float width, float miterLimit)
 {
     triangles.clear();
 
     float halfWidth = width / 2.0f;
 
-    const std::vector<Vector2>& points = polyLine.GetPoints();
+    const std::vector<Vector2>& points = path.GetPoints();
 
     if (points.size() < 2)
     {
         return;
     }
 
-    size_t s = polyLine.IsClosed() ? 0 : 1;
-    size_t n = polyLine.IsClosed() ? points.size() : points.size() - 1;
+    size_t s = path.IsClosed() ? 0 : 1;
+    size_t n = path.IsClosed() ? points.size() : points.size() - 1;
 
     for (size_t i = 0; i < n; i++)
     {
@@ -128,14 +128,11 @@ void Tesselator::Stroke(const PolyLine& polyLine, std::vector<Triangle>& triangl
     }
 }
 
-void Tesselator::Fill(const PolyLine& polyLine, std::vector<Triangle>& triangles)
+void Tesselator::Fill(const Path& path, std::vector<Triangle>& triangles)
 {
     triangles.clear();
-
-    PolyLine closedPolyline = polyLine;
-    closedPolyline.Close();
-
-    std::vector<Vector2> vertices = closedPolyline.GetPoints();
+    
+    std::vector<Vector2> vertices = path.GetPoints();
 
     while (vertices.size() > 3)
     {

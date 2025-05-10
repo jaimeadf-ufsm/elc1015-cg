@@ -4,6 +4,7 @@
 
 #include "Color.h"
 #include "Vector2.h"
+#include "Path.h"
 
 #include "DrawingCommand.h"
 

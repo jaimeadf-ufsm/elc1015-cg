@@ -1,22 +1,22 @@
 #pragma once
 
 #include <vector>
-#include <cstdint>
-
 #include "Vector2.h"
 
-class PolyLine
+class Path
 {
 public:
-    PolyLine();
+    Path();
 
-    void AddPoint(const Vector2& point);
+    void Initialize(Vector2 point);
+
+    void LineTo(Vector2 point);
+    void CubicBezierTo(Vector2 point1, Vector2 point2, Vector2 point3);
 
     void Close();
-    void Clear();
 
-    bool IsClosed() const;
     const std::vector<Vector2>& GetPoints() const;
+    bool IsClosed() const;
 
 private:
     bool m_Closed = false;

@@ -16,83 +16,107 @@
 #include <GL/glut.h>
 #include <GL/freeglut_ext.h> //callback da wheel do mouse.
 
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <iostream>
 
 #include "gl_canvas2d.h"
+
+#include "Game.h"
+
+#include "Benchmark.h"
 
 #include "DrawingContext.h"
 #include "DrawingEngine.h"
 #include "Tesselator.h"
 
 int screenWidth = 1280, screenHeight = 720;
-float mx, my; //coordenadas do mouse
+
+Game game;
 
 DrawingContext drawingContext;
 DrawingEngine drawingEngine;
 
-PolyLine polyline;
-std::vector<Triangle> triangles;
+Path path;
+
+Benchmark frameBenchmark;
+
+Benchmark updateBenchmark;
+Benchmark renderBenchmark;
+Benchmark executeBenchmark;
 
 void render()
 {
+   frameBenchmark.Stop();
+
    drawingContext.ClearCommands();
 
-   polyline.Close();
+   updateBenchmark.Start();
+   game.Update(0.016f);
+   updateBenchmark.Stop();
 
-   Tesselator::Stroke(polyline, triangles, 10.0f, 0.0f);
+   renderBenchmark.Start();
+   game.Render(drawingContext);
+   renderBenchmark.Stop();
 
-   for (const auto& triangle : triangles)
-   {
-      drawingContext.Color(ColorRGB::Red);
-      drawingContext.BeginPolygon();
-      drawingContext.Vertex(triangle.A);
-      drawingContext.Vertex(triangle.B);
-      drawingContext.Vertex(triangle.C);
-      drawingContext.FillPolygon();
-
-      // drawingContext.Color(ColorRGB::Blue);
-      // drawingContext.BeginPolygon();
-      // drawingContext.Vertex(triangle.A);
-      // drawingContext.Vertex(triangle.B);
-      // drawingContext.Vertex(triangle.C);
-      // drawingContext.StrokePolygon();
-   }
-
-   for (const auto& vertex : polyline.GetPoints())
-   {
-      drawingContext.Color(ColorRGB::Black);
-      drawingContext.FillRectangle(vertex - Vector2(2, 2), Vector2(4, 4));
-   }
-
+   executeBenchmark.Start();
    drawingEngine.ExecuteCommands(drawingContext.GetCommands());
+   executeBenchmark.Stop();
+
+   if (frameBenchmark.GetSamples() == 100)
+   {
+      // std::cout << 1.0 / frameBenchmark.GetAverageTime() << " FPS ";
+      // std::cout << "(";
+      // std::cout << "Update: " << updateBenchmark.GetAverageTime() * 1000.0f << " ms, ";
+      // std::cout << "Render: " << renderBenchmark.GetAverageTime() * 1000.0f << " ms, ";
+      // std::cout << "Execute: " << executeBenchmark.GetAverageTime() * 1000.0f << " ms, ";
+      // std::cout << ")";
+      // std::cout << std::endl;
+
+      frameBenchmark.Reset();
+      updateBenchmark.Reset();
+      renderBenchmark.Reset();
+      executeBenchmark.Reset();
+   }
+
+   frameBenchmark.Start();
 }
 
 //funcao chamada toda vez que uma tecla for pressionada.
 void keyboard(int key)
 {
-   printf("\nTecla: %d" , key);
+   // printf("\nTecla: %d" , key);
+   game.HandleEvent(Event::CreateKeyPressEvent(key));
 }
 
 //funcao chamada toda vez que uma tecla for liberada
 void keyboardUp(int key)
 {
-   printf("\nLiberou: %d" , key);
+   // printf("\nLiberou: %d" , key);
+   game.HandleEvent(Event::CreateKeyReleaseEvent(key));
 }
 
 //funcao para tratamento de mouse: cliques, movimentos e arrastos
 void mouse(int button, int state, int wheel, int direction, int x, int y)
 {
-   printf("\nmouse %d %d %d %d %d %d", button, state, wheel, direction,  x, y);
+   // printf("\nmouse %d %d %d %d %d %d", button, state, wheel, direction,  x, y);
 
-   if (button == 0 && state == 0) //botao esquerdo pressionado
+   Vector2 position(x, y);
+
+   if (button == -2 && state == -2 && wheel == -2 && direction == -2)
    {
-      polyline.AddPoint(Vector2(x, y));
+      game.HandleEvent(Event::CreateMouseMoveEvent(position));
    }
 
-   mx = x;
-   my = y;
+   if (button != -2 && state != -2)
+   {
+      if (state == 0)
+      {
+         game.HandleEvent(Event::CreateMouseButtonPressEvent(position, button));
+      }
+      else
+      {
+         game.HandleEvent(Event::CreateMouseButtonReleaseEvent(position, button));
+      }
+   }
 }
 
 int main(void)
