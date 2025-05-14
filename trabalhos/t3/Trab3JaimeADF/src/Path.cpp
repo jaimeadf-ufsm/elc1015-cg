@@ -1,14 +1,14 @@
+#include <cmath>
+
 #include "Path.h"
 
 Path::Path() : m_Closed(false), m_Points({ Vector2() })
 {
 }
 
-void Path::Initialize(Vector2 startPoint)
+void Path::MoveTo(Vector2 point)
 {
-    m_Closed = false;
-    m_Points.clear();
-    m_Points.push_back(startPoint);
+    m_Points.push_back(point);
 }
 
 void Path::LineTo(Vector2 point)
@@ -49,9 +49,29 @@ void Path::CubicBezierTo(Vector2 point1, Vector2 point2, Vector2 point3)
     }
 }
 
+void Path::Arc(Vector2 center, float radius, float initialAngle, float finalAngle)
+{
+    int steps = 100;
+    float increment = (finalAngle - initialAngle) / steps;
+
+    for (int step = 0; step <= steps; step++)
+    {
+        float angle = initialAngle + increment * step;
+        Vector2 point = center + radius * Vector2(std::cos(angle), std::sin(angle));
+
+        m_Points.push_back(point);
+    }
+}
+
 void Path::Close()
 {
     m_Closed = true;
+}
+
+void Path::Clear()
+{
+    m_Closed = false;
+    m_Points.clear();
 }
 
 const std::vector<Vector2>& Path::GetPoints() const

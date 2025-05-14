@@ -63,13 +63,13 @@ void render()
 
    if (frameBenchmark.GetSamples() == 100)
    {
-      // std::cout << 1.0 / frameBenchmark.GetAverageTime() << " FPS ";
-      // std::cout << "(";
-      // std::cout << "Update: " << updateBenchmark.GetAverageTime() * 1000.0f << " ms, ";
-      // std::cout << "Render: " << renderBenchmark.GetAverageTime() * 1000.0f << " ms, ";
-      // std::cout << "Execute: " << executeBenchmark.GetAverageTime() * 1000.0f << " ms, ";
-      // std::cout << ")";
-      // std::cout << std::endl;
+      std::cout << 1.0 / frameBenchmark.GetAverageTime() << " FPS ";
+      std::cout << "(";
+      std::cout << "Update: " << updateBenchmark.GetAverageTime() * 1000.0f << " ms, ";
+      std::cout << "Render: " << renderBenchmark.GetAverageTime() * 1000.0f << " ms, ";
+      std::cout << "Execute: " << executeBenchmark.GetAverageTime() * 1000.0f << " ms, ";
+      std::cout << ")";
+      std::cout << std::endl;
 
       frameBenchmark.Reset();
       updateBenchmark.Reset();

@@ -5,6 +5,7 @@
 #include "Color.h"
 #include "Vector2.h"
 #include "Path.h"
+#include "Mesh.h"
 
 #include "DrawingCommand.h"
 
@@ -21,6 +22,8 @@ public:
 
     void StrokePolygon();
     void FillPolygon();
+
+    void FillMesh(const Mesh& mesh);
 
     const std::vector<DrawingCommand>& GetCommands() const;
     void ClearCommands();

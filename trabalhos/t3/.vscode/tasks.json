@@ -9,7 +9,7 @@
                 "-fexceptions",
                 "-std=c++11",
                 "-Wall",
-                "-O2",
+                "-O3",
                 "-g",
                 "-I${workspaceFolder}\\include",
                 "${workspaceFolder}\\Trab3JaimeADF/\\src\\*.cpp",

@@ -18,7 +18,7 @@ struct Vector2
     float Magnitude() const;
     float MagnitudeSquared() const;
 
-    Vector2 Normalize() const;
+    Vector2 Normalized() const;
     
     Vector2 operator-() const;
 

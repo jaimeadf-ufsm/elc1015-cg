@@ -36,7 +36,7 @@ float Vector2::MagnitudeSquared() const
     return X * X + Y * Y;
 }
 
-Vector2 Vector2::Normalize() const
+Vector2 Vector2::Normalized() const
 {
     float magnitude = Magnitude();
 

@@ -2,60 +2,161 @@
 
 #include <algorithm>
 
-bool IsConvex(const Triangle& triangle)
+struct Node
 {
-    Vector2 ab = triangle.B - triangle.A;
-    Vector2 ac = triangle.C - triangle.A;
+    size_t VertexIndex;
+    Vector2 VertexPoint;
+    size_t PreviousIndex;
+    size_t NextIndex;
+};
 
-    return ab.Cross(ac) > 0.0f;
+float ComputeTriangleArea(Vector2 a, Vector2 b, Vector2 c)
+{
+    return (b - a).Cross(c - b) / 2.0f;
 }
 
-bool IsEar(const std::vector<Vector2>& vertices, size_t index, Triangle &triangle)
+bool IsPointInTriangle(Vector2 a, Vector2 b, Vector2 c, Vector2 point)
 {
-    size_t ia = (index + vertices.size() - 1) % vertices.size();
-    size_t ib = index;
-    size_t ic = (index + 1) % vertices.size();
+    Vector2 ab = b - a;
+    Vector2 ac = c - a;
 
-    Vector2 a = vertices[ia];
-    Vector2 b = vertices[ib];
-    Vector2 c = vertices[ic];
+    Vector2 ap = point - a;
 
-    triangle = Triangle(a, b, c);
+    float d = ab.X * ac.Y - ab.Y * ac.X;
 
-    if (!IsConvex(triangle))
+    float u = ap.X * ac.Y - ap.Y * ac.X;
+    float v = ab.X * ap.Y - ab.Y * ap.X;
+
+    return (u >= 0.0f) && (v >= 0.0f) && (u + v <= d);
+}
+
+size_t CreateNodes(std::vector<Node>& nodes, const std::vector<Vector2>& points)
+{
+    nodes.clear();
+    nodes.reserve(points.size());
+
+    for (size_t i = 0; i < points.size(); i++)
+    {
+        Node node = {
+            .VertexIndex = 0,
+            .VertexPoint = points[i],
+            .PreviousIndex = i - 1,
+            .NextIndex = i + 1
+        };
+
+        nodes.emplace_back(node);
+    }
+
+    nodes.front().PreviousIndex = nodes.size() - 1;
+    nodes.back().NextIndex = 0;
+
+    return 0;
+}
+
+size_t PruneColinearNodes(std::vector<Node>& nodes, size_t startNodeIndex)
+{
+    bool isInitialNode = true;
+    size_t currentNodeIndex = startNodeIndex;
+
+    while (isInitialNode || currentNodeIndex != startNodeIndex)
+    {
+        isInitialNode = false;
+
+        Node& currentNode = nodes[currentNodeIndex];
+        Node& previousNode = nodes[currentNode.PreviousIndex];
+        Node& nextNode = nodes[currentNode.NextIndex];
+
+        Vector2 a = previousNode.VertexPoint;
+        Vector2 b = currentNode.VertexPoint;
+        Vector2 c = nextNode.VertexPoint;
+
+        if (currentNode.PreviousIndex == currentNode.NextIndex)
+        {
+            break;
+        }
+
+        if (ComputeTriangleArea(a, b, c) == 0)
+        {
+            previousNode.NextIndex = currentNode.NextIndex;
+            nextNode.PreviousIndex = currentNode.PreviousIndex;
+
+            if (currentNodeIndex == startNodeIndex)
+            {
+                isInitialNode = true;
+                startNodeIndex = currentNode.NextIndex;
+            }
+        }
+
+        currentNodeIndex = currentNode.NextIndex;
+    }
+
+    return startNodeIndex;
+}
+
+void IndexNodeVertices(std::vector<Node>& nodes, Mesh &mesh, size_t startNodeIndex)
+{
+    size_t currentNodeIndex = startNodeIndex;
+
+    do
+    {
+        Node& node = nodes[currentNodeIndex];
+
+        node.VertexIndex = mesh.Vertices.size();
+        mesh.Vertices.emplace_back(node.VertexPoint);
+
+        currentNodeIndex = node.NextIndex;
+    } while (currentNodeIndex != startNodeIndex);
+}
+
+bool IsEar(std::vector<Node>& nodes, size_t earNodeIndex)
+{
+    Node& earCurrentNode = nodes[earNodeIndex];
+    Node& earPreviousNode = nodes[earCurrentNode.PreviousIndex];
+    Node& earNextNode = nodes[earCurrentNode.NextIndex];
+
+    Vector2 a = earPreviousNode.VertexPoint;
+    Vector2 b = earCurrentNode.VertexPoint;
+    Vector2 c = earNextNode.VertexPoint;
+
+    if (ComputeTriangleArea(a, b, c) < 0)
     {
         return false;
     }
 
-    for (size_t j = 0; j < vertices.size(); j++)
+    size_t currentNodeIndex = earNextNode.NextIndex;
+
+    while (currentNodeIndex != earCurrentNode.PreviousIndex)
     {
-        if (j != ia && j != ib && j != ic && triangle.Contains(vertices[j]))
+        Node& node = nodes[currentNodeIndex];
+
+        if (IsPointInTriangle(a, b, c, node.VertexPoint))
         {
             return false;
         }
+
+        currentNodeIndex = node.NextIndex;
     }
 
     return true;
 }
 
-Vector2 SolveIntersection(const Vector2& a, const Vector2& v, const Vector2& b, const Vector2& u)
+void CutEar(std::vector<Node>& nodes, Mesh &mesh, size_t earNodeIndex)
 {
-    float denom = v.X * u.Y - v.Y * u.X;
+    Node& currentNode = nodes[earNodeIndex];
+    Node& previousNode = nodes[currentNode.PreviousIndex];
+    Node& nextNode = nodes[currentNode.NextIndex];
 
-    if (denom == 0.0f)
-    {
-        return Vector2(0, 0);
-    }
+    previousNode.NextIndex = currentNode.NextIndex;
+    nextNode.PreviousIndex = currentNode.PreviousIndex;
 
-    float t = ((b.X - a.X) * u.Y - (b.Y - a.Y) * u.X) / denom;
-
-    return a + v * t;
+    mesh.Triangles.emplace_back(previousNode.VertexIndex);
+    mesh.Triangles.emplace_back(currentNode.VertexIndex);
+    mesh.Triangles.emplace_back(nextNode.VertexIndex);
 }
 
-
-void Tesselator::Stroke(const Path& path, std::vector<Triangle>& triangles, float width, float miterLimit)
+void Tesselator::Stroke(Mesh& mesh, const Path& path, float width)
 {
-    triangles.clear();
+    mesh.Clear();
 
     float halfWidth = width / 2.0f;
 
@@ -66,92 +167,137 @@ void Tesselator::Stroke(const Path& path, std::vector<Triangle>& triangles, floa
         return;
     }
 
-    size_t s = path.IsClosed() ? 0 : 1;
-    size_t n = path.IsClosed() ? points.size() : points.size() - 1;
+    size_t s = path.IsClosed() ? points.size() + 1 : points.size();
+    size_t j = path.IsClosed() ? points.size() + 1 : points.size() - 1;
 
-    for (size_t i = 0; i < n; i++)
+    for (size_t i = 1; i < s; i++)
     {
-        Vector2 a = points[i];
-        Vector2 b = points[(i + 1) % points.size()];
+        Vector2 startPoint = points[i - 1];
+        Vector2 endPoint = points[i % points.size()];
 
-        Vector2 direction = (b - a).Normalize();
+        Vector2 direction = (endPoint - startPoint).Normalized();
         Vector2 extrude = Vector2(-direction.Y, direction.X) * halfWidth;
 
-        Vector2 p1 = a + extrude;
-        Vector2 p2 = a - extrude;
-        Vector2 p3 = b + extrude;
-        Vector2 p4 = b - extrude;
+        size_t leftStartIndex = mesh.Vertices.size();
+        mesh.Vertices.push_back(startPoint - extrude);
 
-        triangles.emplace_back(p1, p3, p4);
-        triangles.emplace_back(p1, p4, p2);
+        size_t rightStartIndex = mesh.Vertices.size();
+        mesh.Vertices.push_back(startPoint + extrude);
+
+        size_t leftEndIndex = mesh.Vertices.size();
+        mesh.Vertices.push_back(endPoint - extrude);
+
+        size_t rightEndIndex = mesh.Vertices.size();
+        mesh.Vertices.push_back(endPoint + extrude);
+
+        mesh.Triangles.push_back(leftStartIndex);
+        mesh.Triangles.push_back(leftEndIndex);
+        mesh.Triangles.push_back(rightEndIndex);
+
+        mesh.Triangles.push_back(leftStartIndex);
+        mesh.Triangles.push_back(rightEndIndex);
+        mesh.Triangles.push_back(rightStartIndex);
     }
 
-    for (size_t i = s; i < n; i++)
+    for (size_t i = 1; i < j; i++)
     {
-        Vector2 a = points[(i + points.size() - 1) % points.size()];
-        Vector2 b = points[i];
-        Vector2 c = points[(i + 1) % points.size()];
+        Vector2 previousPoint = points[i - 1];
+        Vector2 currentPoint = points[i % points.size()];
+        Vector2 nextPoint = points[(i + 1) % points.size()];
 
-        Vector2 previousDirection = (b - a).Normalize();
-        Vector2 nextDirection = (c - b).Normalize();
+        Vector2 incomingDirection = (currentPoint - previousPoint).Normalized();
+        Vector2 outgoingDirection = (nextPoint - currentPoint).Normalized();
 
-        Vector2 previousExtrude = Vector2(-previousDirection.Y, previousDirection.X) * halfWidth;
-        Vector2 nextExtrude = Vector2(-nextDirection.Y, nextDirection.X) * halfWidth;
+        Vector2 incomingExtrude = Vector2(-incomingDirection.Y, incomingDirection.X) * halfWidth;
+        Vector2 outgoingExtrude = Vector2(-outgoingDirection.Y, outgoingDirection.X) * halfWidth;
 
-        float result = previousDirection.Cross(nextDirection);
-        
-        if (result == 0.0f)
+        float orientation = incomingDirection.Cross(outgoingDirection);
+
+        if (orientation > 0)
         {
-            continue;
+            size_t intersectionIndex = mesh.Vertices.size();
+            mesh.Vertices.push_back(currentPoint);
+
+            size_t previousLeftEndIndex = mesh.Vertices.size();
+            mesh.Vertices.push_back(currentPoint - incomingExtrude);
+
+            size_t nextLeftStartIndex = mesh.Vertices.size();
+            mesh.Vertices.push_back(currentPoint - outgoingExtrude);
+
+            mesh.Triangles.push_back(intersectionIndex);
+            mesh.Triangles.push_back(previousLeftEndIndex);
+            mesh.Triangles.push_back(nextLeftStartIndex);
         }
-        else if (result > 0.0f)
+        else if (orientation < 0)
         {
-            previousExtrude = -previousExtrude;
-            nextExtrude = -nextExtrude;
-        }
+            size_t intersectionIndex = mesh.Vertices.size();
+            mesh.Vertices.push_back(currentPoint);
 
-        Vector2 previousPoint = b + previousExtrude;
-        Vector2 nextPoint = b + nextExtrude;
+            size_t previousRightEndIndex = mesh.Vertices.size();
+            mesh.Vertices.push_back(currentPoint + incomingExtrude);
 
-        Vector2 miterPoint = SolveIntersection(previousPoint, previousDirection, nextPoint, nextDirection);
-        float miterLength = (miterPoint - b).Magnitude();
+            size_t nextRightStartIndex = mesh.Vertices.size();
+            mesh.Vertices.push_back(currentPoint + outgoingExtrude);
 
-        if (miterLength > miterLimit * halfWidth)
-        {
-            triangles.emplace_back(previousPoint, b, nextPoint);
-        }
-        else
-        {
-            triangles.emplace_back(previousPoint, b, miterPoint);
-            triangles.emplace_back(b, miterPoint, nextPoint);
+            mesh.Triangles.push_back(intersectionIndex);
+            mesh.Triangles.push_back(nextRightStartIndex);
+            mesh.Triangles.push_back(previousRightEndIndex);
         }
     }
 }
 
-void Tesselator::Fill(const Path& path, std::vector<Triangle>& triangles)
+void Tesselator::Fill(Mesh& mesh, const Path& path)
 {
-    triangles.clear();
-    
-    std::vector<Vector2> vertices = path.GetPoints();
+    static std::vector<Node> nodes;
 
-    while (vertices.size() > 3)
+    nodes.clear();
+    mesh.Clear();
+
+    const std::vector<Vector2>& points = path.GetPoints();
+
+    if (points.size() < 3)
     {
-        for (size_t i = 0; i < vertices.size(); i++)
-        {
-            Triangle triangle;
-
-            if (IsEar(vertices, i, triangle))
-            {
-                triangles.push_back(triangle);
-                vertices.erase(vertices.begin() + i);
-
-                break;
-            }
-        }
+        return;
     }
 
-    if (vertices.size() == 3)
+    size_t startNodeIndex, currentNodeIndex, stopNodeIndex;
+
+    startNodeIndex = CreateNodes(nodes, points); 
+    startNodeIndex = PruneColinearNodes(nodes, startNodeIndex);
+
+    IndexNodeVertices(nodes, mesh, startNodeIndex);
+
+    currentNodeIndex = startNodeIndex;
+    stopNodeIndex = startNodeIndex;
+
+    while (true)
     {
-        triangles.push_back(Triangle(vertices[0], vertices[1], vertices[2]));
+        Node& currentNode = nodes[currentNodeIndex];
+        Node& nextNode = nodes[currentNode.NextIndex];
+
+        if (currentNode.PreviousIndex == currentNode.NextIndex)
+        {
+            break;
+        }
+
+        if (IsEar(nodes, currentNodeIndex))
+        {
+            CutEar(nodes, mesh, currentNodeIndex);
+
+            currentNodeIndex = nextNode.NextIndex;
+            stopNodeIndex = nextNode.NextIndex;
+
+            continue;
+        }
+
+        currentNodeIndex = currentNode.NextIndex;
+
+        if (currentNodeIndex == stopNodeIndex)
+        {
+            CutEar(nodes, mesh, currentNodeIndex);
+
+            currentNodeIndex = nextNode.NextIndex;
+            stopNodeIndex = nextNode.NextIndex;
+        }
     }
 }
