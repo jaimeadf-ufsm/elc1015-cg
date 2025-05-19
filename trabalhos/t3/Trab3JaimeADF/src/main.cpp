@@ -17,16 +17,24 @@
 #include <GL/freeglut_ext.h> //callback da wheel do mouse.
 
 #include <iostream>
+#include <chrono>
 
 #include "gl_canvas2d.h"
 
 #include "Game.h"
+#include "TrackBoundary.h"
+#include "Player.h"
+#include "Box.h"
+#include "Barrel.h"
+#include "Turret.h"
+#include "PowerUp.h"
 
 #include "Benchmark.h"
 
 #include "DrawingContext.h"
 #include "DrawingEngine.h"
-#include "Tesselator.h"
+
+using frame_clock = std::chrono::steady_clock;
 
 int screenWidth = 1280, screenHeight = 720;
 
@@ -35,26 +43,33 @@ Game game;
 DrawingContext drawingContext;
 DrawingEngine drawingEngine;
 
-Path path;
-
 Benchmark frameBenchmark;
 
 Benchmark updateBenchmark;
 Benchmark renderBenchmark;
 Benchmark executeBenchmark;
 
+frame_clock::time_point lastFrameTime;
+
 void render()
 {
+   frame_clock::time_point currentFrameTime = frame_clock::now();
+
+   float deltaTime = std::chrono::duration<float>(currentFrameTime - lastFrameTime).count();
+
+   deltaTime = std::min(deltaTime, 0.1f);
+
    frameBenchmark.Stop();
+   frameBenchmark.Start();
 
    drawingContext.ClearCommands();
 
    updateBenchmark.Start();
-   game.Update(0.016f);
+   game.Update(deltaTime);
    updateBenchmark.Stop();
 
    renderBenchmark.Start();
-   game.Render(drawingContext);
+   game.Draw(drawingContext);
    renderBenchmark.Stop();
 
    executeBenchmark.Start();
@@ -66,7 +81,7 @@ void render()
       std::cout << 1.0 / frameBenchmark.GetAverageTime() << " FPS ";
       std::cout << "(";
       std::cout << "Update: " << updateBenchmark.GetAverageTime() * 1000.0f << " ms, ";
-      std::cout << "Render: " << renderBenchmark.GetAverageTime() * 1000.0f << " ms, ";
+      std::cout << "Draw: " << renderBenchmark.GetAverageTime() * 1000.0f << " ms, ";
       std::cout << "Execute: " << executeBenchmark.GetAverageTime() * 1000.0f << " ms, ";
       std::cout << ")";
       std::cout << std::endl;
@@ -77,7 +92,7 @@ void render()
       executeBenchmark.Reset();
    }
 
-   frameBenchmark.Start();
+   lastFrameTime = currentFrameTime;
 }
 
 //funcao chamada toda vez que uma tecla for pressionada.
@@ -121,6 +136,14 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
 
 int main(void)
 {
+   // game.CreateObject<TrackBoundary>();
+   std::shared_ptr<Player> player = game.CreateObject<Player>();
+   std::shared_ptr<Turret> enemy = game.CreateObject<Turret>();
+   std::shared_ptr<PowerUp> powerUp = game.CreateObject<PowerUp>();
+   powerUp->Transform->SetPosition(Vector2(800, 500));
+
    CV::init(&screenWidth, &screenHeight, "Titulo da Janela: Canvas 2D - Pressione 1, 2, 3");
    CV::run();
+
+   lastFrameTime = frame_clock::now();
 }

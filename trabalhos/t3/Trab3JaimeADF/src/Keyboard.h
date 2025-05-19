@@ -3,6 +3,11 @@
 #include <array>
 #include <cstdint>
 
+#define KEY_W 'w'
+#define KEY_A 'a'
+#define KEY_S 's'
+#define KEY_D 'd'
+
 class Keyboard
 {
 public:

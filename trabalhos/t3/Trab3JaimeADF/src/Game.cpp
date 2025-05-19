@@ -1,22 +1,43 @@
 #include "Game.h"
+#include "GameObject.h"
 
-#include "EditorScene.h"
+#include <algorithm>
 
-Game::Game()
+Game::Game() : m_Mouse(), m_Keyboard(), m_PhysicsSystem(*this)
 {
-    m_Mouse = std::make_shared<Mouse>();
-    m_Keyboard = std::make_shared<Keyboard>();
-    m_CurrentScene = std::make_shared<EditorScene>(m_Mouse, m_Keyboard);
 }
 
 void Game::Update(float deltaTime)
 {
-    m_CurrentScene->Update(deltaTime);
+    size_t n = m_Objects.size();
+
+    for (size_t i = 0; i < n; i++)
+    {
+        m_Objects[i]->Update(deltaTime);
+    }
+
+    auto it = std::remove_if(
+        m_Objects.begin(),
+        m_Objects.end(),
+        [](std::shared_ptr<GameObject>& object) 
+        {
+            return object->HasBeenDestroyed();
+        }
+    );
+
+    m_Objects.erase(it, m_Objects.end());
+
+    m_PhysicsSystem.Simulate(deltaTime);
 }
 
-void Game::Render(DrawingContext& context)
+void Game::Draw(DrawingContext& context)
 {
-    m_CurrentScene->Render(context);
+    size_t n = m_Objects.size();
+
+    for (size_t i = 0; i < n; i++)
+    {
+        m_Objects[i]->Draw(context);
+    }
 }
 
 void Game::HandleEvent(const Event& event)
@@ -24,21 +45,35 @@ void Game::HandleEvent(const Event& event)
     switch (event.Type)
     {
         case EventType::MouseMove:
-            m_Mouse->SetPosition(event.Mouse.Position);
+            m_Mouse.SetPosition(event.Mouse.Position);
             break;
         case EventType::MouseButtonPress:
-            m_Mouse->SetButtonState(event.Mouse.Button, true);
+            m_Mouse.SetButtonState(event.Mouse.Button, true);
             break;
         case EventType::MouseButtonRelease:
-            m_Mouse->SetButtonState(event.Mouse.Button, false);
+            m_Mouse.SetButtonState(event.Mouse.Button, false);
             break;
         case EventType::KeyPress:
-            m_Keyboard->SetKeyState(event.Key.Key, true);
+            m_Keyboard.SetKeyState(event.Key.Key, true);
             break;
         case EventType::KeyRelease:
-            m_Keyboard->SetKeyState(event.Key.Key, false);
+            m_Keyboard.SetKeyState(event.Key.Key, false);
             break;
     }
-
-    m_CurrentScene->HandleEvent(event);
 }
+
+Mouse& Game::GetMouse()
+{
+    return m_Mouse;
+}
+
+Keyboard& Game::GetKeyboard()
+{
+    return m_Keyboard;
+}
+
+std::vector<std::shared_ptr<GameObject>>& Game::GetObjects()
+{
+    return m_Objects;
+}
+

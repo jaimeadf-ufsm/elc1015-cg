@@ -2,7 +2,7 @@
 
 #include "Path.h"
 
-Path::Path() : m_Closed(false), m_Points({ Vector2() })
+Path::Path() : m_Closed(false), m_Points({ })
 {
 }
 
@@ -14,6 +14,30 @@ void Path::MoveTo(Vector2 point)
 void Path::LineTo(Vector2 point)
 {
     m_Points.push_back(point);
+}
+
+void Path::QuadraticBezierTo(Vector2 point1, Vector2 point2)
+{
+    Vector2 p0 = m_Points.back();
+    Vector2 p1 = point1;
+    Vector2 p2 = point2;
+
+    float t = 0.0f;
+    float step = 0.05f;
+
+    while (t < 1.0f)
+    {
+        Vector2 p;
+        p += (1 - t) * (1 - t) * p0;
+        p += 2 * (1 - t) * t * p1;
+        p += t * t * p2;
+
+        m_Points.push_back(p);
+
+        t += step;
+    }
+
+    m_Points.push_back(point2);
 }
 
 void Path::CubicBezierTo(Vector2 point1, Vector2 point2, Vector2 point3)
@@ -82,4 +106,9 @@ const std::vector<Vector2>& Path::GetPoints() const
 bool Path::IsClosed() const
 {
     return m_Closed;
+}
+
+bool Path::IsEmpty() const
+{
+    return m_Points.empty();
 }

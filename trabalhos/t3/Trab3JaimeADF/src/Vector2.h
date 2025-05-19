@@ -18,6 +18,8 @@ struct Vector2
     float Magnitude() const;
     float MagnitudeSquared() const;
 
+    float Angle() const;
+
     Vector2 Normalized() const;
     
     Vector2 operator-() const;

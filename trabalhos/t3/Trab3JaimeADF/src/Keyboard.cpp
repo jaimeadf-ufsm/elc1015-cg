@@ -1,9 +1,16 @@
+#include <string>
+
 #include "Keyboard.h"
 
 void Keyboard::SetKeyState(uint8_t key, bool pressed)
 {
     if (key >= 0 && key < (int)m_Keys.size())
     {
+        if (key >= 'A' && key <= 'Z')
+        {
+            key = std::tolower(key);
+        }
+
         m_Keys[key] = pressed;
     }
 }

@@ -30,3 +30,10 @@ ColorRGB::ColorRGB(int r, int g, int b)
     G = static_cast<float>(g) / 255.0f;
     B = static_cast<float>(b) / 255.0f;
 }
+
+ColorRGB::ColorRGB(int color)
+{
+    R = static_cast<float>((color >> 16) & 0XFF) / 255.0f;
+    G = static_cast<float>((color >> 8) & 0XFF) / 255.0f;
+    B = static_cast<float>(color & 0XFF) / 255.0f;
+}

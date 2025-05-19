@@ -35,16 +35,43 @@ size_t CreateNodes(std::vector<Node>& nodes, const std::vector<Vector2>& points)
     nodes.clear();
     nodes.reserve(points.size());
 
+    float sum = 0.0f;
+
     for (size_t i = 0; i < points.size(); i++)
     {
-        Node node = {
-            .VertexIndex = 0,
-            .VertexPoint = points[i],
-            .PreviousIndex = i - 1,
-            .NextIndex = i + 1
-        };
+        Vector2 start = points[i];
+        Vector2 end = points[(i + 1) % points.size()];
 
-        nodes.emplace_back(node);
+        sum += (end.X - start.X) * (end.Y + start.Y);
+    }
+
+    if (sum > 0)
+    {
+        for (size_t i = 0; i < points.size(); i++)
+        {
+            Node node = {
+                .VertexIndex = 0,
+                .VertexPoint = points[points.size() - 1 - i],
+                .PreviousIndex = i == 0 ? points.size() - 1 : i - 1,
+                .NextIndex = (i + 1) % points.size()
+            };
+
+            nodes.emplace_back(node);
+        }
+    }
+    else
+    {
+        for (size_t i = 0; i < points.size(); i++)
+        {
+            Node node = {
+                .VertexIndex = 0,
+                .VertexPoint = points[i],
+                .PreviousIndex = i == 0 ? points.size() - 1 : i - 1,
+                .NextIndex = (i + 1) % points.size()
+            };
+
+            nodes.emplace_back(node);
+        }
     }
 
     nodes.front().PreviousIndex = nodes.size() - 1;

@@ -9,10 +9,12 @@ float Vector2::ProjectOnto(const Vector2& other) const
 {
     float dotProduct = Dot(other);
     float otherMagnitudeSquared = other.MagnitudeSquared();
+
     if (otherMagnitudeSquared == 0.0f)
     {
-        return 0.0f; // Avoid division by zero
+        return 0.0f;
     }
+
     return dotProduct / otherMagnitudeSquared;
 }
 
@@ -34,6 +36,11 @@ float Vector2::Magnitude() const
 float Vector2::MagnitudeSquared() const
 {
     return X * X + Y * Y;
+}
+
+float Vector2::Angle() const
+{
+    return std::atan2f(Y, X);
 }
 
 Vector2 Vector2::Normalized() const

@@ -19,4 +19,5 @@ struct ColorRGB
     ColorRGB();
     ColorRGB(float r, float g, float b);
     ColorRGB(int r, int g, int b);
+    ColorRGB(int color);
 };
