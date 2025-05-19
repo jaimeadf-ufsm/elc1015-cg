@@ -3,13 +3,13 @@
 #include "Game.h"
 #include "Constants.h"
 
-Box::Box(std::reference_wrapper<Game> game) : Entity::Entity(game)
+Box::Box(std::reference_wrapper<Game> game) : Enemy::Enemy(game)
 {
 }
 
 void Box::Initialize()
 {
-    Entity::Initialize();
+    Enemy::Initialize();
 
     Health->SetMaxValue(10.0f);
     Health->SetValue(10.0f);
@@ -38,11 +38,11 @@ void Box::Initialize()
 
 void Box::Update(float deltaTime)
 {
-    Entity::Update(deltaTime);
+    Enemy::Update(deltaTime);
 }
 
 void Box::Draw(DrawingContext& context)
 {
-    Entity::Draw(context);
+    Enemy::Draw(context);
     m_Graphic.Draw(context, *Transform);
 }

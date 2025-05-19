@@ -57,6 +57,9 @@
         "cinttypes": "cpp",
         "typeinfo": "cpp",
         "variant": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "cuchar": "cpp",
+        "bitset": "cpp",
+        "regex": "cpp"
     }
 }

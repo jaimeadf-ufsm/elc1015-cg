@@ -3,13 +3,13 @@
 #include "Game.h"
 #include "Constants.h"
 
-Barrel::Barrel(std::reference_wrapper<Game> game) : Entity::Entity(game)
+Barrel::Barrel(std::reference_wrapper<Game> game) : Enemy::Enemy(game)
 {
 }
 
 void Barrel::Initialize()
 {
-    Entity::Initialize();
+    Enemy::Initialize();
 
     Health->SetMaxValue(10.0f);
     Health->SetValue(10.0f);
@@ -41,11 +41,11 @@ void Barrel::Initialize()
 
 void Barrel::Update(float deltaTime)
 {
-    Entity::Update(deltaTime);
+    Enemy::Update(deltaTime);
 }
 
 void Barrel::Draw(DrawingContext& context)
 {
-    Entity::Draw(context);
+    Enemy::Draw(context);
     m_Graphic.Draw(context, *Transform);
 }

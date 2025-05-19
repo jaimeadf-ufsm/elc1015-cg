@@ -6,14 +6,14 @@
 #include "PathParser.h"
 
 
-Shuriken::Shuriken(std::reference_wrapper<Game> game) : Entity::Entity(game)
+Shuriken::Shuriken(std::reference_wrapper<Game> game) : Enemy::Enemy(game)
 {
 
 }
 
 void Shuriken::Initialize()
 {
-    Entity::Initialize();
+    Enemy::Initialize();
 
     Health->SetMaxValue(10.0f);
     Health->SetValue(10.0f);
@@ -45,7 +45,7 @@ void Shuriken::Initialize()
 
 void Shuriken::Update(float deltaTime)
 {
-    Entity::Update(deltaTime);
+    Enemy::Update(deltaTime);
 
     Game& game = GetGame();
 
@@ -71,7 +71,7 @@ void Shuriken::Update(float deltaTime)
 void Shuriken::Draw(DrawingContext& context)
 {
     m_Graphic.Draw(context, *Transform);
-    Entity::Draw(context);
+    Enemy::Draw(context);
 }
 
 void Shuriken::Collide(const Contact& contact)

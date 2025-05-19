@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Entity.h"
+#include "Enemy.h"
 #include "VectorGraphic.h"
 
-class Barrel : public Entity
+class Barrel : public Enemy
 {
 public:
     Barrel(std::reference_wrapper<Game> game);
