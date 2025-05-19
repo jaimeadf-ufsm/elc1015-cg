@@ -38,12 +38,8 @@ bool ParseCommand(const std::string& token, char& c)
 
 bool ParseNumber(const std::string& token, float& number)
 {
-    // float tmp;
-
     std::istringstream iss(token);
     iss >> number;
-
-    // number = tmp;
 
     return iss.eof() && !iss.fail();
 }

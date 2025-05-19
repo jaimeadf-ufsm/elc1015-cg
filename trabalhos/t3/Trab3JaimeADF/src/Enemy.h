@@ -15,4 +15,7 @@ public:
     virtual void Collide(const Contact& contact) override;
 
     virtual void Destroy() override;
+
+private:
+    std::unordered_set<std::shared_ptr<GameObject>> m_AttackedEntities;
 };
