@@ -54,6 +54,9 @@ void Player::Initialize()
     m_Graphic = s_PretesselatedGraphic;
     m_Graphic.Translate(Vector2(-20.0f, -21.0f));
 
+    m_InvincibleTimeRemaining = 0.0f;
+    m_RapidFireTimeRemaining = 0.0f;
+
     m_Cannon = game.CreateObject<PlayerCannon>();
 }
 
@@ -109,6 +112,7 @@ void Player::Update(float deltaTime)
 
     Body->SetLinearVelocity(linearVelocity);
     Body->SetAngularVelocity(angularVelocity);
+    Transform->SetPosition(Vector2(800.0f, 500.0f));
 }
 
 void Player::Draw(DrawingContext& context)

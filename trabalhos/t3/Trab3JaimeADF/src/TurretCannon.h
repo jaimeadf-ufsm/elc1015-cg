@@ -9,7 +9,7 @@ public:
     TurretCannon(std::reference_wrapper<Game> game);
 
     virtual void Initialize() override;
-    
+
     virtual void Update(float deltaTime) override;
     virtual void Draw(DrawingContext& content) override;
 

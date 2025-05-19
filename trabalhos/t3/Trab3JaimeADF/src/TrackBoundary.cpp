@@ -39,11 +39,6 @@ void TrackBoundary::Initialize()
 void TrackBoundary::Update(float deltaTime)
 {
     GameObject::Update(deltaTime);
-
-    Game& game = GetGame();
-    Keyboard& keyboard = game.GetKeyboard();
-
-    // std::cout << deltaTime  * 1000.0f << std::endl;
 }
 
 void TrackBoundary::Draw(DrawingContext& context)

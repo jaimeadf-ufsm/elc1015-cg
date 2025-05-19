@@ -1,4 +1,5 @@
 #include "Tesselator.h"
+#include "Geometry.h"
 
 #include <algorithm>
 
@@ -10,25 +11,6 @@ struct Node
     size_t NextIndex;
 };
 
-float ComputeTriangleArea(Vector2 a, Vector2 b, Vector2 c)
-{
-    return (b - a).Cross(c - b) / 2.0f;
-}
-
-bool IsPointInTriangle(Vector2 a, Vector2 b, Vector2 c, Vector2 point)
-{
-    Vector2 ab = b - a;
-    Vector2 ac = c - a;
-
-    Vector2 ap = point - a;
-
-    float d = ab.X * ac.Y - ab.Y * ac.X;
-
-    float u = ap.X * ac.Y - ap.Y * ac.X;
-    float v = ab.X * ap.Y - ab.Y * ap.X;
-
-    return (u >= 0.0f) && (v >= 0.0f) && (u + v <= d);
-}
 
 size_t CreateNodes(std::vector<Node>& nodes, const std::vector<Vector2>& points)
 {
@@ -156,7 +138,7 @@ bool IsEar(std::vector<Node>& nodes, size_t earNodeIndex)
     {
         Node& node = nodes[currentNodeIndex];
 
-        if (IsPointInTriangle(a, b, c, node.VertexPoint))
+        if (IsPointInTriangle(node.VertexPoint, a, b, c))
         {
             return false;
         }

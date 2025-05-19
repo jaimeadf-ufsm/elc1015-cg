@@ -12,7 +12,7 @@ public:
 
     void Update(float deltaTime) override;
     void Draw(DrawingContext &context) override;
-    
+
     void Collide(const Contact& contact) override;
 
 private:

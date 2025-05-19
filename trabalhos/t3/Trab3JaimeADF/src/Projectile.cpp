@@ -45,13 +45,7 @@ void Projectile::Initialize()
 void Projectile::Update(float deltaTime)
 {
     GameObject::Update(deltaTime);
-
-    Game& game = GetGame();
-    Keyboard& keyboard = game.GetKeyboard();
-
     Body->SetLinearVelocity(Transform->GetHeading() * 600.0f);
-
-    // std::cout << deltaTime  * 1000.0f << std::endl;
 }
 
 void Projectile::Draw(DrawingContext& context)
