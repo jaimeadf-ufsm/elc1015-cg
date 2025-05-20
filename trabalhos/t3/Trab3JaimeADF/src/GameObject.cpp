@@ -16,24 +16,6 @@ void GameObject::Update(float deltaTime)
 
 void GameObject::Draw(DrawingContext& context)
 {
-    return;
-
-    context.Color(ColorRGB::Blue);
-
-    for (std::shared_ptr<Collider>& collider : Colliders)
-    {
-        context.BeginPolygon();
-
-        for (Vector2 originalPoint : collider->GetPolygon())
-        {
-            Vector2 transformedPoint;
-            Transform->Apply(originalPoint, transformedPoint);
-
-            context.Vertex(transformedPoint);
-        }
-
-        context.StrokePolygon();
-    }
 }
 
 void GameObject::HandleEvent(const Event& event)
