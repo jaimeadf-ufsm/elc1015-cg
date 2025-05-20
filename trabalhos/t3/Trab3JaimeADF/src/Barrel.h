@@ -6,7 +6,7 @@
 class Barrel : public Enemy
 {
 public:
-    Barrel(std::reference_wrapper<Game> game);
+    Barrel(std::reference_wrapper<Scene> scene);
 
     void Initialize();
 

@@ -8,7 +8,7 @@
 class Player : public Entity
 {
 public:
-    Player(std::reference_wrapper<Game> game);
+    Player(std::reference_wrapper<Scene> scene);
 
     void Initialize() override;
 

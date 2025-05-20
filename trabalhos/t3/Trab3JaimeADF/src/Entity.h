@@ -8,7 +8,7 @@ class Entity : public GameObject
 public:
     std::shared_ptr<Health> Health;
 
-    Entity(std::reference_wrapper<Game> game);
+    Entity(std::reference_wrapper<Scene> scene);
 
     virtual void Initialize();
 

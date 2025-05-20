@@ -27,7 +27,7 @@ static TesselatedGraphic s_PretesselatedGraphic = VectorGraphic({
         .WithFill(ColorRGB(0x5B5442)),
 }).Materialize();
 
-TurretCannon::TurretCannon(std::reference_wrapper<Game> game) : Cannon::Cannon(game)
+TurretCannon::TurretCannon(std::reference_wrapper<Scene> scene) : Cannon::Cannon(scene)
 {
 }
 
@@ -35,8 +35,9 @@ void TurretCannon::Initialize()
 {
     Cannon::Initialize();
 
+    SetPriority(1);
     SetWidth(36.0f);
-    SetFireRate(4.0f);
+    SetFireRate(0.5f);
     SetIgnoredTags({ "Enemy" });
 
     m_Graphic = s_PretesselatedGraphic;

@@ -1,42 +1,49 @@
-#include "Game.h"
+#include "Scene.h"
 #include "GameObject.h"
 
 #include <algorithm>
 
-Game::Game() : m_Mouse(), m_Keyboard(), m_PhysicsSystem(*this)
+Game::Game() : m_Mouse(), m_Keyboard(), m_Viewport()
 {
+    m_Viewport.SetWidth(1280);
+    m_Viewport.SetHeight(720);
 }
 
 void Game::Update(float deltaTime)
 {
-    size_t n = m_Objects.size();
-
-    for (size_t i = 0; i < n; i++)
+    if (m_NextScene)
     {
-        m_Objects[i]->Update(deltaTime);
+        if (m_CurrentScene)
+        {
+            m_CurrentScene->Stop();
+        }
+
+        m_CurrentScene = m_NextScene;
+        m_NextScene = nullptr;
+
+        m_CurrentScene->Start();
     }
 
-    auto it = std::remove_if(
-        m_Objects.begin(),
-        m_Objects.end(),
-        [](std::shared_ptr<GameObject>& object) 
-        {
-            return object->HasBeenDestroyed();
+    if (m_CurrentScene)
+    {
+        const float maxTimeStep = 1.0f / 60.0f;
+
+        float remainingTime = deltaTime;
+
+        while (remainingTime > 0.0001f) {
+            float fragmentTime = std::min(remainingTime, maxTimeStep);
+            m_CurrentScene->Update(fragmentTime);
+
+            remainingTime -= fragmentTime;
         }
-    );
-
-    m_Objects.erase(it, m_Objects.end());
-
-    m_PhysicsSystem.Simulate(deltaTime);
+    }
 }
 
 void Game::Draw(DrawingContext& context)
 {
-    size_t n = m_Objects.size();
-
-    for (size_t i = 0; i < n; i++)
+    if (m_CurrentScene)
     {
-        m_Objects[i]->Draw(context);
+        m_CurrentScene->Draw(context);
     }
 }
 
@@ -60,6 +67,11 @@ void Game::HandleEvent(const Event& event)
             m_Keyboard.SetKeyState(event.Key.Key, false);
             break;
     }
+
+    if (m_CurrentScene)
+    {
+        m_CurrentScene->HandleEvent(event);
+    }
 }
 
 Mouse& Game::GetMouse()
@@ -72,8 +84,12 @@ Keyboard& Game::GetKeyboard()
     return m_Keyboard;
 }
 
-std::vector<std::shared_ptr<GameObject>>& Game::GetObjects()
+Viewport& Game::GetViewport()
 {
-    return m_Objects;
+    return m_Viewport;
 }
 
+GameState& Game::GetState()
+{
+    return m_State;
+}

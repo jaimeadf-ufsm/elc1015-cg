@@ -1,3 +1,4 @@
+#include <cstring>
 #include "DrawingContext.h"
 
 void DrawingContext::Color(ColorRGB color)
@@ -54,29 +55,16 @@ void DrawingContext::FillPolygon()
     m_Commands.emplace_back(args);
 }
 
-void DrawingContext::FillMesh(const Mesh& mesh)
+void DrawingContext::Text(Vector2 position, const std::string& text)
 {
+    TextDrawingCommandArgs args = {
+        .X = position.X,
+        .Y = position.Y
+    };
 
-    for (size_t i = 0; i + 3 <= mesh.Triangles.size(); i += 3)
-    {
-        Vector2 a = mesh.Vertices[mesh.Triangles[i]];
-        Vector2 b = mesh.Vertices[mesh.Triangles[i + 1]];
-        Vector2 c = mesh.Vertices[mesh.Triangles[i + 2]];
-
-        // Color(ColorRGB::Red);
-        BeginPolygon();
-        Vertex(a);
-        Vertex(b);
-        Vertex(c);
-        FillPolygon();
-
-        // Color(ColorRGB::Blue);
-        // BeginPolygon();
-        // Vertex(a);
-        // Vertex(b);
-        // Vertex(c);
-        // StrokePolygon();
-    }
+    std::strncpy(args.Text, text.c_str(), sizeof(args.Text) - 1);
+    
+    m_Commands.emplace_back(args);
 }
 
 void DrawingContext::ClearCommands()

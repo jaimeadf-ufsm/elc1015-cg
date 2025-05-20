@@ -64,13 +64,15 @@ static std::vector<TesselatedGraphic> s_PretesselatedGraphics = {
     }).Materialize(),
 };
 
-Explosion::Explosion(std::reference_wrapper<Game> game) : Animation(game)
+Explosion::Explosion(std::reference_wrapper<Scene> scene) : Animation(scene)
 {
 }
 
 void Explosion::Initialize()
 {
     Animation::Initialize();
+
+    SetPriority(100);
 
     Frames = s_PretesselatedGraphics;
 

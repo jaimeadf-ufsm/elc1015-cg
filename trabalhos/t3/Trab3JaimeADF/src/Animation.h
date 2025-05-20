@@ -8,7 +8,7 @@ class Animation : public GameObject
 public:
     std::vector<TesselatedGraphic> Frames;
 
-    Animation(std::reference_wrapper<Game> game);
+    Animation(std::reference_wrapper<Scene> scene);
 
     virtual void Initialize() override;
     virtual void Update(float deltaTime) override;

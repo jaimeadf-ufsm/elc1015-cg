@@ -7,9 +7,10 @@
 
 #include "Mouse.h"
 #include "Keyboard.h"
-#include "PhysicsSystem.h"
+#include "Viewport.h"
+#include "GameState.h"
 
-class GameObject;
+class Scene;
 
 class Game
 {
@@ -21,28 +22,32 @@ public:
 
     void HandleEvent(const Event& event);
 
-    template<typename T> std::shared_ptr<T> CreateObject()
-    {
-        std::shared_ptr<T> object = std::make_shared<T>(std::reference_wrapper<Game>(*this));
-
-        m_Objects.emplace_back(object);
-        object->Initialize();
-
-        return object;
-    }
-
-    void DestroyObject(std::shared_ptr<GameObject> object);
+    template <typename T>
+    std::shared_ptr<T> SwitchToScene();
 
     Mouse& GetMouse();
     Keyboard& GetKeyboard();
+    Viewport& GetViewport();
 
-    std::vector<std::shared_ptr<GameObject>>& GetObjects();
+    GameState &GetState();
 
 private:
     Mouse m_Mouse;
     Keyboard m_Keyboard;
+    Viewport m_Viewport;
+    
+    GameState m_State;
 
-    PhysicsSystem m_PhysicsSystem;
-
-    std::vector<std::shared_ptr<GameObject>> m_Objects;
+    std::shared_ptr<Scene> m_CurrentScene;
+    std::shared_ptr<Scene> m_NextScene;
 };
+
+template <typename T>
+std::shared_ptr<T> Game::SwitchToScene()
+{
+    std::shared_ptr<T> scene = std::make_shared<T>(*this);
+
+    m_NextScene = scene;
+
+    return scene;
+}

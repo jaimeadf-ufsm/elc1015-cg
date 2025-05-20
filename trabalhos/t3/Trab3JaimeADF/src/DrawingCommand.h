@@ -3,6 +3,7 @@
 enum class DrawingCommandKind
 {
     Color,
+    Text,
     FillRectangle,
     BeginPolygon,
     Vertex,
@@ -15,6 +16,13 @@ struct ColorDrawingCommandArgs
     float R;
     float G;
     float B;
+};
+
+struct TextDrawingCommandArgs
+{
+    float X;
+    float Y;
+    char Text[256];
 };
 
 struct FillRectangleDrawingCommandArgs
@@ -54,6 +62,7 @@ private:
     union
     {
         ColorDrawingCommandArgs ColorArgs;
+        TextDrawingCommandArgs TextArgs;
         FillRectangleDrawingCommandArgs FillRectangleArgs;
         BeginPolygonDrawingCommandArgs BeginPolygonArgs;
         VertexDrawingCommandArgs VertexArgs;
@@ -63,6 +72,7 @@ private:
 
 public:
     DrawingCommand(ColorDrawingCommandArgs args);
+    DrawingCommand(TextDrawingCommandArgs args);
     DrawingCommand(FillRectangleDrawingCommandArgs args);
     DrawingCommand(BeginPolygonDrawingCommandArgs args);
     DrawingCommand(VertexDrawingCommandArgs args);
@@ -72,6 +82,7 @@ public:
     DrawingCommandKind GetKind() const;
 
     ColorDrawingCommandArgs GetColorArgs() const;
+    TextDrawingCommandArgs GetTextArgs() const;
     FillRectangleDrawingCommandArgs GetFillRectangleArgs() const;
     BeginPolygonDrawingCommandArgs GetBeginPolygonArgs() const;
     VertexDrawingCommandArgs GetVertexArgs() const;

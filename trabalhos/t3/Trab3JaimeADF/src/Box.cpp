@@ -1,6 +1,6 @@
 #include "Box.h"
 
-#include "Game.h"
+#include "Scene.h"
 #include "Constants.h"
 
 static const TesselatedGraphic s_PretesselatedGraphic = VectorGraphic({
@@ -18,7 +18,7 @@ static const TesselatedGraphic s_PretesselatedGraphic = VectorGraphic({
         .WithFill(ColorRGB(0xAF783F)),
 }).Materialize();
 
-Box::Box(std::reference_wrapper<Game> game) : Enemy::Enemy(game)
+Box::Box(std::reference_wrapper<Scene> scene) : Enemy::Enemy(scene)
 {
 }
 
@@ -26,12 +26,10 @@ void Box::Initialize()
 {
     Enemy::Initialize();
 
-    Health->SetMaxValue(10.0f);
-    Health->SetValue(10.0f);
+    Health->SetMaxValue(1.0f);
+    Health->SetValue(1.0f);
 
     Colliders = Collider::Box(Vector2(28.0f, 28.0f));
-
-    Transform->SetPosition(Vector2(1280 / 2, 720 / 2));
 
     m_Graphic = s_PretesselatedGraphic;
     m_Graphic.Translate(Vector2(-14.0f, -14.0f));

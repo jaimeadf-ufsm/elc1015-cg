@@ -6,7 +6,7 @@
 class Shuriken : public Enemy
 {
 public:
-    Shuriken(std::reference_wrapper<Game> game);
+    Shuriken(std::reference_wrapper<Scene> scene);
 
     void Initialize();
 

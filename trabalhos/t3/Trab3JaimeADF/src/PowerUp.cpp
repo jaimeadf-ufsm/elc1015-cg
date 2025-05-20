@@ -1,4 +1,4 @@
-#include <random>
+#include <cstdlib>
 #include <cmath>
 #include <ctime>
 
@@ -50,20 +50,17 @@ static const TesselatedGraphic s_RapidFirePretesselatedGraphic = VectorGraphic({
         .WithFill(ColorRGB(0x94423A)),
 }).Materialize();
 
-PowerUp::PowerUp(std::reference_wrapper<Game> game) : GameObject(game)
+PowerUp::PowerUp(std::reference_wrapper<Scene> scene) : GameObject(scene)
 {
 }
 
 void PowerUp::Initialize()
 {
-    unsigned int seed = static_cast<unsigned int>(std::time(nullptr));
-
-    std::mt19937 rng(seed);
-    std::uniform_int_distribution<int> distribution(0, 2);
+    AddTag("PowerUp");
 
     Colliders = Collider::Box(Vector2(24.0f, 24.0f), ColliderMode::Sensor);
 
-    m_Effect = static_cast<Effect>(distribution(rng));
+    m_Effect = static_cast<Effect>(std::rand() % 3);
 
     switch (m_Effect)
     {

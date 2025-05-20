@@ -23,9 +23,10 @@ public:
     void StrokePolygon();
     void FillPolygon();
 
-    void FillMesh(const Mesh& mesh);
+    void Text(Vector2 position, const std::string& text);
 
     const std::vector<DrawingCommand>& GetCommands() const;
+
     void ClearCommands();
 
 private:

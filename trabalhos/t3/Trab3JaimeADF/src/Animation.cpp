@@ -1,6 +1,6 @@
 #include "Animation.h"
 
-Animation::Animation(std::reference_wrapper<Game> game) : GameObject(game)
+Animation::Animation(std::reference_wrapper<Scene> scene) : GameObject(scene)
 {
 }
 

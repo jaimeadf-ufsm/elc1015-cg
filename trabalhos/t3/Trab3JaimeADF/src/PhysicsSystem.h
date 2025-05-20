@@ -24,12 +24,15 @@ class PhysicsSystem
 private:
 
 public:
-    PhysicsSystem(std::reference_wrapper<Game> game);
-
+    PhysicsSystem(std::reference_wrapper<Scene> scene);
+  
     void Simulate(float deltaTime);
 
+    void OverlapObjectsWithBox(std::vector<std::shared_ptr<GameObject>>& overlapingObjects, const Vector2& start, const Vector2& end);
+    void OverlapObjectsWithPolygon(std::vector<std::shared_ptr<GameObject>>& overlapingObjects, const std::vector<Vector2>& polygon);
+
 private:
-    std::reference_wrapper<Game> m_Game;
+    std::reference_wrapper<Scene> m_Scene;
 
     std::vector<Vector2> m_TransformedPolygonA;
     std::vector<Vector2> m_TransformedPolygonB;

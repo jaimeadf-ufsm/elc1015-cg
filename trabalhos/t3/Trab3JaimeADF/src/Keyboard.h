@@ -7,6 +7,7 @@
 #define KEY_A 'a'
 #define KEY_S 's'
 #define KEY_D 'd'
+#define KEY_ESC 27
 
 class Keyboard
 {

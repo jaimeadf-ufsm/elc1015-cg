@@ -36,6 +36,12 @@ DrawingCommand::DrawingCommand(FillPolygonDrawingCommandArgs args)
     FillPolygonArgs = args;
 }
 
+DrawingCommand::DrawingCommand(TextDrawingCommandArgs args)
+{
+    Kind = DrawingCommandKind::Text;
+    TextArgs = args;
+}
+
 DrawingCommandKind DrawingCommand::GetKind() const
 {
     return Kind;
@@ -44,6 +50,11 @@ DrawingCommandKind DrawingCommand::GetKind() const
 ColorDrawingCommandArgs DrawingCommand::GetColorArgs() const
 {
     return ColorArgs;
+}
+
+TextDrawingCommandArgs DrawingCommand::GetTextArgs() const
+{
+    return TextArgs;
 }
 
 FillRectangleDrawingCommandArgs DrawingCommand::GetFillRectangleArgs() const

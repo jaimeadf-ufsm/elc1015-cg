@@ -4,7 +4,7 @@
 
 BoundingBox::BoundingBox() :
     m_MinPoint(Vector2(std::numeric_limits<float>::max(), std::numeric_limits<float>::max())),
-    m_MaxPoint(Vector2(std::numeric_limits<float>::min(), std::numeric_limits<float>::min()))
+    m_MaxPoint(Vector2(std::numeric_limits<float>::lowest(), std::numeric_limits<float>::lowest()))
 {
 
 }

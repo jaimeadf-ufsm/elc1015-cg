@@ -1,6 +1,6 @@
 #include "Barrel.h"
 
-#include "Game.h"
+#include "Scene.h"
 #include "Constants.h"
 
 static const TesselatedGraphic s_PretesselatedGraphic = VectorGraphic({
@@ -21,7 +21,7 @@ static const TesselatedGraphic s_PretesselatedGraphic = VectorGraphic({
         .WithFill(ColorRGB(0x697E80)),
 }).Materialize();
 
-Barrel::Barrel(std::reference_wrapper<Game> game) : Enemy::Enemy(game)
+Barrel::Barrel(std::reference_wrapper<Scene> scene) : Enemy::Enemy(scene)
 {
 }
 
@@ -29,15 +29,13 @@ void Barrel::Initialize()
 {
     Enemy::Initialize();
 
-    Health->SetMaxValue(10.0f);
-    Health->SetValue(10.0f);
+    Health->SetMaxValue(1.0f);
+    Health->SetValue(1.0f);
 
     Colliders = Collider::Circle(12.0f);
 
-    Transform->SetPosition(Vector2(1280 / 2, 720 / 2));
-
     m_Graphic = s_PretesselatedGraphic;
-    m_Graphic.Translate(Vector2(-14.0f, -14.0f));
+    m_Graphic.Translate(Vector2(-12.0f, -12.0f));
 }
 
 void Barrel::Update(float deltaTime)

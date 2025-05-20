@@ -11,6 +11,9 @@ void DrawingEngine::ExecuteCommands(const std::vector<DrawingCommand>& commands)
             case DrawingCommandKind::Color:
                 ExecuteColorCommand(command.GetColorArgs());
                 break;
+            case DrawingCommandKind::Text:
+                ExecuteTextCommand(command.GetTextArgs());
+                break;
             case DrawingCommandKind::FillRectangle:
                 ExecuteFillRectangleCommand(command.GetFillRectangleArgs());
                 break;
@@ -28,6 +31,11 @@ void DrawingEngine::ExecuteCommands(const std::vector<DrawingCommand>& commands)
                 break;
         }
     }
+}
+
+void DrawingEngine::ExecuteTextCommand(const TextDrawingCommandArgs& args)
+{
+    CV::text(args.X, args.Y, args.Text);
 }
 
 void DrawingEngine::ExecuteColorCommand(const ColorDrawingCommandArgs& args)

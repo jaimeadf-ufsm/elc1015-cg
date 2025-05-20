@@ -1,4 +1,5 @@
 #include <cmath>
+#include <math.h>
 
 #include "Vector2.h"
 
@@ -40,7 +41,7 @@ float Vector2::MagnitudeSquared() const
 
 float Vector2::Angle() const
 {
-    return std::atan2f(Y, X);
+    return atan2f(Y, X);
 }
 
 Vector2 Vector2::Normalized() const

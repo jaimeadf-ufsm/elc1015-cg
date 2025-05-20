@@ -18,16 +18,13 @@
 
 #include <iostream>
 #include <chrono>
+#include <thread>
 
 #include "gl_canvas2d.h"
 
 #include "Game.h"
-#include "TrackBoundary.h"
-#include "Player.h"
-#include "Box.h"
-#include "Barrel.h"
-#include "Turret.h"
-#include "PowerUp.h"
+#include "MainScene.h"
+#include "EditorScene.h"
 
 #include "Benchmark.h"
 
@@ -35,6 +32,9 @@
 #include "DrawingEngine.h"
 
 using frame_clock = std::chrono::steady_clock;
+
+#define FPS 99999
+#define FILENAME "Trab3JaimeADF/save.txt"
 
 int screenWidth = 1280, screenHeight = 720;
 
@@ -53,97 +53,113 @@ frame_clock::time_point lastFrameTime;
 
 void render()
 {
-   frame_clock::time_point currentFrameTime = frame_clock::now();
+    frame_clock::time_point previousFrameTime = lastFrameTime;
+    frame_clock::time_point currentFrameTime = frame_clock::now();
 
-   float deltaTime = std::chrono::duration<float>(currentFrameTime - lastFrameTime).count();
+    lastFrameTime = currentFrameTime;
 
-   deltaTime = std::min(deltaTime, 0.1f);
+    if (previousFrameTime == std::chrono::steady_clock::time_point())
+    {
+        return;
+    }
 
-   frameBenchmark.Stop();
-   frameBenchmark.Start();
+    float deltaTime = std::chrono::duration<float>(currentFrameTime - previousFrameTime).count();
 
-   drawingContext.ClearCommands();
+    frameBenchmark.Stop();
+    frameBenchmark.Start();
 
-   updateBenchmark.Start();
-   game.Update(deltaTime);
-   updateBenchmark.Stop();
+    drawingContext.ClearCommands();
 
-   renderBenchmark.Start();
-   game.Draw(drawingContext);
-   renderBenchmark.Stop();
+    updateBenchmark.Start();
+    game.Update(deltaTime);
+    updateBenchmark.Stop();
 
-   executeBenchmark.Start();
-   drawingEngine.ExecuteCommands(drawingContext.GetCommands());
-   executeBenchmark.Stop();
+    renderBenchmark.Start();
+    game.Draw(drawingContext);
+    renderBenchmark.Stop();
 
-   if (frameBenchmark.GetSamples() == 100)
-   {
-      std::cout << 1.0 / frameBenchmark.GetAverageTime() << " FPS ";
-      std::cout << "(";
-      std::cout << "Update: " << updateBenchmark.GetAverageTime() * 1000.0f << " ms, ";
-      std::cout << "Draw: " << renderBenchmark.GetAverageTime() * 1000.0f << " ms, ";
-      std::cout << "Execute: " << executeBenchmark.GetAverageTime() * 1000.0f << " ms, ";
-      std::cout << ")";
-      std::cout << std::endl;
+    executeBenchmark.Start();
+    drawingEngine.ExecuteCommands(drawingContext.GetCommands());
+    executeBenchmark.Stop();
 
-      frameBenchmark.Reset();
-      updateBenchmark.Reset();
-      renderBenchmark.Reset();
-      executeBenchmark.Reset();
-   }
+    if (frameBenchmark.GetSamples() == 100)
+    {
+        std::cout << 1.0 / frameBenchmark.GetAverageTime() << " FPS ";
+        std::cout << "(";
+        std::cout << "Update: " << updateBenchmark.GetAverageTime() * 1000.0f << " ms, ";
+        std::cout << "Draw: " << renderBenchmark.GetAverageTime() * 1000.0f << " ms, ";
+        std::cout << "Execute: " << executeBenchmark.GetAverageTime() * 1000.0f << " ms";
+        std::cout << ")";
+        std::cout << std::endl;
 
-   lastFrameTime = currentFrameTime;
+        frameBenchmark.Reset();
+        updateBenchmark.Reset();
+        renderBenchmark.Reset();
+        executeBenchmark.Reset();
+    }
+
+    frame_clock::time_point renderEndTime = frame_clock::now();
+    float renderDuration = (renderEndTime - currentFrameTime).count();
+
+    if (renderDuration < 1.0f / FPS)
+    {
+        std::this_thread::sleep_for(std::chrono::duration<float>(1.0f / FPS - renderDuration));
+    }
 }
 
-//funcao chamada toda vez que uma tecla for pressionada.
+// funcao chamada toda vez que uma tecla for pressionada.
 void keyboard(int key)
 {
-   // printf("\nTecla: %d" , key);
-   game.HandleEvent(Event::CreateKeyPressEvent(key));
+    // printf("\nTecla: %d" , key);
+    game.HandleEvent(Event::CreateKeyPressEvent(key));
 }
 
-//funcao chamada toda vez que uma tecla for liberada
+// funcao chamada toda vez que uma tecla for liberada
 void keyboardUp(int key)
 {
-   // printf("\nLiberou: %d" , key);
-   game.HandleEvent(Event::CreateKeyReleaseEvent(key));
+    // printf("\nLiberou: %d" , key);
+    game.HandleEvent(Event::CreateKeyReleaseEvent(key));
 }
 
-//funcao para tratamento de mouse: cliques, movimentos e arrastos
+// funcao para tratamento de mouse: cliques, movimentos e arrastos
 void mouse(int button, int state, int wheel, int direction, int x, int y)
 {
-   // printf("\nmouse %d %d %d %d %d %d", button, state, wheel, direction,  x, y);
+    // printf("\nmouse %d %d %d %d %d %d", button, state, wheel, direction,  x, y);
 
-   Vector2 position(x, y);
+    Vector2 position(x, y);
 
-   if (button == -2 && state == -2 && wheel == -2 && direction == -2)
-   {
-      game.HandleEvent(Event::CreateMouseMoveEvent(position));
-   }
+    if (button == -2 && state == -2 && wheel == -2 && direction == -2)
+    {
+        game.HandleEvent(Event::CreateMouseMoveEvent(position));
+    }
 
-   if (button != -2 && state != -2)
-   {
-      if (state == 0)
-      {
-         game.HandleEvent(Event::CreateMouseButtonPressEvent(position, button));
-      }
-      else
-      {
-         game.HandleEvent(Event::CreateMouseButtonReleaseEvent(position, button));
-      }
-   }
+    if (button != -2 && state != -2)
+    {
+        if (state == 0)
+        {
+            game.HandleEvent(Event::CreateMouseButtonPressEvent(position, button));
+        }
+        else
+        {
+            game.HandleEvent(Event::CreateMouseButtonReleaseEvent(position, button));
+        }
+    }
+}
+
+void exiting() {
+    std::cout << "Saving game state..." << std::endl;
+    game.GetState().Save(FILENAME);
 }
 
 int main(void)
 {
-   // game.CreateObject<TrackBoundary>();
-   std::shared_ptr<Player> player = game.CreateObject<Player>();
-   std::shared_ptr<Turret> enemy = game.CreateObject<Turret>();
-   std::shared_ptr<PowerUp> powerUp = game.CreateObject<PowerUp>();
-   powerUp->Transform->SetPosition(Vector2(800, 500));
+    srand(time(NULL));
 
-   CV::init(&screenWidth, &screenHeight, "Titulo da Janela: Canvas 2D - Pressione 1, 2, 3");
-   CV::run();
+    std::atexit(exiting);
 
-   lastFrameTime = frame_clock::now();
+    game.GetState().Load(FILENAME);
+    game.SwitchToScene<EditorScene>();
+
+    CV::init(&screenWidth, &screenHeight, "T3 (Jaime Antonio Daniel Filho)");
+    CV::run();
 }

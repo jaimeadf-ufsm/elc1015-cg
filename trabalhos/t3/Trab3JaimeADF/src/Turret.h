@@ -7,9 +7,10 @@
 class Turret : public Enemy
 {
 public:
-    Turret(std::reference_wrapper<Game> game);
+    Turret(std::reference_wrapper<Scene> scene);
 
     void Initialize() override;
+
     void Update(float deltaTime) override;
     void Draw(DrawingContext &context) override;
 

@@ -11,13 +11,15 @@ static std::vector<TesselatedGraphic> s_PretesselatedGraphics = {
     }).Materialize(),
 };
 
-MuzzleFlash::MuzzleFlash(std::reference_wrapper<Game> game) : Animation(game)
+MuzzleFlash::MuzzleFlash(std::reference_wrapper<Scene> scene) : Animation(scene)
 {
 }
 
 void MuzzleFlash::Initialize()
 {
     Animation::Initialize();
+
+    SetPriority(100);
 
     Frames = s_PretesselatedGraphics;
 

@@ -1,8 +1,8 @@
 #include "Entity.h"
 #include "Explosion.h"
-#include "Game.h"
+#include "Scene.h"
 
-Entity::Entity(std::reference_wrapper<Game> game) : GameObject(game)
+Entity::Entity(std::reference_wrapper<Scene> scene) : GameObject(scene)
 {
     Health = std::make_shared<::Health>();
 }

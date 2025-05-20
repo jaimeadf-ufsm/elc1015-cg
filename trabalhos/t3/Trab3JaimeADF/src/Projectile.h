@@ -6,7 +6,7 @@
 class Projectile : public GameObject
 {
 public:
-    Projectile(std::reference_wrapper<Game> game);
+    Projectile(std::reference_wrapper<Scene> scene);
 
     void Initialize() override;
 

@@ -5,7 +5,7 @@
 class Enemy : public Entity
 {
 public:
-    Enemy(std::reference_wrapper<Game> game);
+    Enemy(std::reference_wrapper<Scene> scene);
 
     virtual void Initialize();
 

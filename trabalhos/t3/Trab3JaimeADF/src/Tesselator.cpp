@@ -11,23 +11,22 @@ struct Node
     size_t NextIndex;
 };
 
-
 size_t CreateNodes(std::vector<Node>& nodes, const std::vector<Vector2>& points)
 {
     nodes.clear();
     nodes.reserve(points.size());
 
-    float sum = 0.0f;
+    float orientation = 0.0f;
 
     for (size_t i = 0; i < points.size(); i++)
     {
         Vector2 start = points[i];
         Vector2 end = points[(i + 1) % points.size()];
 
-        sum += (end.X - start.X) * (end.Y + start.Y);
+        orientation += (end.X - start.X) * (end.Y + start.Y);
     }
 
-    if (sum > 0)
+    if (orientation > 0)
     {
         for (size_t i = 0; i < points.size(); i++)
         {
@@ -165,11 +164,13 @@ void CutEar(std::vector<Node>& nodes, Mesh &mesh, size_t earNodeIndex)
 
 void Tesselator::Stroke(Mesh& mesh, const Path& path, float width)
 {
+    static std::vector<Vector2> points;
+
     mesh.Clear();
 
     float halfWidth = width / 2.0f;
 
-    const std::vector<Vector2>& points = path.GetPoints();
+    points = path.GetPoints();
 
     if (points.size() < 2)
     {
@@ -210,7 +211,7 @@ void Tesselator::Stroke(Mesh& mesh, const Path& path, float width)
 
     for (size_t i = 1; i < j; i++)
     {
-        Vector2 previousPoint = points[i - 1];
+        Vector2 previousPoint = points[(i - 1)];
         Vector2 currentPoint = points[i % points.size()];
         Vector2 nextPoint = points[(i + 1) % points.size()];
 

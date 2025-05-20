@@ -43,12 +43,12 @@ void TesselatedGraphic::Translate(const Vector2& offset)
     }
 }
 
-void TesselatedGraphic::Render(DrawingContext& context)
+void TesselatedGraphic::Draw(DrawingContext& context) const
 {
     Draw(context, Transform());
 }
 
-void TesselatedGraphic::Draw(DrawingContext& context, Transform transform)
+void TesselatedGraphic::Draw(DrawingContext& context, Transform transform) const
 {
     for (const TesselatedFeature& feature : Features)
     {

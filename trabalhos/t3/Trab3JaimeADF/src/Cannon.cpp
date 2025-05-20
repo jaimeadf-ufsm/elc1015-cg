@@ -1,13 +1,13 @@
 #include "Cannon.h"
 
-#include "Game.h"
+#include "Scene.h"
 #include "Constants.h"
 #include "Projectile.h"
 
 static const float s_ProjectileOffset = 10.0f;
 static const float s_MuzzleFlashOffset = 10.0f;
 
-Cannon::Cannon(std::reference_wrapper<Game> game) : GameObject::GameObject(game)
+Cannon::Cannon(std::reference_wrapper<Scene> scene) : GameObject::GameObject(scene)
 {
 }
 
@@ -37,7 +37,7 @@ void Cannon::Draw(DrawingContext& context)
 
 void Cannon::Fire()
 {
-    Game& game = GetGame();
+    Scene& scene = GetScene();
 
     if (m_TimeSinceLastFire <= (1.0f / m_FireRate))
     {
@@ -46,11 +46,11 @@ void Cannon::Fire()
 
     m_TimeSinceLastFire = 0.0f;
 
-    std::shared_ptr<Projectile> projectile = game.CreateObject<Projectile>();
+    std::shared_ptr<Projectile> projectile = scene.CreateObject<Projectile>();
     projectile->Transform->SetPosition(GetMuzzlePosition(s_ProjectileOffset));
     projectile->Transform->SetRotation(Transform->GetRotation());
 
-    m_MuzzleFlash = game.CreateObject<MuzzleFlash>();
+    m_MuzzleFlash = scene.CreateObject<MuzzleFlash>();
     m_MuzzleFlash->Transform->SetPosition(GetMuzzlePosition(s_MuzzleFlashOffset));
     m_MuzzleFlash->Transform->SetRotation(Transform->GetRotation());
 

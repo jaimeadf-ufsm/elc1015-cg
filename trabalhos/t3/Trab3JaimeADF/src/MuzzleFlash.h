@@ -5,7 +5,7 @@
 class MuzzleFlash : public Animation
 {
 public:
-    MuzzleFlash(std::reference_wrapper<Game> game);
+    MuzzleFlash(std::reference_wrapper<Scene> scene);
 
     void Initialize() override;
 };

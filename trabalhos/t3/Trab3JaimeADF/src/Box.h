@@ -6,7 +6,7 @@
 class Box : public Enemy
 {
 public:
-    Box(std::reference_wrapper<Game> game);
+    Box(std::reference_wrapper<Scene> scene);
 
     void Initialize() override;
 

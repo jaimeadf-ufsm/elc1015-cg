@@ -49,7 +49,7 @@ void Path::CubicBezierTo(Vector2 point1, Vector2 point2, Vector2 point3)
 
     float t = 0.0f;
 
-    float step = 0.05f;
+    float step = 0.025f;
 
     while (t < 1.0f)
     {

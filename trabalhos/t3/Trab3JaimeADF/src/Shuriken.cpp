@@ -1,12 +1,20 @@
 #include "Shuriken.h"
 
-#include "Game.h"
+#include "Scene.h"
 #include "Constants.h"
 #include "Tesselator.h"
 #include "PathParser.h"
 
+static const TesselatedGraphic s_PretesselatedGraphic = VectorGraphic({
+    VectorFeature()
+        .WithPaths("M24 0L29.6129 17.2746H47.7765L33.0818 27.9508L38.6947 45.2254L24 34.5491L9.30541 45.2254L14.9183 27.9508L0.223633 17.2746H18.3872L24 0Z")
+        .WithFill(ColorRGB(0xD04436)),
+    VectorFeature()
+        .WithPaths("M19.1133 18.2744H3.30078L16.0938 27.5693L11.207 42.6064L24 33.3135L36.792 42.6064L31.9062 27.5693L44.6992 18.2744H28.8867L24 3.23535L19.1133 18.2744Z")
+        .WithFill(ColorRGB(0xE74C3C)),
+}).Materialize();
 
-Shuriken::Shuriken(std::reference_wrapper<Game> game) : Enemy::Enemy(game)
+Shuriken::Shuriken(std::reference_wrapper<Scene> scene) : Enemy::Enemy(scene)
 {
 
 }
@@ -19,7 +27,7 @@ void Shuriken::Initialize()
     Health->SetValue(10.0f);
 
     std::vector<Mesh> bodyMeshes;
-    std::vector<Path> bodyPaths = PathParser::ParseCommands("M42.8431 47.5782C44.2039 53.7251 50.0266 62 50.0266 62C34.4737 62 30.4041 48.2771 30.2717 47.5782C30.1393 46.8793 28.4785 37.06 28.4761 33.1748V33.1563C28.4785 29.2814 21.3858 27.6363 16.0339 25.9454C10.0504 24.055 0 24.9794 0 24.9794C7.77643 11.4588 21.4007 14.7463 22.3197 15.0167C23.2386 15.2871 32.3178 18.7271 35.6596 20.6667C39.0015 22.6063 43.9671 17.2628 48.1018 13.4558C52.7245 9.19935 56.9522 0 56.9522 0C64.7286 13.5206 55.2759 23.7896 54.3875 24.3845C53.4991 24.9794 46.1874 31.2209 42.8431 33.1563C39.4988 35.0917 41.626 42.0802 42.8431 47.5782Z");
+    std::vector<Path> bodyPaths = PathParser::ParseCommands("M24 0L29.6129 17.2746H47.7765L33.0818 27.9508L38.6947 45.2254L24 34.5491L9.30541 45.2254L14.9183 27.9508L0.223633 17.2746H18.3872L24 0Z");
 
     for (const Path& path : bodyPaths)
     {
@@ -28,38 +36,32 @@ void Shuriken::Initialize()
 
         Tesselator::Fill(bodyMesh, path);
 
-        bodyMesh.Translate(Vector2(-36.0f, -28.0f));
+        bodyMesh.Translate(Vector2(-23.28f, -24.5f));
     }
 
     Colliders = Collider::Meshes(bodyMeshes);
-    Transform->SetPosition(Vector2(1280 / 2, 720 / 2));
 
-    m_Graphic = VectorGraphic({
-      VectorFeature()
-          .WithPaths(bodyPaths)
-          .WithFill(ColorRGB(0x657A7B)),
-    }).Materialize();
-
-    m_Graphic.Translate(Vector2(-36.0f, -28.0f));
+    m_Graphic = s_PretesselatedGraphic;
+    m_Graphic.Translate(Vector2(-23.28f, -24.5f));
 }
 
 void Shuriken::Update(float deltaTime)
 {
     Enemy::Update(deltaTime);
 
-    Game& game = GetGame();
+    Scene& scene = GetScene();
 
-    Body->SetAngularVelocity(PI);
+    Body->SetAngularVelocity(PI / 4.0f);
     Body->SetLinearVelocity(Vector2());
 
-    for (const std::shared_ptr<GameObject>& object : game.GetObjects())
+    for (const std::shared_ptr<GameObject>& object : scene.GetObjects())
     {
         if (object->HasTag("Player"))
         {
             Vector2 direction = object->Transform->GetPosition() - Transform->GetPosition();
             direction = direction.Normalized();
 
-            Vector2 velocity = direction * 200.0f;
+            Vector2 velocity = direction * 50.0f;
 
             Body->SetLinearVelocity(velocity);
         }

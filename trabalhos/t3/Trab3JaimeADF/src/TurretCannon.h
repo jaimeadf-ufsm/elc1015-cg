@@ -6,7 +6,7 @@
 class TurretCannon : public Cannon
 {
 public:
-    TurretCannon(std::reference_wrapper<Game> game);
+    TurretCannon(std::reference_wrapper<Scene> scene);
 
     virtual void Initialize() override;
 

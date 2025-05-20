@@ -1,7 +1,8 @@
 #include <limits>
+#include <math.h>
 
 #include "PhysicsSystem.h"
-#include "Game.h"
+#include "Scene.h"
 #include "GameObject.h"
 
 struct PolygonIntersectionResult
@@ -37,7 +38,7 @@ void ProjectPolygonAlongAxis(
 )
 {
     result.Minimum = std::numeric_limits<float>::max();
-    result.Maximum = std::numeric_limits<float>::min();
+    result.Maximum = std::numeric_limits<float>::lowest();
 
     for (const Vector2& vertex : polygon)
     {
@@ -116,7 +117,7 @@ bool IntersectPolygons(
     return true;
 }
 
-PhysicsSystem::PhysicsSystem(std::reference_wrapper<Game> game) : m_Game(game)
+PhysicsSystem::PhysicsSystem(std::reference_wrapper<Scene> scene) : m_Scene(scene)
 {
 }
 
@@ -127,11 +128,47 @@ void PhysicsSystem::Simulate(float deltaTime)
     FireContactCallbacks();
 }
 
+void PhysicsSystem::OverlapObjectsWithBox(std::vector<std::shared_ptr<GameObject>>& objects, const Vector2& start, const Vector2& end)
+{
+    OverlapObjectsWithPolygon(
+        objects,
+        {
+            Vector2(start.X, start.Y),
+            Vector2(end.X, start.Y),
+            Vector2(end.X, end.Y),
+            Vector2(start.X, end.Y)
+        }
+    );
+}
+
+void PhysicsSystem::OverlapObjectsWithPolygon(std::vector<std::shared_ptr<GameObject>>& overlapingObjects, const std::vector<Vector2>& polygon)
+{
+    Scene& scene = m_Scene.get();
+
+    overlapingObjects.clear();
+
+    for (std::shared_ptr<GameObject>& object : scene.GetObjects())
+    {
+        for (std::shared_ptr<Collider> collider : object->Colliders)
+        {
+            object->Transform->Apply(collider->GetPolygon(), m_TransformedPolygonA);
+
+            PolygonIntersectionResult intersection;
+
+            if (IntersectPolygons(intersection, m_TransformedPolygonA, polygon))
+            {
+                overlapingObjects.push_back(object);
+                break;
+            }
+        }
+    }
+}
+
 void PhysicsSystem::Integrate(float deltaTime)
 {
-    Game& game = m_Game.get();
+    Scene& scene = m_Scene.get();
 
-    for (std::shared_ptr<GameObject>& object : game.GetObjects())
+    for (std::shared_ptr<GameObject>& object : scene.GetObjects())
     {
         Vector2 linearOffset = object->Body->GetLinearVelocity() * deltaTime;
         float angularOffset = object->Body->GetAngularVelocity() * deltaTime;
@@ -143,9 +180,9 @@ void PhysicsSystem::Integrate(float deltaTime)
 
 void PhysicsSystem::SolveCollisions(float deltaTime)
 {
-    Game& game = m_Game.get();
+    Scene& scene = m_Scene.get();
 
-    std::vector<std::shared_ptr<GameObject>>& objects = game.GetObjects();
+    std::vector<std::shared_ptr<GameObject>>& objects = scene.GetObjects();
 
     m_Collisions.clear();
 
@@ -249,8 +286,8 @@ void PhysicsSystem::SolveCollision(Collision& collision)
         Vector2 velocityA = objectA->Body->GetLinearVelocity();
         Vector2 velocityB = objectB->Body->GetLinearVelocity();
 
-        float projectionA = std::abs(velocityA.Dot(normal));
-        float projectionB = std::abs(velocityB.Dot(normal));
+        float projectionA = fabs(velocityA.Dot(normal));
+        float projectionB = fabs(velocityB.Dot(normal));
         float total = projectionA + projectionB;
 
         if (total > 0.0f)

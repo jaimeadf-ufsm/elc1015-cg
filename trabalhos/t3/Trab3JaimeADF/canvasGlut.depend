@@ -1,0 +1,740 @@
+# depslib dependency file v1.0
+1747619675 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\animation.cpp
+	"Animation.h"
+
+1747619675 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\animation.h
+	"GameObject.h"
+	"VectorGraphic.h"
+
+1747624956 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\gameobject.h
+	<memory>
+	<unordered_set>
+	"DrawingContext.h"
+	"Event.h"
+	"Transform.h"
+	"Body.h"
+	"Collider.h"
+	"Contact.h"
+	"BoundingBox.h"
+
+1747687011 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\drawingcontext.h
+	<vector>
+	"Color.h"
+	"Vector2.h"
+	"Path.h"
+	"Mesh.h"
+	"DrawingCommand.h"
+
+1747501601 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\color.h
+
+1747518530 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\vector2.h
+	<iostream>
+
+1747662162 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\path.h
+	<vector>
+	"Vector2.h"
+
+1747574517 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\mesh.h
+	<vector>
+	"Vector2.h"
+
+1747684292 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\drawingcommand.h
+
+1746398922 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\event.h
+	"Vector2.h"
+
+1747591247 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\transform.h
+	<vector>
+	"Vector2.h"
+
+1747396696 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\body.h
+	"Vector2.h"
+
+1747581956 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\collider.h
+	<vector>
+	<memory>
+	"Vector2.h"
+	"Mesh.h"
+
+1747619660 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\contact.h
+	<memory>
+
+1747565905 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\boundingbox.h
+	"Vector2.h"
+
+1747506193 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\vectorgraphic.h
+	"Path.h"
+	"Color.h"
+	"TesselatedGraphic.h"
+
+1747665864 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\tesselatedgraphic.h
+	"Color.h"
+	"Mesh.h"
+	"Transform.h"
+	"DrawingContext.h"
+
+1747700141 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\audiosystem.cpp
+	<iostream>
+	<string>
+	<unordered_map>
+	<memory>
+	"AudioSystem.h"
+	"miniaudio.h"
+
+1747700137 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\audiosystem.h
+	<string>
+	<unordered_map>
+	<memory>
+	"AudioSystem.h"
+
+1747270616 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\miniaudio.h
+	"miniaudio.h"
+	"miniaudio.c"
+	<stddef.h>
+	<string.h>
+	<stdint.h>
+	<pthread.h>
+	<stdalign.h>
+	<stdarg.h>
+	<assert.h>
+	<limits.h>
+	<math.h>
+	<stdlib.h>
+	<string.h>
+	<stdarg.h>
+	<stdio.h>
+	<strings.h>
+	<wchar.h>
+	<float.h>
+	<windows.h>
+	<sched.h>
+	<sys/time.h>
+	<pthread.h>
+	<time.h>
+	<sys/stat.h>
+	<emscripten/emscripten.h>
+	<stdint.h>
+	<immintrin.h>
+	<emmintrin.h>
+	<arm_neon.h>
+	<intrin.h>
+	<sys/system_properties.h>
+	<errno.h>
+	<android/log.h>
+	<intrin.h>
+	<dlfcn.h>
+	<AvailabilityMacros.h>
+	<mach/mach_time.h>
+	<sys/types.h>
+	<unistd.h>
+	<dlfcn.h>
+	<audioclient.h>
+	<mmdeviceapi.h>
+	<poll.h>
+	<sys/eventfd.h>
+	<alsa/asoundlib.h>
+	<errno.h>
+	<pulse/pulseaudio.h>
+	<jack/jack.h>
+	<TargetConditionals.h>
+	<CoreAudio/CoreAudio.h>
+	<AVFoundation/AVFoundation.h>
+	<AudioToolbox/AudioToolbox.h>
+	<fcntl.h>
+	<sys/audioio.h>
+	<sys/soundcard.h>
+	<fcntl.h>
+	<poll.h>
+	<errno.h>
+	<sys/stat.h>
+	<sys/types.h>
+	<sys/ioctl.h>
+	<sys/audioio.h>
+	<sys/param.h>
+	<sys/param.h>
+	<sys/ioctl.h>
+	<unistd.h>
+	<fcntl.h>
+	<sys/soundcard.h>
+	<AAudio/AAudio.h>
+	<SLES/OpenSLES.h>
+	<SLES/OpenSLES_Android.h>
+	<emscripten/emscripten.h>
+	<emscripten/webaudio.h>
+	<stddef.h>
+	<stddef.h>
+	<stddef.h>
+	<ctype.h>
+	<wctype.h>
+	<stdlib.h>
+	<string.h>
+	<stdlib.h>
+	<string.h>
+	<limits.h>
+	<stdio.h>
+	<wchar.h>
+	<assert.h>
+	<endian.h>
+	<stdlib.h>
+	<string.h>
+	<smmintrin.h>
+	<emmintrin.h>
+	<arm_neon.h>
+	<intrin.h>
+	<assert.h>
+	<intrinsics.h>
+	<intrin.h>
+	<stdio.h>
+	<wchar.h>
+	<stdlib.h>
+	<string.h>
+	<limits.h>
+	<intrin.h>
+	<emmintrin.h>
+	<arm_neon.h>
+	<assert.h>
+	<stdio.h>
+	<wchar.h>
+
+1747685731 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\background.cpp
+	"Background.h"
+	"Scene.h"
+	"Constants.h"
+	"Tesselator.h"
+
+1747679978 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\background.h
+	"GameObject.h"
+	"Track.h"
+
+1747679543 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\track.h
+	"Path.h"
+	"PathTransformer.h"
+	"VectorGraphic.h"
+
+1747663117 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\pathtransformer.h
+	"Path.h"
+
+1747699355 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\scene.h
+	"Game.h"
+	"PhysicsSystem.h"
+	"AudioSystem.h"
+
+1747693030 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\game.h
+	<memory>
+	"Event.h"
+	"DrawingContext.h"
+	"Mouse.h"
+	"Keyboard.h"
+	"Viewport.h"
+	"GameState.h"
+
+1746473197 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\mouse.h
+	<array>
+	<cstdint>
+	"Vector2.h"
+
+1747694770 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\keyboard.h
+	<array>
+	<cstdint>
+
+1747620292 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\viewport.h
+
+1747696856 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\gamestate.h
+	<chrono>
+	<memory>
+	"Track.h"
+
+1747682243 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\physicssystem.h
+	<unordered_set>
+	"GameObject.h"
+	"Contact.h"
+
+1747256067 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\constants.h
+
+1747139221 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\tesselator.h
+	<vector>
+	"Vector2.h"
+	"Path.h"
+	"Mesh.h"
+
+1747685675 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\barrel.cpp
+	"Barrel.h"
+	"Scene.h"
+	"Constants.h"
+
+1747619675 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\barrel.h
+	"Enemy.h"
+	"VectorGraphic.h"
+
+1747619675 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\enemy.h
+	"Entity.h"
+
+1747619675 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\entity.h
+	"GameObject.h"
+	"Health.h"
+
+1747565090 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\health.h
+
+1747634852 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\bezier.cpp
+	"Bezier.h"
+
+1747633371 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\bezier.h
+	"Vector2.h"
+
+1747256014 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\body.cpp
+	"Body.h"
+
+1747688491 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\boundingbox.cpp
+	<limits>
+	"BoundingBox.h"
+
+1747685669 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\box.cpp
+	"Box.h"
+	"Scene.h"
+	"Constants.h"
+
+1747619675 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\box.h
+	"Enemy.h"
+	"VectorGraphic.h"
+
+1747619726 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\cannon.cpp
+	"Cannon.h"
+	"Scene.h"
+	"Constants.h"
+	"Projectile.h"
+
+1747619675 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\cannon.h
+	"GameObject.h"
+	"MuzzleFlash.h"
+
+1747619675 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\muzzleflash.h
+	"Animation.h"
+
+1747619675 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\projectile.h
+	"GameObject.h"
+	"VectorGraphic.h"
+
+1747582243 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\collider.cpp
+	<cmath>
+	"Collider.h"
+	"Constants.h"
+
+1747501647 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\color.cpp
+	"Color.h"
+
+1747684299 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\drawingcommand.cpp
+	"DrawingCommand.h"
+
+1747687069 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\drawingcontext.cpp
+	<cstring>
+	"DrawingContext.h"
+
+1747684318 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\drawingengine.cpp
+	"gl_canvas2d.h"
+	"DrawingEngine.h"
+
+1746899125 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\gl_canvas2d.h
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	<string.h>
+	<GL/glut.h>
+	<GL/freeglut_ext.h>
+	"Vector2.h"
+
+1745804562 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\include\gl\glut.h
+	"freeglut_std.h"
+
+1745804562 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\include\gl\freeglut_std.h
+	<windows.h>
+	<EGL/egl.h>
+	<GLES/gl.h>
+	<GLES2/gl2.h>
+	<OpenGL/gl.h>
+	<OpenGL/glu.h>
+	<GL/gl.h>
+	<GL/glu.h>
+	<stdlib.h>
+
+1745804562 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\include\gl\freeglut_ext.h
+	<stdarg.h>
+
+1747684245 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\drawingengine.h
+	<vector>
+	"DrawingCommand.h"
+
+1747696886 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\editorscene.cpp
+	"EditorScene.h"
+	"TrackEditor.h"
+	"MainScene.h"
+	"ScoreScene.h"
+
+1747624873 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\editorscene.h
+	"Scene.h"
+
+1747693729 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\trackeditor.h
+	"GameObject.h"
+	"Track.h"
+
+1747620593 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\mainscene.h
+	"Scene.h"
+
+1747696355 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\scorescene.h
+	"Scene.h"
+
+1747691074 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\enemy.cpp
+	"Enemy.h"
+	"Explosion.h"
+	"Scene.h"
+	"Score.h"
+
+1747619675 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\explosion.h
+	"Animation.h"
+
+1747694916 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\score.h
+	"GameObject.h"
+	"Track.h"
+
+1747619713 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\entity.cpp
+	"Entity.h"
+	"Explosion.h"
+	"Scene.h"
+
+1747685773 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\explosion.cpp
+	"Explosion.h"
+
+1747693035 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\game.cpp
+	"Scene.h"
+	"GameObject.h"
+	<algorithm>
+
+1747689296 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\gameobject.cpp
+	"GameObject.h"
+
+1747694976 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\gameover.cpp
+	<cstdlib>
+	"GameOver.h"
+	"Scene.h"
+	"Constants.h"
+	"Tesselator.h"
+	"TextRuler.h"
+	"Player.h"
+	"Score.h"
+
+1747691655 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\gameover.h
+	"GameObject.h"
+	"Track.h"
+
+1747684537 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\textruler.h
+	<string>
+
+1747619675 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\player.h
+	"VectorGraphic.h"
+	"Entity.h"
+	"PlayerCannon.h"
+	"Effect.h"
+
+1747619675 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\playercannon.h
+	"Cannon.h"
+	"VectorGraphic.h"
+
+1747600542 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\effect.h
+
+1747698329 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\gamestate.cpp
+	"GameState.h"
+	<fstream>
+	<vector>
+	"Track.h"
+
+1747614282 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\geometry.cpp
+	"Geometry.h"
+
+1747614286 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\geometry.h
+	"Vector2.h"
+
+1746271670 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\gl_canvas2d.cpp
+	"gl_canvas2d.h"
+	<GL/glut.h>
+
+1747694905 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\health.cpp
+	<algorithm>
+	"Health.h"
+
+1747662119 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\intersection.cpp
+	"Intersection.h"
+
+1747661877 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\intersection.h
+	"Vector2.h"
+
+1747255933 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\keyboard.cpp
+	<string>
+	"Keyboard.h"
+
+1747698153 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\main.cpp
+	<GL/glut.h>
+	<GL/freeglut_ext.h>
+	<iostream>
+	<chrono>
+	<thread>
+	"gl_canvas2d.h"
+	"Game.h"
+	"MainScene.h"
+	"EditorScene.h"
+	"Benchmark.h"
+	"DrawingContext.h"
+	"DrawingEngine.h"
+
+1746404797 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\benchmark.h
+	<chrono>
+
+1747699815 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\mainscene.cpp
+	"MainScene.h"
+	"EditorScene.h"
+	"Player.h"
+	"Turret.h"
+	"PowerUp.h"
+	"Background.h"
+	"TrackBoundary.h"
+	"TrackPlacer.h"
+	"WaveSpawner.h"
+	"PowerUpSpawner.h"
+	"Score.h"
+	"GameOver.h"
+
+1747682764 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\turret.h
+	"Enemy.h"
+	"VectorGraphic.h"
+	"TurretCannon.h"
+
+1747619675 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\turretcannon.h
+	"Cannon.h"
+	"VectorGraphic.h"
+
+1747619675 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\powerup.h
+	"GameObject.h"
+	"Effect.h"
+	"VectorGraphic.h"
+
+1747683889 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\trackboundary.h
+	"GameObject.h"
+	"Track.h"
+
+1747687747 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\trackplacer.h
+	"GameObject.h"
+	"Track.h"
+
+1747689924 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\wavespawner.h
+	"GameObject.h"
+	"Track.h"
+	"TrackPlacer.h"
+
+1747689946 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\powerupspawner.h
+	"GameObject.h"
+	"Track.h"
+	"TrackPlacer.h"
+
+1747574544 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\mesh.cpp
+	"Mesh.h"
+
+1747691121 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\message.cpp
+	"Message.h"
+	"Scene.h"
+	"TextRuler.h"
+
+1747684065 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\message.h
+	"GameObject.h"
+	"VectorGraphic.h"
+
+1746399818 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\mouse.cpp
+	"Mouse.h"
+
+1747685781 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\muzzleflash.cpp
+	"MuzzleFlash.h"
+
+1747694529 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\path.cpp
+	<cmath>
+	"Path.h"
+
+1747618847 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\pathparser.cpp
+	<regex>
+	<deque>
+	<sstream>
+	"PathParser.h"
+
+1747501948 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\pathparser.h
+	"Path.h"
+
+1747663522 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\pathtransformer.cpp
+	"PathTransformer.h"
+	"Intersection.h"
+
+1747689997 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\player.cpp
+	"Player.h"
+	"Scene.h"
+	"Constants.h"
+	<cmath>
+
+1747683493 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\playercannon.cpp
+	"PlayerCannon.h"
+
+1747689885 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\powerup.cpp
+	<cstdlib>
+	<cmath>
+	<ctime>
+	"PowerUp.h"
+	"Player.h"
+
+1747689838 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\powerupspawner.cpp
+	"PowerUpSpawner.h"
+	"Scene.h"
+	"Constants.h"
+	"Tesselator.h"
+	"Entity.h"
+	"PowerUp.h"
+
+1747631561 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\primitivegraphic.cpp
+	<cmath>
+	"PrimitiveGraphic.h"
+	"Constants.h"
+
+1747631479 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\primitivegraphic.h
+	"DrawingContext.h"
+
+1747699863 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\projectile.cpp
+	"Projectile.h"
+	"Scene.h"
+	"Constants.h"
+	"Entity.h"
+	"Explosion.h"
+
+1747699373 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\scene.cpp
+	<algorithm>
+	"Scene.h"
+	"GameObject.h"
+
+1747694915 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\score.cpp
+	<cstdlib>
+	"Score.h"
+	"Scene.h"
+	"Constants.h"
+	"Tesselator.h"
+	"TextRuler.h"
+
+1747696740 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\scoreboard.cpp
+	<cstdlib>
+	<algorithm>
+	"Scoreboard.h"
+	"Scene.h"
+	"Constants.h"
+	"Tesselator.h"
+	"TextRuler.h"
+	"Player.h"
+	"Score.h"
+
+1747696449 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\scoreboard.h
+	"GameObject.h"
+	"Track.h"
+
+1747696874 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\scorescene.cpp
+	"ScoreScene.h"
+	"EditorScene.h"
+	"Scoreboard.h"
+
+1747690485 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\shuriken.cpp
+	"Shuriken.h"
+	"Scene.h"
+	"Constants.h"
+	"Tesselator.h"
+	"PathParser.h"
+
+1747688589 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\shuriken.h
+	"Enemy.h"
+	"VectorGraphic.h"
+
+1747665851 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\tesselatedgraphic.cpp
+	"TesselatedGraphic.h"
+
+1747697357 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\tesselator.cpp
+	"Tesselator.h"
+	"Geometry.h"
+	<algorithm>
+
+1747691593 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\textruler.cpp
+	"TextRuler.h"
+
+1747683378 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\track.cpp
+	"Track.h"
+	"Interpolation.h"
+	"Tesselator.h"
+
+1747659206 c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\interpolation.h
+
+1747685573 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\trackboundary.cpp
+	"TrackBoundary.h"
+	"Scene.h"
+	"Constants.h"
+	"Tesselator.h"
+	"Entity.h"
+
+1747694621 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\trackeditor.cpp
+	<limits>
+	"TrackEditor.h"
+	"Scene.h"
+	"Tesselator.h"
+	"Bezier.h"
+	"PrimitiveGraphic.h"
+	"Geometry.h"
+	"Interpolation.h"
+	"PathTransformer.h"
+
+1747688097 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\trackplacer.cpp
+	<cstdlib>
+	"TrackPlacer.h"
+	"Scene.h"
+	"Constants.h"
+	"Tesselator.h"
+
+1747591256 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\transform.cpp
+	"Transform.h"
+	<cmath>
+
+1747685424 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\turret.cpp
+	"Turret.h"
+	"Scene.h"
+	"Constants.h"
+
+1747686464 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\turretcannon.cpp
+	"TurretCannon.h"
+
+1747506181 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\vectorgraphic.cpp
+	"VectorGraphic.h"
+	"Tesselator.h"
+	"PathParser.h"
+
+1747620277 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\viewport.cpp
+	"Viewport.h"
+
+1747688840 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\wavespawner.cpp
+	"WaveSpawner.h"
+	"Scene.h"
+	"Constants.h"
+	"Tesselator.h"
+	"Entity.h"
+	"Box.h"
+	"Barrel.h"
+	"Turret.h"
+	"Shuriken.h"
+	"Message.h"
+
+1747700668 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\vector2.cpp
+	<cmath>
+	<math.h>
+	"Vector2.h"
+
+1747700690 source:c:\users\jaime\dev\repositories\jaimeadf-ufsm\elc1015-cg\trabalhos\t3\trab3jaimeadf\src\physicssystem.cpp
+	<limits>
+	<math.h>
+	"PhysicsSystem.h"
+	"Scene.h"
+	"GameObject.h"
+

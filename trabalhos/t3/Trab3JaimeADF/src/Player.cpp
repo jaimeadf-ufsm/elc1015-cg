@@ -1,6 +1,6 @@
 #include "Player.h"
 
-#include "Game.h"
+#include "Scene.h"
 #include "Constants.h"
 
 #include <cmath>
@@ -32,7 +32,7 @@ static const TesselatedGraphic s_PretesselatedGraphic = VectorGraphic({
         .WithFill(ColorRGB(0x27AF60)),
 }).Materialize();
 
-Player::Player(std::reference_wrapper<Game> game) : Entity::Entity(game)
+Player::Player(std::reference_wrapper<Scene> scene) : Entity::Entity(scene)
 {
 }
 
@@ -40,14 +40,12 @@ void Player::Initialize()
 {
     Entity::Initialize();
 
-    Game& game = GetGame();
-
-    Transform->SetPosition(Vector2(0, 0));
+    Scene& scene = GetScene();
 
     Colliders = Collider::Box(Vector2(40.0f, 42.0f));
 
-    Health->SetMaxValue(100.0f);
-    Health->SetValue(100.0f);
+    Health->SetMaxValue(50.0f);
+    Health->SetValue(50.0f);
 
     AddTag("Player");
     
@@ -57,16 +55,16 @@ void Player::Initialize()
     m_InvincibleTimeRemaining = 0.0f;
     m_RapidFireTimeRemaining = 0.0f;
 
-    m_Cannon = game.CreateObject<PlayerCannon>();
+    m_Cannon = scene.CreateObject<PlayerCannon>();
 }
 
 void Player::Update(float deltaTime)
 {
     Entity::Update(deltaTime);
 
-    Game& game = GetGame();
-    Mouse& mouse = game.GetMouse();
-    Keyboard& keyboard = game.GetKeyboard();
+    Scene& scene = GetScene();
+    Mouse& mouse = scene.GetMouse();
+    Keyboard& keyboard = scene.GetKeyboard();
 
     m_RapidFireTimeRemaining -= deltaTime;
     m_InvincibleTimeRemaining -= deltaTime;
@@ -92,7 +90,7 @@ void Player::Update(float deltaTime)
         m_Cannon->SetFireRate(4.0f);
     }
 
-    Vector2 linearVelocity = Transform->GetHeading() * 300.0f;
+    Vector2 linearVelocity = Transform->GetHeading() * 150.0f;
     float angularVelocity = 0.0f;
 
     if (keyboard.IsKeyPressed(KEY_A))
@@ -112,7 +110,6 @@ void Player::Update(float deltaTime)
 
     Body->SetLinearVelocity(linearVelocity);
     Body->SetAngularVelocity(angularVelocity);
-    Transform->SetPosition(Vector2(800.0f, 500.0f));
 }
 
 void Player::Draw(DrawingContext& context)

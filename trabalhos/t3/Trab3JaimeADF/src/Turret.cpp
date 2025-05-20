@@ -1,6 +1,6 @@
 #include "Turret.h"
 
-#include "Game.h"
+#include "Scene.h"
 #include "Constants.h"
 
 static const Vector2 s_LeftCannonOffset(-6.5, -7.5);
@@ -27,7 +27,7 @@ static TesselatedGraphic s_PretesselatedGraphic = VectorGraphic({
         .WithFill(ColorRGB(0x403C2F)),
 }).Materialize();
 
-Turret::Turret(std::reference_wrapper<Game> game) : Enemy::Enemy(game)
+Turret::Turret(std::reference_wrapper<Scene> scene) : Enemy::Enemy(scene)
 {
 }
 
@@ -35,27 +35,25 @@ void Turret::Initialize()
 {
     Enemy::Initialize();
 
-    Game& game = GetGame();
+    Scene& scene = GetScene();
 
     Health->SetMaxValue(10.0f);
     Health->SetValue(10.0f);
 
     Colliders = Collider::Box(Vector2(48.0f, 48.0f));
 
-    Transform->SetPosition(Vector2(1280 / 2, 720 / 2));
-
     m_Graphic = s_PretesselatedGraphic;
     m_Graphic.Translate(Vector2(-24.0f, -24.0f));
 
-    m_LeftCannon = game.CreateObject<TurretCannon>();
-    m_RightCannon = game.CreateObject<TurretCannon>();
+    m_LeftCannon = scene.CreateObject<TurretCannon>();
+    m_RightCannon = scene.CreateObject<TurretCannon>();
 }
 
 void Turret::Update(float deltaTime)
 {
     Enemy::Update(deltaTime);
 
-    Game& game = GetGame();
+    Scene& scene = GetScene();
 
     Vector2 position = Transform->GetPosition();
     Vector2 heading = Transform->GetHeading();
@@ -69,7 +67,7 @@ void Turret::Update(float deltaTime)
         position + heading * s_RightCannonOffset.X + perpendicular * s_RightCannonOffset.Y
     );
 
-    for (const std::shared_ptr<GameObject>& object : game.GetObjects())
+    for (const std::shared_ptr<GameObject>& object : scene.GetObjects())
     {
         if (object->HasTag("Player"))
         {

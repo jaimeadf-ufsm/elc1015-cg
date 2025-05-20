@@ -1,6 +1,6 @@
 #include "GameObject.h"
 
-GameObject::GameObject(std::reference_wrapper<Game> game) : m_Game(game)
+GameObject::GameObject(std::reference_wrapper<Scene> scene) : m_Scene(scene), m_Priority(0)
 {
     Transform = std::make_shared<::Transform>();
     Body = std::make_shared<::Body>();
@@ -34,6 +34,10 @@ void GameObject::Draw(DrawingContext& context)
 
         context.StrokePolygon();
     }
+}
+
+void GameObject::HandleEvent(const Event& event)
+{
 }
 
 void GameObject::Collide(const Contact& contact)
@@ -93,7 +97,7 @@ BoundingBox GameObject::GetBoundingBox() const
     return bb;
 }
 
-Game& GameObject::GetGame() const
+Scene& GameObject::GetScene() const
 {
-    return m_Game.get();
+    return m_Scene.get();
 }

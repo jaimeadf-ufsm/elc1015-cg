@@ -7,7 +7,7 @@
 class PowerUp : public GameObject
 {
 public:
-    PowerUp(std::reference_wrapper<Game> game);
+    PowerUp(std::reference_wrapper<Scene> scene);
 
     void Initialize() override;
 

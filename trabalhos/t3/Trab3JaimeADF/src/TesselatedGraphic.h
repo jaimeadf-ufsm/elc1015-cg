@@ -31,6 +31,6 @@ public:
 
     void Translate(const Vector2& offset);
 
-    void Render(DrawingContext& context);
-    void Draw(DrawingContext& context, Transform transform);
+    void Draw(DrawingContext& context) const;
+    void Draw(DrawingContext& context, Transform transform) const;
 };

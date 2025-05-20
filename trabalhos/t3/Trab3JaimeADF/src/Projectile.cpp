@@ -1,6 +1,6 @@
 #include "Projectile.h"
 
-#include "Game.h"
+#include "Scene.h"
 #include "Constants.h"
 #include "Entity.h"
 #include "Explosion.h"
@@ -23,8 +23,8 @@ static TesselatedGraphic s_PretesselatedGraphic = VectorGraphic({
         .WithFill(ColorRGB(0x27AF60)),
 }).Materialize();
 
-Projectile::Projectile(std::reference_wrapper<Game> game) :
-    GameObject::GameObject(game),
+Projectile::Projectile(std::reference_wrapper<Scene> scene) :
+    GameObject::GameObject(scene),
     m_Damage(1.0f)
 {
 
@@ -34,12 +34,18 @@ void Projectile::Initialize()
 {
     GameObject::Initialize();
 
+    Scene& scene = GetScene();
+    AudioSystem& audio = scene.GetAudioSystem();
+
     Colliders = Collider::Box(Vector2(16.0f, 12.0f), ColliderMode::Sensor);
 
     AddTag("Projectile");
+    SetPriority(2);
 
     m_Graphic = s_PretesselatedGraphic;
     m_Graphic.Translate(Vector2(-8.0f, -6.0f));
+
+    audio.PlayAudio("gunfire");
 }
 
 void Projectile::Update(float deltaTime)
@@ -58,7 +64,8 @@ void Projectile::Collide(const Contact& contact)
 {
     GameObject::Collide(contact);
 
-    Game& game = GetGame();
+    Scene& scene = GetScene();
+    AudioSystem& audio = scene.GetAudioSystem();
 
     if (HasBeenDestroyed())
     {
@@ -85,10 +92,12 @@ void Projectile::Collide(const Contact& contact)
         entity->Health->TakeDamage(m_Damage);
     }
     
-    std::shared_ptr<Explosion> explosion = game.CreateObject<Explosion>();
+    std::shared_ptr<Explosion> explosion = scene.CreateObject<Explosion>();
     explosion->Transform->SetPosition(Transform->GetPosition());
     explosion->Transform->SetRotation(Transform->GetRotation());
     explosion->Transform->SetScale(Vector2(0.5f, 0.5f));
+
+    audio.PlayAudio("explosion");
 
     Destroy();
 }

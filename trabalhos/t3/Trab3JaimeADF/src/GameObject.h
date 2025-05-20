@@ -4,6 +4,7 @@
 #include <unordered_set>
 
 #include "DrawingContext.h"
+#include "Event.h"
 
 #include "Transform.h"
 #include "Body.h"
@@ -11,7 +12,7 @@
 #include "Contact.h"
 #include "BoundingBox.h"
 
-class Game;
+class Scene;
 
 class GameObject
 {
@@ -21,12 +22,14 @@ public:
 
     std::vector<std::shared_ptr<Collider>> Colliders;
 
-    GameObject(std::reference_wrapper<Game> game);
+    GameObject(std::reference_wrapper<Scene> scene);
 
     virtual void Initialize();
 
     virtual void Update(float deltaTime);
     virtual void Draw(DrawingContext& context);
+
+    virtual void HandleEvent(const Event& event);
 
     virtual void Collide(const Contact& contact);
 
@@ -43,10 +46,10 @@ public:
 
     BoundingBox GetBoundingBox() const;
 
-    Game& GetGame() const;
+    Scene& GetScene() const;
 
 private:
-    std::reference_wrapper<Game> m_Game;
+    std::reference_wrapper<Scene> m_Scene;
 
     int m_Priority;
     std::unordered_set<std::string> m_Tags;

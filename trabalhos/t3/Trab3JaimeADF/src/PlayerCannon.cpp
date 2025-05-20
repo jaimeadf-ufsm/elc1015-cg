@@ -12,7 +12,7 @@ static TesselatedGraphic s_PretesselatedGraphic = VectorGraphic({
         .WithFill(ColorRGB(0x20934f)),
 }).Materialize();
 
-PlayerCannon::PlayerCannon(std::reference_wrapper<Game> game) : Cannon::Cannon(game)
+PlayerCannon::PlayerCannon(std::reference_wrapper<Scene> scene) : Cannon::Cannon(scene)
 {
 }
 
@@ -22,6 +22,7 @@ void PlayerCannon::Initialize()
 
     SetWidth(30.0f);
     SetFireRate(4.0f);
+    SetPriority(1);
 
     SetIgnoredTags({ "Player" });
 
