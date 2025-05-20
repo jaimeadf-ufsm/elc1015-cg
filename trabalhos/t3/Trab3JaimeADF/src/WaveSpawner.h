@@ -31,5 +31,5 @@ private:
     int m_Level;
 
     void SpawnLevel();
-    bool HasEnemiesRemaing();
+    bool HasEnemiesRemaining();
 };

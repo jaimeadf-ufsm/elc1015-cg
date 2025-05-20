@@ -1,17 +1,37 @@
-/*********************************************************************
-// Canvas para desenho, criada sobre a API OpenGL. Nao eh necessario conhecimentos de OpenGL para usar.
-//  Autor: Cesar Tadeu Pozzer
-//         02/2025
-//
-//  Pode ser utilizada para fazer desenhos, animacoes, e jogos simples.
-//  Tem tratamento de mouse e teclado
-//  Estude o OpenGL antes de tentar compreender o arquivo gl_canvas.cpp
-//
-//  Versao 2.1
-//
-//  Instru��es:
-//	  Para alterar a animacao, digite numeros entre 1 e 3
-// *********************************************************************/
+// ## Requisitos implementados
+
+// Todos os requisitos obrigatórios e extras especificados do trabalho foram implementados:
+
+// ### Requisitos obrigatórios
+// - Pista desenhada com curvas de bezier cúbicas.
+// - Editor de pistas.
+// - Movimentação do tanque com o teclado (A/D) e do canhão com o mouse.
+// - Disparo de projéteis.
+// - Placar de pontaução.
+// - Colisão entre projéteis, alvos, pistas, etc...
+// - Controle de FPS.
+// - Barra de vida do tanque e danos na colisão.
+// - Todos os movimentos são feitas conforme o FPS.
+
+// ### Requisitos extras especificados
+
+// - Alvos com diferentes lógicas. (até 1 pt)
+// - Alvos com diferentes visuais e colisão apropriada (estrela, barril e quadrado). (até 2 pt)
+// - Power-ups (cura, invincibilidade e disparos rápidos). (até 1 pt)
+// - Efeitos de explosão bonitos. (até 2 pt)
+// - Preenchimento colorido da pista com detalhes. (até 1 pt)
+// - Diferentes níveis de dificuldade ao explodir todos os alvos. (até 1 pt)
+
+// ### Requisitos extras não-especificados
+// - Sons (Explosão e Tiro).
+// - Armazenamento de pistas e de pontuações em um arquivo.
+// - Histórico de pontuações.
+// - Limitador de FPS.
+// - Animações nos diferentes tipos de objetos.
+// - Todos os desenhos são feitos utilizado triângulos com as primitivas do Canvas 2D (nada é um bitmap).
+// - Triangularizador de polígonos convexos e concâvos.
+// - Parser de comandos utilizados em SVG para desenhar qualquer elemento na tela.
+// - Colisão genérica utilizando SAT (Separting Axis Theorem).
 
 #include <GL/glut.h>
 #include <GL/freeglut_ext.h> //callback da wheel do mouse.

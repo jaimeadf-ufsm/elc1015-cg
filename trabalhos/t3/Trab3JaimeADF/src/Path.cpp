@@ -1,6 +1,7 @@
 #include <cmath>
 
 #include "Path.h"
+#include "Bezier.h"
 
 Path::Path() : m_Closed(false), m_Points({ })
 {
@@ -27,13 +28,7 @@ void Path::QuadraticBezierTo(Vector2 point1, Vector2 point2)
 
     while (t < 1.0f)
     {
-        Vector2 p;
-        p += (1 - t) * (1 - t) * p0;
-        p += 2 * (1 - t) * t * p1;
-        p += t * t * p2;
-
-        m_Points.push_back(p);
-
+        m_Points.push_back(QuadraticBezier(p0, p1, p2, t));
         t += step;
     }
 

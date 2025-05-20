@@ -65,7 +65,7 @@ void WaveSpawner::Update(float deltaTime)
         return;
     }
 
-    if (!HasEnemiesRemaing())
+    if (!HasEnemiesRemaining())
     {
         SpawnLevel();
     }
@@ -127,7 +127,7 @@ void WaveSpawner::SpawnLevel()
     m_Level++;
 }
 
-bool WaveSpawner::HasEnemiesRemaing()
+bool WaveSpawner::HasEnemiesRemaining()
 {
     Scene& scene = GetScene();
     std::vector<std::shared_ptr<GameObject>>& objects = scene.GetObjects();

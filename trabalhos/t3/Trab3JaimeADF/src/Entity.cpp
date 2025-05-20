@@ -24,6 +24,11 @@ void Entity::Update(float deltaTime)
 
 void Entity::Draw(DrawingContext& context)
 {
+    if (Health->GetMaxValue() <= 1.0f)
+    {
+        return;
+    }
+
     BoundingBox bb = GetBoundingBox();
 
     Vector2 minPoint = bb.GetMinPoint();

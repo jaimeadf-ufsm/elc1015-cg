@@ -50,16 +50,17 @@ Mouse:
 - Clique com o botão esquerdo sobre a curva para dividá-la em dois segmentos de bézier.
 - Clique com o botão direito sobre um ponto da curva que não seja um ponto de controle para remover aquele segmento. Observe que você é impedido de remover se o restar somente dois segmentos.
 
-Teclas:
+Teclado:
 - *0 a 9*: Escolha do slot de pista. 
 - *M*: Aumenta a largura da pista.
 - *N*: Diminui a largura da pista.
+- *O*: Habilita ou desabilita a estilização da pista.
 - *P*: Entra no Modo Jogatina com a pista selecionada.
 - *S*: Entra no Modo Placar.
 
 #### Modo Placar
 
-Teclas:
+Teclado:
 - ESC: Volta para o Modo Editor.
 
 #### Modo Jogativa
@@ -67,6 +68,6 @@ Teclas:
 Mouse:
 - Clique com o botão esquerdo para disparar o canhão.
 
-Teclas:
+Teclado:
 - *A,D*: Movimentação da rotação do tanque.
 
