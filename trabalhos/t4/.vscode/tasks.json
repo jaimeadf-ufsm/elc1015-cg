@@ -1,0 +1,33 @@
+{
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "Build",
+            "command": "g++",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-fexceptions",
+                "-std=c++11",
+                "-Wall",
+                "-O3",
+                "-g",
+                "-I${workspaceFolder}\\include",
+                "${workspaceFolder}\\Trab4JaimeADF\\src\\*.cpp",
+                "-L${workspaceFolder}\\lib",
+                "-lfreeglut32",
+                "-lopengl32",
+                "-lglu32",
+                "-o",
+                "${workspaceFolder}\\Trab4JaimeADF.exe"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ],
+    "version": "2.0.0"
+}
