@@ -15,7 +15,8 @@ public:
 
     void Clear();
 
-    static void GenerateArrow(Mesh &mesh, int arcSegments);
-    static void GenerateSphere(Mesh &mesh, int xSegments, int ySegments);
-    static void GenerateRevolution(Mesh &mesh, const PolyLine& polyline, int arcSegments);
+    static void GenerateArrow(Mesh &mesh, int xResolution);
+    static void GenerateSphere(Mesh &mesh, int xResolution, int yResolution);
+    static void GenerateRevolution(Mesh &mesh, const PolyLine2D& polyline, int xResolution);
+    static void GenerateSweep(Mesh &mesh, const PolyLine2D& shape, const PolyLine3D& path);
 };

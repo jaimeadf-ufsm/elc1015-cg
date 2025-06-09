@@ -5,7 +5,7 @@
 std::vector<float> Graphics::s_VerticesX;
 std::vector<float> Graphics::s_VerticesY;
 
-void Graphics::StrokeLine(const ColorRGB& color, const PolyLine& polyline, float width)
+void Graphics::StrokeLine(const ColorRGB& color, const PolyLine2D& polyline, float width)
 {
     CV::color(color.R, color.G, color.B);
 

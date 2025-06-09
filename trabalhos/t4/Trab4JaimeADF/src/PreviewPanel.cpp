@@ -93,8 +93,8 @@ void PreviewPanel::Process(const Event& event)
                 break;
             }
             break;
-        case 'n':
-        case 'N':
+        case 'z':
+        case 'Z':
             m_ShowNormals = !m_ShowNormals;
             break;
         case 'g':

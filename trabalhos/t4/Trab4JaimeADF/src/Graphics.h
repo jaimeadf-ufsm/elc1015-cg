@@ -9,7 +9,7 @@
 
 class Graphics {
 public:
-    static void StrokeLine(const ColorRGB& color, const PolyLine& polyline, float width = 1.0f);
+    static void StrokeLine(const ColorRGB& color, const PolyLine2D& polyline, float width = 1.0f);
 
     static void FillRectangle(const ColorRGB& color, const Vector2& position, const Vector2& size);
     static void FillCircle(const ColorRGB& color, const Vector2& center, float radius);

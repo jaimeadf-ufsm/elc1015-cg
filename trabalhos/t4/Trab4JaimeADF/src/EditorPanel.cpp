@@ -1,4 +1,23 @@
+#include <sstream>
+#include <iomanip>
+
 #include "EditorPanel.h"
+
+void GenerateSpring(PolyLine3D& polyline, int segments, float radius, float height, float frequency)
+{
+    polyline.Clear();
+
+    for (int i = 0; i < segments; ++i)
+    {
+        float t = static_cast<float>(i) / static_cast<float>(segments - 1);
+        float angle = t * MATH_TAU * frequency;
+        float x = radius * std::cos(angle);
+        float y = height * t - height / 2.0f;
+        float z = radius * std::sin(angle);
+
+        polyline.InsertPoint(Vector3(x, y, z));
+    }
+}
 
 const float EditorPanel::s_PointRadius = 5.0f;
 const float EditorPanel::s_LocalGridSpacing = 0.075f;
@@ -7,8 +26,12 @@ EditorPanel::EditorPanel()
 {
     m_SelectedPointIndex = -1;
     m_BezierDegree = 3;
-    m_BezierSegments = 10;
-    m_BezierArcs = 8;
+    m_CurveResolution = 32;
+    m_ExtrudeResolution = 32;
+
+    m_SpringRadius = 0.25f;
+    m_SpringHeight = 1.0f;
+    m_SpringFrequency = 2.0f;
 
     SetSize(Vector2(Window::GetWidth() / 2.0f, Window::GetHeight()));
     SetPosition(Vector2());
@@ -63,22 +86,51 @@ void EditorPanel::Process(const Event& event)
         switch (event.Keyboard.Key)
         {
         case 'q':
-            IncreaseDegree();
+            m_BezierDegree = m_BezierDegree + 1;
             break;
         case 'Q':
-            DecreaseDegree();
+            m_BezierDegree = std::max(1, m_BezierDegree - 1);
             break;
         case 'e':
-            IncreaseSamples();
+            m_CurveResolution = m_CurveResolution + 1;
             break;
         case 'E':
-            DecreaseSamples();
+            m_CurveResolution = std::max(2, m_CurveResolution - 1);
             break;
         case 'r':
-            IncreaseArcs();
+            m_ExtrudeResolution = m_ExtrudeResolution + 1;
             break;
         case 'R':
-            DecreaseArcs();
+            m_ExtrudeResolution = std::max(2, m_ExtrudeResolution - 1);
+            break;
+        case 'v':
+            m_SpringRadius += 0.01f;
+            break;
+        case 'V':
+            m_SpringRadius = std::max(0.01f, m_SpringRadius - 0.01f);
+            break;
+        case 'b':
+            m_SpringHeight += 0.01f;
+            break;
+        case 'B':
+            m_SpringHeight = std::max(0.01f, m_SpringHeight - 0.01f);
+            break;
+        case 'n':
+            m_SpringFrequency += 0.1f;
+            break;
+        case 'N':
+            m_SpringFrequency = std::max(0.1f, m_SpringFrequency - 0.1f);
+            break;
+        case 'm':
+        case 'M':
+            if (m_ModelType == ModelType::Revolution)
+            {
+                m_ModelType = ModelType::SpringSweep;
+            }
+            else
+            {
+                m_ModelType = ModelType::Revolution;
+            }
             break;
         }
     default:
@@ -89,7 +141,7 @@ void EditorPanel::Process(const Event& event)
 void EditorPanel::Update()
 {
     RegenerateCurve();
-    Mesh::GenerateRevolution(GlobalContext::GetMesh(), m_CurvePolyLine, m_BezierArcs);
+    RegenerateModel();
 }
 
 void EditorPanel::Draw()
@@ -191,14 +243,26 @@ void EditorPanel::DrawCurve()
 
 void EditorPanel::DrawInformation()
 {
-    std::string information;
-    information += "Degree: " + std::to_string(m_BezierDegree);
-    information += "; ";
-    information += "Segments: " + std::to_string(m_BezierSegments);
-    information += "; ";
-    information += "Arcs: " + std::to_string(m_BezierArcs);
+    std::stringstream curveStream;
+    curveStream << "Degree: " << m_BezierDegree;
+    curveStream << "; Curve Resolution: " << m_CurveResolution;
+    curveStream << "; Extrude Resolution: " << m_ExtrudeResolution;
 
-    Graphics::DrawString(0xFFFFFF, Vector2(16, 16), information);
+    std::stringstream modelStream;
+    if (m_ModelType == ModelType::Revolution)
+    {
+        modelStream << "Model: Revolution";
+    }
+    else
+    {
+        modelStream << "Model: Spring";
+        modelStream << "; Radius: " << std::fixed << std::setprecision(2) << m_SpringRadius;
+        modelStream << "; Height: " << std::fixed << std::setprecision(2) << m_SpringHeight;
+        modelStream << "; Frequency: " << std::fixed << std::setprecision(2) << m_SpringFrequency;
+    }
+
+    Graphics::DrawString(0xFFFFFF, Vector2(16, 32), curveStream.str());
+    Graphics::DrawString(0xFFFFFF, Vector2(16, 16), modelStream.str());
 }
 
 int EditorPanel::LocatePointAt(const Vector2& screenPosition) const
@@ -246,45 +310,6 @@ void EditorPanel::MovePoint(int index, const Vector2& screenPosition)
     m_BezierPoints[index] = ConvertToLocalCoordinates(screenPosition);
 }
 
-void EditorPanel::IncreaseDegree()
-{
-    m_BezierDegree++;
-}
-
-void EditorPanel::DecreaseDegree()
-{
-    if (m_BezierDegree > 1)
-    {
-        m_BezierDegree--;
-    }
-}
-
-void EditorPanel::IncreaseSamples()
-{
-    m_BezierSegments++;
-}
-
-void EditorPanel::DecreaseSamples()
-{
-    if (m_BezierSegments > 1)
-    {
-        m_BezierSegments--;
-    }
-}
-
-void EditorPanel::IncreaseArcs()
-{
-    m_BezierArcs++;
-}
-
-void EditorPanel::DecreaseArcs()
-{
-    if (m_BezierArcs > 3)
-    {
-        m_BezierArcs--;
-    }
-}
-
 void EditorPanel::RegenerateCurve()
 {
     m_CurvePolyLine.Clear();
@@ -296,9 +321,9 @@ void EditorPanel::RegenerateCurve()
         return;
     }
 
-    float step = patches / static_cast<float>(m_BezierSegments);
+    float step = patches / static_cast<float>(m_CurveResolution);
 
-    for (int i = 0; i <= m_BezierSegments; ++i)
+    for (int i = 0; i <= m_CurveResolution; ++i)
     {
         float v = i * step;
         int patch = static_cast<int>(v);
@@ -311,6 +336,21 @@ void EditorPanel::RegenerateCurve()
         Vector2 point = m_Bezier.Evaluate(start, end, t);
 
         m_CurvePolyLine.InsertPoint(point);
+    }
+}
+
+void EditorPanel::RegenerateModel()
+{
+    m_PathPolyline.Clear();
+
+    if (m_ModelType == ModelType::Revolution)
+    {
+        Mesh::GenerateRevolution(GlobalContext::GetMesh(), m_CurvePolyLine, m_ExtrudeResolution);
+    }
+    else
+    {
+        GenerateSpring(m_PathPolyline, m_ExtrudeResolution, m_SpringRadius, m_SpringHeight, m_SpringFrequency);
+        Mesh::GenerateSweep(GlobalContext::GetMesh(), m_CurvePolyLine, m_PathPolyline);
     }
 }
 

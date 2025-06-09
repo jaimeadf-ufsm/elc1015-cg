@@ -13,17 +13,32 @@ public:
     void Draw() override;
 
 private:
+    enum class ModelType
+    {
+        Revolution,
+        SpringSweep
+    };
+
     static const float s_PointRadius;
     static const float s_LocalGridSpacing;
 
-    PolyLine m_TemporaryPolyLine;
-    PolyLine m_CurvePolyLine;
+    ModelType m_ModelType;
+
+    PolyLine2D m_TemporaryPolyLine;
+    PolyLine2D m_CurvePolyLine;
+
+    PolyLine3D m_PathPolyline;
 
     Bezier m_Bezier;
 
     int m_BezierDegree;
-    int m_BezierSegments;
-    int m_BezierArcs;
+
+    int m_CurveResolution;
+    int m_ExtrudeResolution;
+
+    float m_SpringRadius;
+    float m_SpringHeight;
+    float m_SpringFrequency;
 
     int m_SelectedPointIndex;
 
@@ -45,16 +60,8 @@ private:
 
     void MovePoint(int index, const Vector2& screenPosition);
 
-    void IncreaseDegree();
-    void DecreaseDegree();
-
-    void IncreaseSamples();
-    void DecreaseSamples();
-
-    void IncreaseArcs();
-    void DecreaseArcs();
-
     void RegenerateCurve();
+    void RegenerateModel();
 
     float ComputeScale() const;
 

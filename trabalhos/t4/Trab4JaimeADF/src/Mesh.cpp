@@ -7,28 +7,28 @@ void Mesh::Clear()
     Indices.clear();
 }
 
-void Mesh::GenerateArrow(Mesh &mesh, int arcSegments)
+void Mesh::GenerateArrow(Mesh &mesh, int xResolution)
 {
-    PolyLine polyline;
+    PolyLine2D polyline;
     polyline.InsertPoint(Vector2(0.0f, -1.0f));
     polyline.InsertPoint(Vector2(0.3f, -1.0f));
     polyline.InsertPoint(Vector2(0.3f, 0.2f));
     polyline.InsertPoint(Vector2(0.6f, 0.2f));
     polyline.InsertPoint(Vector2(0.0f, 1.0f));
 
-    Mesh::GenerateRevolution(mesh, polyline, arcSegments);
+    Mesh::GenerateRevolution(mesh, polyline, xResolution);
 }
 
-void Mesh::GenerateSphere(Mesh &mesh, int xSegments, int ySegments)
+void Mesh::GenerateSphere(Mesh &mesh, int xResolution, int yResolution)
 {
     mesh.Clear();
 
-    for (int y = 0; y <= ySegments; ++y)
+    for (int y = 0; y <= yResolution; ++y)
     {
-        for (int x = 0; x <= xSegments; ++x)
+        for (int x = 0; x <= xResolution; ++x)
         {
-            float xSegmentRatio = (float)x / (float)xSegments;
-            float ySegmentRatio = (float)y / (float)ySegments;
+            float xSegmentRatio = (float)x / (float)xResolution;
+            float ySegmentRatio = (float)y / (float)yResolution;
 
             float xPos = std::cos(xSegmentRatio * MATH_TAU) * std::sin(ySegmentRatio * MATH_PI);
             float yPos = std::cos(ySegmentRatio * MATH_PI);
@@ -44,33 +44,33 @@ void Mesh::GenerateSphere(Mesh &mesh, int xSegments, int ySegments)
         }
     }
 
-    for (int y = 0; y < ySegments; ++y)
+    for (int y = 0; y < yResolution; ++y)
     {
-        for (int x = 0; x < xSegments; ++x)
+        for (int x = 0; x < xResolution; ++x)
         {
-            mesh.Indices.push_back(y * (xSegments + 1) + x);
-            mesh.Indices.push_back((y + 1) * (xSegments + 1) + x);
-            mesh.Indices.push_back(y * (xSegments + 1) + x + 1);
+            mesh.Indices.push_back(y * (xResolution + 1) + x);
+            mesh.Indices.push_back((y + 1) * (xResolution + 1) + x);
+            mesh.Indices.push_back(y * (xResolution + 1) + x + 1);
 
-            mesh.Indices.push_back(y * (xSegments + 1) + x + 1);
-            mesh.Indices.push_back((y + 1) * (xSegments + 1) + x);
-            mesh.Indices.push_back((y + 1) * (xSegments + 1) + x + 1);
+            mesh.Indices.push_back(y * (xResolution + 1) + x + 1);
+            mesh.Indices.push_back((y + 1) * (xResolution + 1) + x);
+            mesh.Indices.push_back((y + 1) * (xResolution + 1) + x + 1);
         }
     }
 }
 
-void Mesh::GenerateRevolution(Mesh &mesh, const PolyLine &polyline, int arcSegments)
+void Mesh::GenerateRevolution(Mesh &mesh, const PolyLine2D &polyline, int resolution)
 {
     mesh.Clear();
 
-    if (polyline.GetSize() < 2 || arcSegments < 3)
+    if (polyline.GetSize() < 2 || resolution < 3)
     {
         return;
     }
 
-    float angleStep = 2.0f * MATH_PI / arcSegments;
+    float angleStep = 2.0f * MATH_PI / resolution;
 
-    int n = arcSegments + 1;
+    int n = resolution + 1;
     int m = polyline.GetSize();
 
     for (int i = 0; i < n; ++i)
@@ -148,6 +148,7 @@ void Mesh::GenerateRevolution(Mesh &mesh, const PolyLine &polyline, int arcSegme
         }
     }
 
+    // Counter-clockwise winding order
     // D . ----- . C
     //   |     / |
     //   |   /   |
@@ -170,6 +171,147 @@ void Mesh::GenerateRevolution(Mesh &mesh, const PolyLine &polyline, int arcSegme
             mesh.Indices.push_back(a);
             mesh.Indices.push_back(c);
             mesh.Indices.push_back(d);
+        }
+    }
+}
+
+void Mesh::GenerateSweep(Mesh &mesh, const PolyLine2D& shape, const PolyLine3D& path)
+{
+    mesh.Clear();
+    
+    if (path.GetSize() < 2 || shape.GetSize() < 2)
+    {
+        return;
+    }
+    
+    int pathSize = path.GetSize();
+    int shapeSize = shape.GetSize();
+    
+    // Generate vertices by placing the shape at each point along the path
+    for (int i = 0; i < pathSize; ++i)
+    {
+        const Vector3& pathPoint = path.GetPoint(i);
+        
+        // Calculate tangent vector along the path
+        Vector3 tangent;
+        if (i == 0)
+        {
+            tangent = path.GetPoint(i + 1) - pathPoint;
+        }
+        else if (i == pathSize - 1)
+        {
+            tangent = pathPoint - path.GetPoint(i - 1);
+        }
+        else
+        {
+            tangent = (path.GetPoint(i + 1) - path.GetPoint(i - 1)) * 0.5f;
+        }
+        tangent = tangent.Normalize();
+        
+        // Create a local coordinate system at this path point
+        Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
+        Vector3 right;
+        Vector3 forward = tangent;
+        
+        // Handle the case where tangent is parallel to up vector
+        if (std::abs(forward.Dot(up)) > 0.99f)
+        {
+            up = Vector3(1.0f, 0.0f, 0.0f);
+        }
+        
+        right = forward.Cross(up).Normalize();
+        up = right.Cross(forward).Normalize();
+        
+        // Place shape vertices at this path point
+        for (int j = 0; j < shapeSize; ++j)
+        {
+            const Vector2& shapePoint = shape.GetPoint(j);
+            
+            // Transform 2D shape point to 3D world position
+            Vector3 worldPosition = pathPoint + 
+                                  right * shapePoint.X + 
+                                  up * shapePoint.Y;
+            
+            Vertex vertex = {
+                .Position = worldPosition,
+                .UV = Vector2(
+                    static_cast<float>(i) / (pathSize - 1),
+                    static_cast<float>(j) / (shapeSize - 1)
+                ),
+                .Normal = Vector3(0.0f, 0.0f, 0.0f), // Will be calculated later
+            };
+            
+            mesh.Vertices.emplace_back(vertex);
+        }
+    }
+    
+    // Calculate normals for each vertex
+    for (int i = 0; i < pathSize; ++i)
+    {
+        for (int j = 0; j < shapeSize; ++j)
+        {
+            Vector3 normal = Vector3(0.0f, 0.0f, 0.0f);
+            int vertexIndex = i * shapeSize + j;
+            
+            // Calculate normal based on neighboring vertices
+            Vector3 tangentU, tangentV;
+            
+            // Tangent along the path direction
+            if (i == 0)
+            {
+                tangentU = mesh.Vertices[(i + 1) * shapeSize + j].Position - 
+                          mesh.Vertices[i * shapeSize + j].Position;
+            }
+            else if (i == pathSize - 1)
+            {
+                tangentU = mesh.Vertices[i * shapeSize + j].Position - 
+                          mesh.Vertices[(i - 1) * shapeSize + j].Position;
+            }
+            else
+            {
+                tangentU = (mesh.Vertices[(i + 1) * shapeSize + j].Position - 
+                           mesh.Vertices[(i - 1) * shapeSize + j].Position) * 0.5f;
+            }
+            
+            // Tangent along the shape direction
+            int nextJ = (j + 1) % shapeSize;
+            int prevJ = (j - 1 + shapeSize) % shapeSize;
+            
+            tangentV = mesh.Vertices[i * shapeSize + nextJ].Position - 
+                      mesh.Vertices[i * shapeSize + prevJ].Position;
+            
+            // Normal is cross product of tangents
+            normal = tangentU.Cross(tangentV).Normalize();
+            
+            mesh.Vertices[vertexIndex].Normal = normal;
+        }
+    }
+    
+    // Generate triangle indices connecting adjacent cross-sections
+    // Counter-clockwise winding order
+    for (int i = 0; i < pathSize - 1; ++i)
+    {
+        for (int j = 0; j < shapeSize; ++j)
+        {
+            int nextJ = (j + 1) % shapeSize;
+            
+            // Current cross-section vertices
+            std::size_t a = i * shapeSize + j;
+            std::size_t b = i * shapeSize + nextJ;
+            
+            // Next cross-section vertices
+            std::size_t c = (i + 1) * shapeSize + nextJ;
+            std::size_t d = (i + 1) * shapeSize + j;
+            
+            // First triangle: a -> d -> c
+            mesh.Indices.push_back(a);
+            mesh.Indices.push_back(d);
+            mesh.Indices.push_back(c);
+            
+            // Second triangle: a -> c -> b
+            mesh.Indices.push_back(a);
+            mesh.Indices.push_back(c);
+            mesh.Indices.push_back(b);
         }
     }
 }
