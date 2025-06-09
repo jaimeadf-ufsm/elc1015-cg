@@ -8,6 +8,7 @@ EditorPanel::EditorPanel()
     m_SelectedPointIndex = -1;
     m_BezierDegree = 3;
     m_BezierSegments = 10;
+    m_BezierArcs = 8;
 
     SetSize(Vector2(Window::GetWidth() / 2.0f, Window::GetHeight()));
     SetPosition(Vector2());
@@ -21,6 +22,7 @@ void EditorPanel::Process(const Event& event)
         SetSize(Vector2(event.Window.Width / 2.0f, event.Window.Height));
         break;
     case EventType::MouseButtonPress:
+        if (IsPointInside(event.Mouse.Position))
         {
             int hoveringIndex = LocatePointAt(event.Mouse.Position);
 
@@ -43,8 +45,8 @@ void EditorPanel::Process(const Event& event)
                 }
                 break;
             }
-            break;
         }
+        break;
     case EventType::MouseButtonRelease:
         if (event.Mouse.Button == MOUSE_BUTTON_LEFT)
         {
@@ -52,7 +54,7 @@ void EditorPanel::Process(const Event& event)
         }
         break;
     case EventType::MouseMove:
-        if (m_SelectedPointIndex != -1)
+        if (IsPointInside(event.Mouse.Position) && m_SelectedPointIndex != -1)
         {
             MovePoint(m_SelectedPointIndex, event.Mouse.Position);
         }
@@ -60,22 +62,34 @@ void EditorPanel::Process(const Event& event)
     case EventType::KeyPress:
         switch (event.Keyboard.Key)
         {
-        case 'd':
+        case 'q':
             IncreaseDegree();
             break;
-        case 'D':
+        case 'Q':
             DecreaseDegree();
             break;
-        case 's':
+        case 'e':
             IncreaseSamples();
             break;
-        case 'S':
+        case 'E':
             DecreaseSamples();
+            break;
+        case 'r':
+            IncreaseArcs();
+            break;
+        case 'R':
+            DecreaseArcs();
             break;
         }
     default:
         break;
     }
+}
+
+void EditorPanel::Update()
+{
+    RegenerateCurve();
+    Mesh::GenerateRevolution(GlobalContext::GetMesh(), m_CurvePolyLine, m_BezierArcs);
 }
 
 void EditorPanel::Draw()
@@ -108,11 +122,11 @@ void EditorPanel::DrawGrid()
         Vector2 start(x, minimumY);
         Vector2 end(x, maximumY);
 
-        m_TemporaryLine.Clear();
-        m_TemporaryLine.InsertPoint(ConvertToScreenCoordinates(start).Round());
-        m_TemporaryLine.InsertPoint(ConvertToScreenCoordinates(end).Round());
+        m_TemporaryPolyLine.Clear();
+        m_TemporaryPolyLine.InsertPoint(ConvertToScreenCoordinates(start).Round());
+        m_TemporaryPolyLine.InsertPoint(ConvertToScreenCoordinates(end).Round());
 
-        Graphics::StrokeLine(0x2E2E2E, m_TemporaryLine, 2.0f);
+        Graphics::StrokeLine(0x2E2E2E, m_TemporaryPolyLine, 2.0f);
     }
 
     for (float y = startY; y <= maximumY; y += s_LocalGridSpacing)
@@ -120,37 +134,37 @@ void EditorPanel::DrawGrid()
         Vector2 start(minimumX, y);
         Vector2 end(maximumX, y);
 
-        m_TemporaryLine.Clear();
+        m_TemporaryPolyLine.Clear();
 
-        m_TemporaryLine.InsertPoint(ConvertToScreenCoordinates(start).Round());
-        m_TemporaryLine.InsertPoint(ConvertToScreenCoordinates(end).Round());
+        m_TemporaryPolyLine.InsertPoint(ConvertToScreenCoordinates(start).Round());
+        m_TemporaryPolyLine.InsertPoint(ConvertToScreenCoordinates(end).Round());
 
-        Graphics::StrokeLine(0x2E2E2E, m_TemporaryLine, 2.0f);
+        Graphics::StrokeLine(0x2E2E2E, m_TemporaryPolyLine, 2.0f);
     }
 
-    m_TemporaryLine.Clear();
-    m_TemporaryLine.InsertPoint(ConvertToScreenCoordinates(Vector2(startX, 0.0)).Round());
-    m_TemporaryLine.InsertPoint(ConvertToScreenCoordinates(Vector2(maximumX, 0.0)).Round());
+    m_TemporaryPolyLine.Clear();
+    m_TemporaryPolyLine.InsertPoint(ConvertToScreenCoordinates(Vector2(startX, 0.0)).Round());
+    m_TemporaryPolyLine.InsertPoint(ConvertToScreenCoordinates(Vector2(maximumX, 0.0)).Round());
 
-    Graphics::StrokeLine(0x3A3A5A, m_TemporaryLine, 2.0f);
+    Graphics::StrokeLine(0x3A3A5A, m_TemporaryPolyLine, 2.0f);
 
-    m_TemporaryLine.Clear();
-    m_TemporaryLine.InsertPoint(ConvertToScreenCoordinates(Vector2(0.0, startY)).Round());
-    m_TemporaryLine.InsertPoint(ConvertToScreenCoordinates(Vector2(0.0, maximumY)).Round());
+    m_TemporaryPolyLine.Clear();
+    m_TemporaryPolyLine.InsertPoint(ConvertToScreenCoordinates(Vector2(0.0, startY)).Round());
+    m_TemporaryPolyLine.InsertPoint(ConvertToScreenCoordinates(Vector2(0.0, maximumY)).Round());
 
-    Graphics::StrokeLine(0x3A3A5A, m_TemporaryLine, 2.0f);
+    Graphics::StrokeLine(0x3A3A5A, m_TemporaryPolyLine, 2.0f);
 }
 
 void EditorPanel::DrawControlPolygon()
 {
-    m_TemporaryLine.Clear();
+    m_TemporaryPolyLine.Clear();
 
     for (const Vector2& point : m_BezierPoints)
     {
-        m_TemporaryLine.InsertPoint(ConvertToScreenCoordinates(point).Round());
+        m_TemporaryPolyLine.InsertPoint(ConvertToScreenCoordinates(point).Round());
     }
 
-    Graphics::StrokeLine(0x555555, m_TemporaryLine, 2.0f);
+    Graphics::StrokeLine(0x555555, m_TemporaryPolyLine, 2.0f);
 }
 
 void EditorPanel::DrawControlPoints()
@@ -164,33 +178,15 @@ void EditorPanel::DrawControlPoints()
 
 void EditorPanel::DrawCurve()
 {
-    int patches = (static_cast<int>(m_BezierPoints.size()) - 1) / m_BezierDegree;
+    m_TemporaryPolyLine.Clear();
 
-    if (patches == 0)
+    for (std::size_t i = 0; i < m_CurvePolyLine.GetSize(); ++i)
     {
-        return;
+        Vector2 point = m_CurvePolyLine.GetPoint(i);
+        m_TemporaryPolyLine.InsertPoint(ConvertToScreenCoordinates(point).Round());
     }
 
-    m_TemporaryLine.Clear();
-
-    float step = patches / static_cast<float>(m_BezierSegments);
-
-    for (int i = 0; i <= m_BezierSegments; ++i)
-    {
-        float v = i * step;
-        int patch = static_cast<int>(v);
-
-        float t = v - patch;
-
-        auto start = m_BezierPoints.begin() + patch * m_BezierDegree;
-        auto end = start + m_BezierDegree + 1;
-
-        Vector2 point = m_Bezier.Evaluate(start, end, t);
-
-        m_TemporaryLine.InsertPoint(ConvertToScreenCoordinates(point));
-    }
-
-    Graphics::StrokeLine(0x3ECCFD, m_TemporaryLine, 2.0f);
+    Graphics::StrokeLine(0x3ECCFD, m_TemporaryPolyLine, 2.0f);
 }
 
 void EditorPanel::DrawInformation()
@@ -199,6 +195,8 @@ void EditorPanel::DrawInformation()
     information += "Degree: " + std::to_string(m_BezierDegree);
     information += "; ";
     information += "Segments: " + std::to_string(m_BezierSegments);
+    information += "; ";
+    information += "Arcs: " + std::to_string(m_BezierArcs);
 
     Graphics::DrawString(0xFFFFFF, Vector2(16, 16), information);
 }
@@ -271,6 +269,48 @@ void EditorPanel::DecreaseSamples()
     if (m_BezierSegments > 1)
     {
         m_BezierSegments--;
+    }
+}
+
+void EditorPanel::IncreaseArcs()
+{
+    m_BezierArcs++;
+}
+
+void EditorPanel::DecreaseArcs()
+{
+    if (m_BezierArcs > 3)
+    {
+        m_BezierArcs--;
+    }
+}
+
+void EditorPanel::RegenerateCurve()
+{
+    int patches = (static_cast<int>(m_BezierPoints.size()) - 1) / m_BezierDegree;
+
+    if (patches == 0)
+    {
+        return;
+    }
+
+    m_CurvePolyLine.Clear();
+
+    float step = patches / static_cast<float>(m_BezierSegments);
+
+    for (int i = 0; i <= m_BezierSegments; ++i)
+    {
+        float v = i * step;
+        int patch = static_cast<int>(v);
+
+        float t = v - patch;
+
+        auto start = m_BezierPoints.begin() + patch * m_BezierDegree;
+        auto end = start + m_BezierDegree + 1;
+
+        Vector2 point = m_Bezier.Evaluate(start, end, t);
+
+        m_CurvePolyLine.InsertPoint(point);
     }
 }
 

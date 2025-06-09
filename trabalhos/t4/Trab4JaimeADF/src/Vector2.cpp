@@ -2,7 +2,7 @@
 
 #include "Vector2.h"
 
-Vector2::Vector2() : X(0.0f), Y(0.0f)
+Vector2::Vector2() : Vector2(0.0f, 0.0f)
 {
 
 }
@@ -12,7 +12,7 @@ Vector2::Vector2(float x, float y) : X(x), Y(y)
 
 }
 
-Vector2 Vector2::Normalized() const
+Vector2 Vector2::Normalize() const
 {
     float magnitude = Magnitude();
 
@@ -59,26 +59,6 @@ Vector2 Vector2::Round() const
     return Vector2(std::round(X), std::round(Y));
 }
 
-Vector2 Vector2::operator+(float scalar) const
-{
-    return Vector2(X + scalar, Y + scalar);
-}
-
-Vector2 Vector2::operator-(float scalar) const
-{
-    return Vector2(X - scalar, Y - scalar);
-}
-
-Vector2 Vector2::operator*(float scalar) const
-{
-    return Vector2(X * scalar, Y * scalar);
-}
-
-Vector2 Vector2::operator/(float scalar) const
-{
-    return Vector2(X / scalar, Y / scalar);
-}
-
 Vector2 Vector2::operator+(const Vector2& other) const
 {
     return Vector2(X + other.X, Y + other.Y);
@@ -99,32 +79,14 @@ Vector2 Vector2::operator/(const Vector2& other) const
     return Vector2(X / other.X, Y / other.Y);
 }
 
-Vector2& Vector2::operator+=(float scalar)
+Vector2 Vector2::operator*(float scalar) const
 {
-    X += scalar;
-    Y += scalar;
-    return *this;
+    return Vector2(X * scalar, Y * scalar);
 }
 
-Vector2& Vector2::operator-=(float scalar)
+Vector2 Vector2::operator/(float scalar) const
 {
-    X -= scalar;
-    Y -= scalar;
-    return *this;
-}
-
-Vector2& Vector2::operator*=(float scalar)
-{
-    X *= scalar;
-    Y *= scalar;
-    return *this;
-}
-
-Vector2& Vector2::operator/=(float scalar)
-{
-    X /= scalar;
-    Y /= scalar;
-    return *this;
+    return Vector2(X / scalar, Y / scalar);
 }
 
 Vector2& Vector2::operator+=(const Vector2& other)
@@ -155,8 +117,16 @@ Vector2& Vector2::operator/=(const Vector2& other)
     return *this;
 }
 
-bool operator==(const Vector2& lhs, const Vector2& rhs)
+Vector2& Vector2::operator*=(float scalar)
 {
-    return lhs.X == rhs.X && lhs.Y == rhs.Y;
+    X *= scalar;
+    Y *= scalar;
+    return *this;
 }
 
+Vector2& Vector2::operator/=(float scalar)
+{
+    X /= scalar;
+    Y /= scalar;
+    return *this;
+}

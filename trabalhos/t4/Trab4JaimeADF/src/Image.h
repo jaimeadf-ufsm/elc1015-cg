@@ -6,21 +6,23 @@
 
 struct Image
 {
+    Image();
     Image(std::size_t width, std::size_t height);
 
-    void SetPixel(std::size_t x, std::size_t y, const Color& color);
+    void SetPixel(std::size_t x, std::size_t y, const ColorRGB& color);
 
-    Color& GetPixel(std::size_t x, std::size_t y);
-    const Color& GetPixel(std::size_t x, std::size_t y) const;
+    ColorRGB& GetPixel(std::size_t x, std::size_t y);
+    const ColorRGB& GetPixel(std::size_t x, std::size_t y) const;
 
     std::size_t GetWidth() const;
     std::size_t GetHeight() const;
     
     void Resize(std::size_t newWidth, std::size_t newHeight);
+    void Clear(const ColorRGB& color = ColorRGB(0, 0, 0));
 
 private:
     std::size_t m_Width;
     std::size_t m_Height;
 
-    std::vector<Color> m_Pixels;
+    std::vector<ColorRGB> m_Pixels;
 };

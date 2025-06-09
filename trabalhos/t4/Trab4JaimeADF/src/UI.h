@@ -11,6 +11,7 @@ public:
     static void RegisterPanel(std::shared_ptr<Panel> panel);
 
     static void Dispatch(const Event& event);
+    static void Update();
     static void Draw();
 
 private:

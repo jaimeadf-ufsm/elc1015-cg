@@ -4,14 +4,18 @@
 
 #include "Math.h"
 #include "Event.h"
+#include "Time.h"
 #include "Window.h"
 #include "Mouse.h"
+#include "Keyboard.h"
 #include "Graphics.h"
+#include "GlobalContext.h"
 
 class Panel
 {
 public:
     virtual void Process(const Event& event) = 0;
+    virtual void Update() = 0;
     virtual void Draw() = 0;
 
     Vector2 GetSize() const;

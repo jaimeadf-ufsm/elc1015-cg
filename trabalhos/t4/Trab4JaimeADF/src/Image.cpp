@@ -1,5 +1,10 @@
 #include "Image.h"
 
+Image::Image() : Image(0, 0)
+{
+
+}
+
 Image::Image(std::size_t width, std::size_t height) :
     m_Width(width),
     m_Height(height),
@@ -8,17 +13,17 @@ Image::Image(std::size_t width, std::size_t height) :
 
 }
 
-void Image::SetPixel(std::size_t x, std::size_t y, const Color& color)
+void Image::SetPixel(std::size_t x, std::size_t y, const ColorRGB& color)
 {
     m_Pixels[y * m_Width + x] = color;
 }
 
-Color& Image::GetPixel(std::size_t x, std::size_t y)
+ColorRGB& Image::GetPixel(std::size_t x, std::size_t y)
 {
     return m_Pixels[y * m_Width + x];
 }
 
-const Color& Image::GetPixel(std::size_t x, std::size_t y) const
+const ColorRGB& Image::GetPixel(std::size_t x, std::size_t y) const
 {
     return m_Pixels[y * m_Width + x];
 }
@@ -39,4 +44,9 @@ void Image::Resize(std::size_t newWidth, std::size_t newHeight)
     m_Height = newHeight;
 
     m_Pixels.resize(newWidth * newHeight);
+}
+
+void Image::Clear(const ColorRGB& color)
+{
+    std::fill(m_Pixels.begin(), m_Pixels.end(), color);
 }

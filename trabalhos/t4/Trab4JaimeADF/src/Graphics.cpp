@@ -5,7 +5,7 @@
 std::vector<float> Graphics::s_VerticesX;
 std::vector<float> Graphics::s_VerticesY;
 
-void Graphics::StrokeLine(const Color& color, const PolyLine& polyline, float width)
+void Graphics::StrokeLine(const ColorRGB& color, const PolyLine& polyline, float width)
 {
     CV::color(color.R, color.G, color.B);
 
@@ -16,7 +16,7 @@ void Graphics::StrokeLine(const Color& color, const PolyLine& polyline, float wi
         Vector2 start = polyline.GetPoint(i - 1);
         Vector2 end = polyline.GetPoint(i);
 
-        Vector2 direction = (end - start).Normalized();
+        Vector2 direction = (end - start).Normalize();
         Vector2 perpendicular(-direction.Y, direction.X);
 
         Vector2 leftStart = start - perpendicular * halfWidth;
@@ -43,13 +43,13 @@ void Graphics::StrokeLine(const Color& color, const PolyLine& polyline, float wi
     }
 }
 
-void Graphics::FillRectangle(const Color& color, const Vector2& position, const Vector2& size)
+void Graphics::FillRectangle(const ColorRGB& color, const Vector2& position, const Vector2& size)
 {
     CV::color(color.R, color.G, color.B);
     CV::rectFill(position.X, position.Y, position.X + size.X, position.Y + size.Y);
 }
 
-void Graphics::FillCircle(const Color& color, const Vector2& center, float radius)
+void Graphics::FillCircle(const ColorRGB& color, const Vector2& center, float radius)
 {
     CV::color(color.R, color.G, color.B);
     CV::circleFill(center.X, center.Y, radius, 32);
@@ -64,7 +64,7 @@ void Graphics::DrawImage(const Image& image, const Vector2& position)
     {
         for (std::size_t x = 0; x < image.GetWidth(); ++x)
         {
-            const Color& pixelColor = image.GetPixel(x, y);
+            const ColorRGB& pixelColor = image.GetPixel(x, y);
 
             glColor3f(pixelColor.R, pixelColor.G, pixelColor.B);
             glVertex2f(position.X + x, position.Y + y);
@@ -72,9 +72,25 @@ void Graphics::DrawImage(const Image& image, const Vector2& position)
     }
 
     glEnd();
+
+    // glBegin(GL_QUADS);
+
+    // for (std::size_t y = 0; y < image.GetHeight(); ++y)
+    // {
+    //     for (std::size_t x = 0; x < image.GetWidth(); ++x)
+    //     {
+    //         const ColorRGB& pixelColor = image.GetPixel(x, y);
+
+    //         glColor3f(pixelColor.R, pixelColor.G, pixelColor.B);
+    //         glVertex2f(position.X + x, position.Y + y);
+    //         glVertex2f(position.X + x + 1, position.Y + y);
+    //         glVertex2f(position.X + x + 1, position.Y + y + 1);
+    //         glVertex2f(position.X + x, position.Y + y + 1);
+    //     }
+    // }
 }
 
-void Graphics::DrawString(const Color& color, const Vector2& position, const std::string& text)
+void Graphics::DrawString(const ColorRGB& color, const Vector2& position, const std::string& text)
 {
     CV::color(color.R, color.G, color.B);
     CV::text(position.X, position.Y, text.c_str());

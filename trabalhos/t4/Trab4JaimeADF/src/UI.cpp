@@ -15,6 +15,14 @@ void UI::Dispatch(const Event& event)
     }
 }
 
+void UI::Update()
+{
+    for (const auto& panel : s_Panels)
+    {
+        panel->Update();
+    }
+}
+
 void UI::Draw()
 {
     for (const auto& panel : s_Panels)

@@ -9,22 +9,25 @@ public:
     EditorPanel();
 
     void Process(const Event& event) override;
+    void Update() override;
     void Draw() override;
 
 private:
     static const float s_PointRadius;
     static const float s_LocalGridSpacing;
 
-    PolyLine m_TemporaryLine;
+    PolyLine m_TemporaryPolyLine;
+    PolyLine m_CurvePolyLine;
 
     Bezier m_Bezier;
 
     int m_BezierDegree;
     int m_BezierSegments;
-
-    std::vector<Vector2> m_BezierPoints;
+    int m_BezierArcs;
 
     int m_SelectedPointIndex;
+
+    std::vector<Vector2> m_BezierPoints;
 
     void DrawGrid();
     void DrawCurve();
@@ -47,6 +50,11 @@ private:
 
     void IncreaseSamples();
     void DecreaseSamples();
+
+    void IncreaseArcs();
+    void DecreaseArcs();
+
+    void RegenerateCurve();
 
     float ComputeScale() const;
 

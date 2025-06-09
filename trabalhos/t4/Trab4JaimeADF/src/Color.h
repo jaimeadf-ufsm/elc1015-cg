@@ -1,13 +1,33 @@
 #pragma once
 
-struct Color
+struct Vector3;
+struct Vector4;
+
+struct ColorRGB
 {
     float R;
     float G;
     float B;
 
-    Color();
-    Color(int color);
-    Color(int r, int g, int b);
-    Color(float r, float g, float b);
+    ColorRGB();
+    ColorRGB(int color);
+    ColorRGB(int r, int g, int b);
+    ColorRGB(float r, float g, float b);
+    ColorRGB(const Vector3& vector);
+};
+
+struct ColorRGBA
+{
+    float R;
+    float G;
+    float B;
+    float A;
+
+    ColorRGBA();
+    ColorRGBA(int color);
+    ColorRGBA(int color, float alpha);
+    ColorRGBA(int r, int g, int b, int a = 255);
+    ColorRGBA(float r, float g, float b, float a = 1.0f);
+    ColorRGBA(const ColorRGB& rgb, float alpha = 1.0f);
+    ColorRGBA(const Vector4& vector);
 };

@@ -26,13 +26,13 @@ private:
 public:
     Bezier();
 
-    template<typename Iterator>
-    typename std::iterator_traits<Iterator>::value_type Evaluate(Iterator begin, Iterator end, float t)
+    template<typename T>
+    typename std::iterator_traits<T>::value_type Evaluate(T begin, T end, float t)
     {
-        using ValueType = typename std::iterator_traits<Iterator>::value_type;
+        using ValueType = typename std::iterator_traits<T>::value_type;
 
         ValueType result = ValueType();
-        Iterator it = begin;
+        T it = begin;
 
         uint32_t n = static_cast<uint32_t>(std::distance(begin, end)) - 1;
 
