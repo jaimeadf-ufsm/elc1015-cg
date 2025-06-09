@@ -287,14 +287,14 @@ void EditorPanel::DecreaseArcs()
 
 void EditorPanel::RegenerateCurve()
 {
+    m_CurvePolyLine.Clear();
+
     int patches = (static_cast<int>(m_BezierPoints.size()) - 1) / m_BezierDegree;
 
     if (patches == 0)
     {
         return;
     }
-
-    m_CurvePolyLine.Clear();
 
     float step = patches / static_cast<float>(m_BezierSegments);
 
