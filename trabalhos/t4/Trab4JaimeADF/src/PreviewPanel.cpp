@@ -15,7 +15,7 @@ PreviewPanel::PreviewPanel() : Panel()
 
     m_ProjectionType = ProjectionType::Perspective;
     m_ShaderType = ShaderType::Wireframe;
-    m_Target = Target::Model;
+    m_Target = Target::ModelPosition;
 
     m_ShowNormals = false;
 
@@ -99,13 +99,17 @@ void PreviewPanel::Process(const Event& event)
             break;
         case 'g':
         case 'G':
-            if (m_Target == Target::Model)
+            switch (m_Target)
             {
+            case Target::ModelPosition:
+                m_Target = Target::ModelRotation;
+                break;
+            case Target::ModelRotation:
                 m_Target = Target::Light;
-            }
-            else
-            {
-                m_Target = Target::Model;
+                break;
+            case Target::Light:
+                m_Target = Target::ModelPosition;
+                break;
             }
             break;
         case 'c':
@@ -149,10 +153,6 @@ void PreviewPanel::Update()
     float targetPositionOffset = 0.25f * Time::GetDeltaTime();
     float targetAngleOffset = 0.5f * Time::GetDeltaTime();
 
-    Vector3& targetPosition = m_Target == Target::Model ? m_ModelPosition : m_LightPosition;
-    float& targetYaw = m_ModelYaw;
-    float& targetPitch = m_ModelPitch;
-
     if (Keyboard::IsKeyDown('w'))
     {
         m_Camera.SetPosition(m_Camera.GetPosition() + m_Camera.GetFront() * cameraPositionOffset);
@@ -172,54 +172,101 @@ void PreviewPanel::Update()
     {
         m_Camera.SetPosition(m_Camera.GetPosition() + m_Camera.GetRight() * cameraPositionOffset);
     }
-
+    
     if (Keyboard::IsKeyDown('j'))
     {
-        targetPosition -= m_Camera.GetRight() * targetPositionOffset;
+        switch (m_Target)
+        {
+        case Target::ModelPosition:
+            m_ModelPosition -= m_Camera.GetRight() * targetPositionOffset;
+            break;
+        case Target::ModelRotation:
+            m_ModelRotation.Y -= targetAngleOffset;
+            break;
+        case Target::Light:
+            m_LightPosition -= m_Camera.GetRight() * targetPositionOffset;
+            break;
+        }
     }
 
     if (Keyboard::IsKeyDown('l'))
     {
-        targetPosition += m_Camera.GetRight() * targetPositionOffset;
+        switch (m_Target)
+        {
+        case Target::ModelPosition:
+            m_ModelPosition += m_Camera.GetRight() * targetPositionOffset;
+            break;
+        case Target::ModelRotation:
+            m_ModelRotation.Y += targetAngleOffset;
+            break;
+        case Target::Light:
+            m_LightPosition += m_Camera.GetRight() * targetPositionOffset;
+            break;
+        }
     }
+    
     if (Keyboard::IsKeyDown('i'))
     {
-        targetPosition += m_Camera.GetFront() * targetPositionOffset;
+        switch (m_Target)
+        {
+        case Target::ModelPosition:
+            m_ModelPosition += m_Camera.GetFront() * targetPositionOffset;
+            break;
+        case Target::ModelRotation:
+            m_ModelRotation.X -= targetAngleOffset;
+            break;
+        case Target::Light:
+            m_LightPosition += m_Camera.GetFront() * targetPositionOffset;
+            break;
+        }
     }
 
     if (Keyboard::IsKeyDown('k'))
     {
-        targetPosition -= m_Camera.GetFront() * targetPositionOffset;
+        switch (m_Target)
+        {
+        case Target::ModelPosition:
+            m_ModelPosition -= m_Camera.GetFront() * targetPositionOffset;
+            break;
+        case Target::ModelRotation:
+            m_ModelRotation.X += targetAngleOffset;
+            break;
+        case Target::Light:
+            m_LightPosition -= m_Camera.GetFront() * targetPositionOffset;
+            break;
+        }
     }
 
     if (Keyboard::IsKeyDown('u'))
     {
-        targetPosition.Y -= targetPositionOffset;
+        switch (m_Target)
+        {
+        case Target::ModelPosition:
+            m_ModelPosition.Y -= targetPositionOffset;
+            break;
+        case Target::ModelRotation:
+            m_ModelRotation.Z += targetAngleOffset;
+            break;
+        case Target::Light:
+            m_LightPosition.Y -= targetPositionOffset;
+            break;
+        }
     }
 
     if (Keyboard::IsKeyDown('o'))
     {
-        targetPosition.Y += targetPositionOffset;
-    }
-
-    if (Keyboard::IsKeyDown(201)) // Arrow Up
-    {
-        targetPitch -= targetAngleOffset;
-    }
-
-    if (Keyboard::IsKeyDown(200)) // Arrow Left
-    {
-        targetYaw -= targetAngleOffset;
-    }
-
-    if (Keyboard::IsKeyDown(203)) // Arrow Down
-    {
-        targetPitch += targetAngleOffset;
-    }
-
-    if (Keyboard::IsKeyDown(202)) // Arrow Right
-    {
-        targetYaw += targetAngleOffset;
+        switch (m_Target)
+        {
+        case Target::ModelPosition:
+            m_ModelPosition.Y += targetPositionOffset;
+            break;
+        case Target::ModelRotation:
+            m_ModelRotation.Z -= targetAngleOffset;
+            break;
+        case Target::Light:
+            m_LightPosition.Y += targetPositionOffset;
+            break;
+        }
     }
 
     UpdateProjectionMatrix();
@@ -265,10 +312,11 @@ void PreviewPanel::RenderLight()
 void PreviewPanel::RenderModel()
 {
     Matrix4x4 translation = Matrix4x4::Translate(m_ModelPosition);
-    Matrix4x4 yawRotation = Matrix4x4::Rotate(Vector3(0.0f, 1.0f, 0.0f), m_ModelYaw);
-    Matrix4x4 pitchRotation = Matrix4x4::Rotate(Vector3(1.0f, 0.0f, 0.0f), m_ModelPitch);
+    Matrix4x4 pitchRotation = Matrix4x4::Rotate(Vector3(1.0f, 0.0f, 0.0f), m_ModelRotation.X);
+    Matrix4x4 yawRotation = Matrix4x4::Rotate(Vector3(0.0f, 1.0f, 0.0f), m_ModelRotation.Y);
+    Matrix4x4 rollRotation = Matrix4x4::Rotate(Vector3(0.0f, 0.0f, 1.0f), m_ModelRotation.Z);
 
-    Matrix4x4 modelMatrix = translation * yawRotation * pitchRotation;
+    Matrix4x4 modelMatrix = translation * yawRotation * pitchRotation * rollRotation;
 
     switch (m_ShaderType)
     {
@@ -310,14 +358,13 @@ void PreviewPanel::RenderNormals()
 {
     const Mesh& mesh = GlobalContext::GetMesh();
     
-    // Create the same model transformation as used in RenderModel()
     Matrix4x4 modelTranslation = Matrix4x4::Translate(m_ModelPosition);
-    Matrix4x4 yawRotation = Matrix4x4::Rotate(Vector3(0.0f, 1.0f, 0.0f), m_ModelYaw);
-    Matrix4x4 pitchRotation = Matrix4x4::Rotate(Vector3(1.0f, 0.0f, 0.0f), m_ModelPitch);
-    Matrix4x4 modelMatrix = modelTranslation * yawRotation * pitchRotation;
-    
-    // Extract rotation part for transforming normals (no translation)
-    Matrix4x4 normalMatrix = yawRotation * pitchRotation;
+    Matrix4x4 modelPitchRotation = Matrix4x4::Rotate(Vector3(1.0f, 0.0f, 0.0f), m_ModelRotation.X);
+    Matrix4x4 modelYawRotation = Matrix4x4::Rotate(Vector3(0.0f, 1.0f, 0.0f), m_ModelRotation.Y);
+    Matrix4x4 modelRollRotation = Matrix4x4::Rotate(Vector3(0.0f, 0.0f, 1.0f), m_ModelRotation.Z);
+
+    Matrix4x4 modelMatrix = modelTranslation * modelYawRotation * modelPitchRotation * modelRollRotation;
+    Matrix4x4 normalMatrix = modelYawRotation * modelPitchRotation * modelRollRotation;
     
     Matrix4x4 offset = Matrix4x4::Translate(Vector3(0.0f, 1.5f, 0.0f));
     Matrix4x4 scale = Matrix4x4::Scale(Vector3(0.02f, 0.02, 0.02f));
@@ -362,9 +409,22 @@ void PreviewPanel::RenderNormals()
 
 void PreviewPanel::DrawTarget()
 {
-    std::string name = m_Target == Target::Model ? "Model" : "Light";
-    Vector2 position = GetPosition() + Vector2(10.0f, 10.0f);
+    std::string name;
 
+    switch (m_Target)
+    {
+    case Target::ModelPosition:
+        name = "Model Position";
+        break;
+    case Target::ModelRotation:
+        name = "Model Rotation";
+        break;
+    case Target::Light:
+        name = "Light Position";
+        break;
+    }
+
+    Vector2 position = GetPosition() + Vector2(10.0f, 10.0f);
     Graphics::DrawString(ColorRGB(1.0f, 1.0f, 1.0f), position, "Target: " + name);
 }
 
@@ -375,8 +435,7 @@ void PreviewPanel::ResetScene()
     m_Camera.SetPitch(0.0f);
 
     m_ModelPosition = Vector3(0.0f, 0.0f, 0.0f);
-    m_ModelYaw = 0.0f;
-    m_ModelPitch = 0.0f;
+    m_ModelRotation = Vector3(0.0f, 0.0f, 0.0f);
 
     m_LightPosition = Vector3(0.75f, 0.75f, 0.0f);
 }

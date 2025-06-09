@@ -30,7 +30,8 @@ private:
 
     enum class Target
     {
-        Model,
+        ModelPosition,
+        ModelRotation,
         Light
     };
 
@@ -46,8 +47,7 @@ private:
     Vector3 m_LightPosition;
 
     Vector3 m_ModelPosition;
-    float m_ModelYaw;
-    float m_ModelPitch;
+    Vector3 m_ModelRotation;
 
     ProjectionType m_ProjectionType;
     ShaderType m_ShaderType;
