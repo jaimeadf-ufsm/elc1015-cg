@@ -55,9 +55,14 @@ float Vector4::MagnitudeSquared() const
     return X * X + Y * Y + Z * Z + W * W;
 }
 
-Vector3 Vector4::ToCartesian() const
+Vector3 Vector4::ToCartesianPosition() const
 {
     return Vector3(X / W, Y / W, Z / W);
+}
+
+Vector3 Vector4::ToCartesianDirection() const
+{
+    return Vector3(X, Y, Z);
 }
 
 Vector4 Vector4::operator+(const Vector4& other) const

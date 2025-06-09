@@ -154,7 +154,7 @@ void Renderer::ClearDepthBuffer(float depth)
 
 Vector3 Renderer::GetScreenCoordinates(const Vector4& point) const
 {
-    Vector3 cartesianPoint = point.ToCartesian();
+    Vector3 cartesianPoint = point.ToCartesianPosition();
 
     return Vector3(
         (cartesianPoint.X + 1.0f) * 0.5f * m_FrameBuffer.GetWidth(),

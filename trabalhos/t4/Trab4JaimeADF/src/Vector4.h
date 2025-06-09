@@ -25,7 +25,8 @@ struct Vector4
     float Magnitude() const;
     float MagnitudeSquared() const;
 
-    Vector3 ToCartesian() const;
+    Vector3 ToCartesianPosition() const;
+    Vector3 ToCartesianDirection() const;
 
     Vector4 operator+(const Vector4& other) const;
     Vector4 operator-(const Vector4& other) const;
