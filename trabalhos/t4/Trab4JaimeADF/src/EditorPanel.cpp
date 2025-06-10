@@ -32,7 +32,7 @@ EditorPanel::EditorPanel()
     m_CurveResolution = 16;
     m_ExtrudeResolution = 16;
 
-    m_SpringRadius = 0.25f;
+    m_SpringRadius = 1.0f;
     m_SpringHeight = 1.0f;
     m_SpringFrequency = 2.0f;
 
