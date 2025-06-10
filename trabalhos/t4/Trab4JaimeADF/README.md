@@ -48,6 +48,7 @@ A interface é dividida em dois painéis principais:
 * `x` / `X`: aumenta / diminui os **segmentos do caminho** (circunferência ou mola).
 * `v` / `V`: aumenta / diminui o **grau da curva**.
 * `c`: alterna entre **curva aberta e fechada**.
+* `y`: imprime os pontos de controle.
 
 #### **Configurações da Mola (Sweep):**
 
@@ -83,6 +84,7 @@ A interface é dividida em dois painéis principais:
 * `r`: alterna entre **wireframe**, **sólido** ou **iluminação por pixel**.
 * `f`: alterna entre **exibição de normais** (**nenhum**, **por vértice** ou **por face**).
 * `e`: ativa/desativa **remoção de faces ocultas (back-face culling)**.
+* `espaço`: reseta a cena.
 
 #### **Controle de Transformações:**
 

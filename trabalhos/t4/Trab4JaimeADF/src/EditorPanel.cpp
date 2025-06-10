@@ -1,5 +1,6 @@
 #include <sstream>
 #include <iomanip>
+#include <iostream>
 
 #include "EditorPanel.h"
 
@@ -27,16 +28,25 @@ EditorPanel::EditorPanel()
     m_ModelType = ModelType::Revolution;
 
     m_BezierDegree = 3;
-    m_BezierClosed = false;
+    m_BezierClosed = true;
 
     m_CurveResolution = 16;
     m_ExtrudeResolution = 16;
 
     m_SpringRadius = 1.0f;
-    m_SpringHeight = 1.0f;
+    
     m_SpringFrequency = 2.0f;
 
     m_SelectedPointIndex = -1;
+
+    m_ControlPoints = {
+        Vector2(0.60, -0.15),
+        Vector2(0.75, -0.15),
+        Vector2(0.75, 0.15),
+        Vector2(0.60, 0.15),
+        Vector2(0.45, 0.15),
+        Vector2(0.45, -0.15),
+    };
 
     SetSize(Vector2(Window::GetWidth() / 2.0f, Window::GetHeight()));
     SetPosition(Vector2());
@@ -139,6 +149,13 @@ void EditorPanel::Process(const Event& event)
             else
             {
                 m_ModelType = ModelType::Revolution;
+            }
+            break;
+        case 'y':
+        case 'Y':
+            for (const Vector2& point : m_ControlPoints)
+            {
+                std::cout << "Vector2(" << std::fixed << std::setprecision(2) << point.X << ", " << point.Y << ")," << std::endl;
             }
             break;
         }
@@ -384,7 +401,7 @@ void EditorPanel::RegenerateCurve()
         float v = i * step;
         int patch = static_cast<int>(v);
 
-        float t = v - patch;
+        float t = std::min(v - patch, 1.0f);
 
         auto start = m_BezierPoints.begin() + patch * m_BezierDegree;
         auto end = start + m_BezierDegree + 1;
