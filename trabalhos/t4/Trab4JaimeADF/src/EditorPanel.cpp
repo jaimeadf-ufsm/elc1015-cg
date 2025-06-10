@@ -7,7 +7,7 @@ void GenerateSpring(PolyLine3D& polyline, int segments, float radius, float heig
 {
     polyline.Clear();
 
-    for (int i = 0; i < segments; ++i)
+    for (int i = 0; i <= segments; ++i)
     {
         float t = static_cast<float>(i) / static_cast<float>(segments - 1);
         float angle = t * MATH_TAU * frequency;
