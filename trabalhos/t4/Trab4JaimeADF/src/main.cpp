@@ -1,3 +1,24 @@
+// ## Requisitos implementados
+
+// ### Requisitos básicos
+
+// * [x] Modelagem do objeto com curvas de bézier (revolução e sweep) para gerar garrafas, donuts e molas.
+// * [x] Rotação e translação do objeto usando as teclas do teclado.
+// * [x] Visualização em wireframe de triângulos com projeção ortográfica e em perspectiva.
+// * [x] Parametrização do número de segmentos da curva e do número de segmentos da revolução ou do sweep para controlar o número de faces e de pontos do objeto gerado.
+
+// ### Requisitos extras
+// * [x] Exibição de vetores normais de cada face (até 1 ponto).
+// * [x] Adição de mais de 4 pontos de controle por patch por meio do controle do grau da curva (até 1 ponto).
+// * [x] Adição de mais de um patch por meio da criação de vários pontos em sequência (até 1 ponto).
+// * [x] Remoção de faces ocultas sem preenchimento utilizando back-face culling (até 2 pontos).
+// * [x] Preenchimento do objeto com z-buffer e com scanline usando iluminação por pixel (até 5 pontos).
+// * [x] Cena com vários modelos (esferas, flechas e objeto).
+// * [x] Exibição de vetores normais de cada vértice.
+// * [x] Câmera que pode andar, rotacionar ou aproximar o espaço.
+// * [x] Textura com imagens BMP.
+// * [x] Translação da luz para alterar a fonte da iluminação por pixel.
+
 #include <GL/glut.h>
 #include <GL/freeglut_ext.h>
 
