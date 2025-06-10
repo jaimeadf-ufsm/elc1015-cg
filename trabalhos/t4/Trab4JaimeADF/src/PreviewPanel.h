@@ -19,7 +19,7 @@ class PreviewPanel : public Panel
 public:
     PreviewPanel();
 
-    void Process(const Event& event) override;
+    void Process(const Event &event) override;
     void Update() override;
     void Draw() override;
 
@@ -31,7 +31,8 @@ private:
     enum class ProjectionType
     {
         Perspective,
-        Orthographic    };
+        Orthographic
+    };
 
     /**
      * @enum ShaderType
@@ -41,7 +42,8 @@ private:
     {
         Wireframe,
         Flat,
-        Phong    };
+        Phong
+    };
 
     /**
      * @enum NormalMode
@@ -51,8 +53,9 @@ private:
     {
         None,
         Vertex,
-        Face    };
-    
+        Face
+    };
+
     /**
      * @enum Target
      * @brief Target for user interaction and manipulation
@@ -83,8 +86,10 @@ private:
     ShaderType m_ShaderType;
     NormalMode m_NormalMode;
     Target m_Target;
-    
-    Sampler m_Texture;    bool m_MouseDragging;
+
+    Sampler m_Texture;
+
+    bool m_MouseDragging;
     Vector2 m_MouseLastPosition;
 
     void RenderLight();
