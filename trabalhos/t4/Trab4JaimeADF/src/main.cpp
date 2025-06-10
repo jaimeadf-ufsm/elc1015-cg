@@ -18,6 +18,7 @@
 // * [x] Câmera que pode andar, rotacionar ou aproximar o espaço.
 // * [x] Textura com imagens BMP.
 // * [x] Translação da luz para alterar a fonte da iluminação por pixel.
+// * [x] Responsividade para qualquer resolução.
 
 #include <GL/glut.h>
 #include <GL/freeglut_ext.h>
