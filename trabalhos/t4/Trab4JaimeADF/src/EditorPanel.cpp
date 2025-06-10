@@ -34,7 +34,7 @@ EditorPanel::EditorPanel()
     m_ExtrudeResolution = 16;
 
     m_SpringRadius = 1.0f;
-    
+    m_SpringHeight = 1.0f; 
     m_SpringFrequency = 2.0f;
 
     m_SelectedPointIndex = -1;
@@ -293,7 +293,7 @@ void EditorPanel::DrawInformation()
         modelStream << "; Frequency: " << std::fixed << std::setprecision(2) << m_SpringFrequency;
     }
 
-    Graphics::DrawString(0xFFFFFF, Vector2(16, 32), curveStream.str());
+    Graphics::DrawString(0xFFFFFF, Vector2(16, 40), curveStream.str());
     Graphics::DrawString(0xFFFFFF, Vector2(16, 16), modelStream.str());
 }
 

@@ -51,7 +51,7 @@ private:
      */
     enum class NormalMode
     {
-        None,
+        Hidden,
         Vertex,
         Face
     };
@@ -97,7 +97,7 @@ private:
     void RenderVertexNormals();
     void RenderFaceNormals();
 
-    void DrawTarget();
+    void DrawInformation();
 
     void ResetScene();
     void ResetCamera();

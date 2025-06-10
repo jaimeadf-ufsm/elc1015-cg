@@ -1,4 +1,6 @@
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 
 #include "PreviewPanel.h"
 #include "WireframeShader.h"
@@ -11,11 +13,11 @@
 PreviewPanel::PreviewPanel() : Panel()
 {
     Mesh::GenerateSphere(m_SphereMesh, 32, 32);
-    Mesh::GenerateArrow(m_ArrowMesh, 32);
+    Mesh::GenerateArrow(m_ArrowMesh, 8);
 
     m_ProjectionType = ProjectionType::Perspective;
     m_ShaderType = ShaderType::Wireframe;
-    m_NormalMode = NormalMode::None;
+    m_NormalMode = NormalMode::Hidden;
     m_Target = Target::ModelPosition;
     m_MouseDragging = false;
 
@@ -127,14 +129,14 @@ void PreviewPanel::Process(const Event &event)
         case 'F':
             switch (m_NormalMode)
             {
-            case NormalMode::None:
+            case NormalMode::Hidden:
                 m_NormalMode = NormalMode::Vertex;
                 break;
             case NormalMode::Vertex:
                 m_NormalMode = NormalMode::Face;
                 break;
             case NormalMode::Face:
-                m_NormalMode = NormalMode::None;
+                m_NormalMode = NormalMode::Hidden;
                 break;
             }
             break;
@@ -363,13 +365,13 @@ void PreviewPanel::Draw()
     case NormalMode::Face:
         RenderFaceNormals();
         break;
-    case NormalMode::None:
+    case NormalMode::Hidden:
         break;
     }
 
     Graphics::DrawImage(m_Renderer.GetFrameBuffer(), GetPosition());
 
-    DrawTarget();
+    DrawInformation();
 }
 
 void PreviewPanel::RenderLight()
@@ -467,47 +469,44 @@ void PreviewPanel::RenderVertexNormals()
 void PreviewPanel::RenderFaceNormals()
 {
     const Mesh &mesh = GlobalContext::GetMesh();
-
+    
     Matrix4x4 offset = Matrix4x4::Translate(Vector3(0.0f, 1.5f, 0.0f));
-    Matrix4x4 scale = Matrix4x4::Scale(Vector3(0.01f, 0.01f, 0.01f));
+    Matrix4x4 scale = Matrix4x4::Scale(Vector3(0.01f, 0.01, 0.01f));
 
     FlatShader shader;
     shader.ProjectionMatrix = m_ProjectionMatrix;
     shader.ViewMatrix = m_ViewMatrix;
     shader.Texture = Sampler::CreateCoordinatesSampler();
 
-    for (std::size_t i = 0; i + 6 <= mesh.Indices.size(); i += 6)
+    for (std::size_t i = 0; i < mesh.Indices.size(); i += 3)
     {
-        const Vertex &v0 = mesh.Vertices[mesh.Indices[i]];
-        const Vertex &v1 = mesh.Vertices[mesh.Indices[i + 1]];
-        const Vertex &v2 = mesh.Vertices[mesh.Indices[i + 2]];
-        const Vertex &v3 = mesh.Vertices[mesh.Indices[i + 5]];
+        const Vertex& v0 = mesh.Vertices[mesh.Indices[i]];
+        const Vertex& v1 = mesh.Vertices[mesh.Indices[i + 1]];
+        const Vertex& v2 = mesh.Vertices[mesh.Indices[i + 2]];
 
-        Vector3 faceCenter = (v0.Position + v1.Position + v2.Position + v3.Position) * 0.25f;
+        Vector3 worldPos0 = (m_ModelMatrix * v0.Position).ToCartesianPosition();
+        Vector3 worldPos1 = (m_ModelMatrix * v1.Position).ToCartesianPosition();
+        Vector3 worldPos2 = (m_ModelMatrix * v2.Position).ToCartesianPosition();
 
-        Vector3 edge1 = v1.Position - v0.Position;
-        Vector3 edge2 = v2.Position - v0.Position;
+        Vector3 faceCenter = (worldPos0 + worldPos1 + worldPos2) / 3.0f;
+
+        Vector3 edge1 = worldPos1 - worldPos0;
+        Vector3 edge2 = worldPos2 - worldPos0;
         Vector3 faceNormal = edge1.Cross(edge2).Normalize();
 
-        Vector4 transformedCenter = m_ModelMatrix * Vector4(faceCenter.X, faceCenter.Y, faceCenter.Z, 1.0f);
-        Vector3 position = Vector3(transformedCenter.X, transformedCenter.Y, transformedCenter.Z);
-
-        Vector4 transformedNormal = m_ModelMatrix * Vector4(faceNormal.X, faceNormal.Y, faceNormal.Z, 0.0f);
-        Vector3 normal = Vector3(transformedNormal.X, transformedNormal.Y, transformedNormal.Z).Normalize();
-
-        Matrix4x4 translation = Matrix4x4::Translate(position);
+        Matrix4x4 translation = Matrix4x4::Translate(faceCenter);
         Matrix4x4 rotation = Matrix4x4::Identity();
 
         Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
 
-        if (std::abs(normal.Dot(up)) < 0.99f)
+        if (std::abs(faceNormal.Dot(up)) < 0.99f)
         {
-            Vector3 axis = up.Cross(normal).Normalize();
-            float angle = std::acos(up.Dot(normal));
+            Vector3 axis = up.Cross(faceNormal).Normalize();
+            float angle = std::acos(up.Dot(faceNormal));
 
             rotation = Matrix4x4::Rotate(axis, angle);
         }
-        else if (normal.Dot(up) < 0.0f)
+        else if (faceNormal.Dot(up) < 0.0f)
         {
             rotation = Matrix4x4::Rotate(Vector3(1.0f, 0.0f, 0.0f), MATH_PI);
         }
@@ -518,25 +517,82 @@ void PreviewPanel::RenderFaceNormals()
     }
 }
 
-void PreviewPanel::DrawTarget()
+void PreviewPanel::DrawInformation()
 {
-    std::string name;
+    std::stringstream optionsLine1;
+    std::stringstream optionsLine2;
+    std::stringstream objectLine;
+
+    objectLine << "Target: ";
 
     switch (m_Target)
     {
     case Target::ModelPosition:
-        name = "Model Position";
+        objectLine << "Model Position";
         break;
     case Target::ModelRotation:
-        name = "Model Rotation";
+        objectLine << "Model Rotation";
         break;
     case Target::Light:
-        name = "Light Position";
+        objectLine << "Light Position";
         break;
     }
 
-    Vector2 position = GetPosition() + Vector2(10.0f, 10.0f);
-    Graphics::DrawString(ColorRGB(1.0f, 1.0f, 1.0f), position, "Target: " + name);
+    optionsLine2 << "Projection: ";
+
+    switch (m_ProjectionType)
+    {
+    case ProjectionType::Perspective:
+        optionsLine2 << "Perspective";
+        break;
+    case ProjectionType::Orthographic:
+        optionsLine2 << "Orthographic";
+        break;
+    }
+
+    optionsLine2 << "; Shader: ";
+
+    switch (m_ShaderType)
+    {
+    case ShaderType::Wireframe:
+        optionsLine2 << "Wireframe";
+        break;
+    case ShaderType::Flat:
+        optionsLine2 << "Flat";
+        break;
+    case ShaderType::Phong:
+        optionsLine2 << "Phong";
+        break;
+    }
+
+    optionsLine2 << "; Face Culling: ";
+    optionsLine2 << (m_Renderer.IsFaceCulling() ? "yes" : "no");
+
+    optionsLine1 << "Normals: ";
+
+    switch (m_NormalMode)
+    {
+    case NormalMode::Hidden:
+        optionsLine1 << "Hidden";
+        break;
+    case NormalMode::Vertex:
+        optionsLine1 << "Vertex";
+        break;
+    case NormalMode::Face:
+        optionsLine1 << "Face";
+        break;
+    }
+
+    const Mesh &mesh = GlobalContext::GetMesh();
+
+    optionsLine1 << "; Vertices: " << mesh.Vertices.size();
+    optionsLine1 << "; Faces: " << mesh.Indices.size() / 3;
+
+    const Vector2& position = GetPosition();
+
+    Graphics::DrawString(ColorRGB(1.0f, 1.0f, 1.0f), position + Vector2(16.0f, 16.0f), objectLine.str());
+    Graphics::DrawString(ColorRGB(1.0f, 1.0f, 1.0f), position + Vector2(16.0f, 40.0f), optionsLine1.str());
+    Graphics::DrawString(ColorRGB(1.0f, 1.0f, 1.0f), position + Vector2(16.0f, 64.0f), optionsLine2.str());
 }
 
 void PreviewPanel::ResetScene()

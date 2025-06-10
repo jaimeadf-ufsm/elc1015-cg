@@ -72,22 +72,6 @@ void Graphics::DrawImage(const Image& image, const Vector2& position)
     }
 
     glEnd();
-
-    // glBegin(GL_QUADS);
-
-    // for (std::size_t y = 0; y < image.GetHeight(); ++y)
-    // {
-    //     for (std::size_t x = 0; x < image.GetWidth(); ++x)
-    //     {
-    //         const ColorRGB& pixelColor = image.GetPixel(x, y);
-
-    //         glColor3f(pixelColor.R, pixelColor.G, pixelColor.B);
-    //         glVertex2f(position.X + x, position.Y + y);
-    //         glVertex2f(position.X + x + 1, position.Y + y);
-    //         glVertex2f(position.X + x + 1, position.Y + y + 1);
-    //         glVertex2f(position.X + x, position.Y + y + 1);
-    //     }
-    // }
 }
 
 void Graphics::DrawString(const ColorRGB& color, const Vector2& position, const std::string& text)
