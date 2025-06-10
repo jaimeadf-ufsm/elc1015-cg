@@ -28,6 +28,13 @@ private:
         Phong
     };
 
+    enum class NormalMode
+    {
+        None,
+        Vertex,
+        Face
+    };
+    
     enum class Target
     {
         ModelPosition,
@@ -40,6 +47,7 @@ private:
 
     Matrix4x4 m_ProjectionMatrix;
     Matrix4x4 m_ViewMatrix;
+    Matrix4x4 m_ModelMatrix;
 
     Mesh m_SphereMesh;
     Mesh m_ArrowMesh;
@@ -51,21 +59,23 @@ private:
 
     ProjectionType m_ProjectionType;
     ShaderType m_ShaderType;
+    NormalMode m_NormalMode;
     Target m_Target;
-
-    Sampler m_Texture;
-
-    bool m_ShowNormals;
-
-    bool m_MouseDragging;
+    
+    Sampler m_Texture;    bool m_MouseDragging;
     Vector2 m_MouseLastPosition;
 
     void RenderLight();
     void RenderModel();
-    void RenderNormals();
+    void RenderVertexNormals();
+    void RenderFaceNormals();
 
     void DrawTarget();
 
     void ResetScene();
+    void ResetCamera();
+
     void UpdateProjectionMatrix();
+    void UpdateViewMatrix();
+    void UpdateModelMatrix();
 };

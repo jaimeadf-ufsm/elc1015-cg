@@ -49,11 +49,11 @@ void Mesh::GenerateSphere(Mesh &mesh, int xResolution, int yResolution)
         for (int x = 0; x < xResolution; ++x)
         {
             mesh.Indices.push_back(y * (xResolution + 1) + x);
-            mesh.Indices.push_back((y + 1) * (xResolution + 1) + x);
             mesh.Indices.push_back(y * (xResolution + 1) + x + 1);
+            mesh.Indices.push_back((y + 1) * (xResolution + 1) + x);
 
-            mesh.Indices.push_back(y * (xResolution + 1) + x + 1);
             mesh.Indices.push_back((y + 1) * (xResolution + 1) + x);
+            mesh.Indices.push_back(y * (xResolution + 1) + x + 1);
             mesh.Indices.push_back((y + 1) * (xResolution + 1) + x + 1);
         }
     }
@@ -137,25 +137,10 @@ void Mesh::GenerateRevolution(Mesh &mesh, const PolyLine2D &polyline, int resolu
             );
 
             Vector3 normal = axialTangent.Cross(circumferentialTangent).Normalize();
-            Vector3 radialDirection = Vector3(cosTheta, 0.0f, sinTheta);
-
-            if (normal.Dot(radialDirection) < 0.0f)
-            {
-                normal = normal * -1.0f;
-            }
 
             mesh.Vertices[i * m + j].Normal = normal;
         }
-    }
-
-    // Counter-clockwise winding order
-    // D . ----- . C
-    //   |     / |
-    //   |   /   |
-    //   | /     |
-    // A . ----- . B
-
-    for (int i = 0; i < n - 1; ++i)
+    }    for (int i = 0; i < n - 1; ++i)
     {
         for (int j = 0; j < m - 1; ++j)
         {
@@ -165,12 +150,12 @@ void Mesh::GenerateRevolution(Mesh &mesh, const PolyLine2D &polyline, int resolu
             std::size_t d = a + 1;
 
             mesh.Indices.push_back(a);
-            mesh.Indices.push_back(b);
-            mesh.Indices.push_back(c);
-
-            mesh.Indices.push_back(a);
-            mesh.Indices.push_back(c);
             mesh.Indices.push_back(d);
+            mesh.Indices.push_back(b);
+
+            mesh.Indices.push_back(b);
+            mesh.Indices.push_back(d);
+            mesh.Indices.push_back(c);
         }
     }
 }
@@ -186,13 +171,16 @@ void Mesh::GenerateSweep(Mesh &mesh, const PolyLine2D& shape, const PolyLine3D& 
     
     int pathSize = path.GetSize();
     int shapeSize = shape.GetSize();
+
+    if (shape.GetPoint(0) == shape.GetPoint(shapeSize - 1))
+    {
+        --shapeSize;
+    }
     
-    // Generate vertices by placing the shape at each point along the path
     for (int i = 0; i < pathSize; ++i)
     {
         const Vector3& pathPoint = path.GetPoint(i);
         
-        // Calculate tangent vector along the path
         Vector3 tangent;
         if (i == 0)
         {
@@ -208,12 +196,10 @@ void Mesh::GenerateSweep(Mesh &mesh, const PolyLine2D& shape, const PolyLine3D& 
         }
         tangent = tangent.Normalize();
         
-        // Create a local coordinate system at this path point
         Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
         Vector3 right;
         Vector3 forward = tangent;
         
-        // Handle the case where tangent is parallel to up vector
         if (std::abs(forward.Dot(up)) > 0.99f)
         {
             up = Vector3(1.0f, 0.0f, 0.0f);
@@ -222,12 +208,10 @@ void Mesh::GenerateSweep(Mesh &mesh, const PolyLine2D& shape, const PolyLine3D& 
         right = forward.Cross(up).Normalize();
         up = right.Cross(forward).Normalize();
         
-        // Place shape vertices at this path point
         for (int j = 0; j < shapeSize; ++j)
         {
             const Vector2& shapePoint = shape.GetPoint(j);
             
-            // Transform 2D shape point to 3D world position
             Vector3 worldPosition = pathPoint + 
                                   right * shapePoint.X + 
                                   up * shapePoint.Y;
@@ -238,14 +222,13 @@ void Mesh::GenerateSweep(Mesh &mesh, const PolyLine2D& shape, const PolyLine3D& 
                     static_cast<float>(i) / (pathSize - 1),
                     static_cast<float>(j) / (shapeSize - 1)
                 ),
-                .Normal = Vector3(0.0f, 0.0f, 0.0f), // Will be calculated later
+                .Normal = Vector3(0.0f, 0.0f, 0.0f),
             };
             
             mesh.Vertices.emplace_back(vertex);
         }
     }
     
-    // Calculate normals for each vertex
     for (int i = 0; i < pathSize; ++i)
     {
         for (int j = 0; j < shapeSize; ++j)
@@ -253,10 +236,8 @@ void Mesh::GenerateSweep(Mesh &mesh, const PolyLine2D& shape, const PolyLine3D& 
             Vector3 normal = Vector3(0.0f, 0.0f, 0.0f);
             int vertexIndex = i * shapeSize + j;
             
-            // Calculate normal based on neighboring vertices
             Vector3 tangentU, tangentV;
             
-            // Tangent along the path direction
             if (i == 0)
             {
                 tangentU = mesh.Vertices[(i + 1) * shapeSize + j].Position - 
@@ -273,42 +254,33 @@ void Mesh::GenerateSweep(Mesh &mesh, const PolyLine2D& shape, const PolyLine3D& 
                            mesh.Vertices[(i - 1) * shapeSize + j].Position) * 0.5f;
             }
             
-            // Tangent along the shape direction
             int nextJ = (j + 1) % shapeSize;
             int prevJ = (j - 1 + shapeSize) % shapeSize;
             
             tangentV = mesh.Vertices[i * shapeSize + nextJ].Position - 
                       mesh.Vertices[i * shapeSize + prevJ].Position;
             
-            // Normal is cross product of tangents
             normal = tangentU.Cross(tangentV).Normalize();
             
             mesh.Vertices[vertexIndex].Normal = normal;
         }
     }
     
-    // Generate triangle indices connecting adjacent cross-sections
-    // Counter-clockwise winding order
     for (int i = 0; i < pathSize - 1; ++i)
     {
         for (int j = 0; j < shapeSize; ++j)
         {
             int nextJ = (j + 1) % shapeSize;
             
-            // Current cross-section vertices
             std::size_t a = i * shapeSize + j;
             std::size_t b = i * shapeSize + nextJ;
-            
-            // Next cross-section vertices
             std::size_t c = (i + 1) * shapeSize + nextJ;
             std::size_t d = (i + 1) * shapeSize + j;
             
-            // First triangle: a -> d -> c
             mesh.Indices.push_back(a);
             mesh.Indices.push_back(d);
             mesh.Indices.push_back(c);
             
-            // Second triangle: a -> c -> b
             mesh.Indices.push_back(a);
             mesh.Indices.push_back(c);
             mesh.Indices.push_back(b);

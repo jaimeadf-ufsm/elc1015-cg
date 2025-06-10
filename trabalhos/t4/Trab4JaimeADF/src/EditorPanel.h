@@ -22,16 +22,8 @@ private:
     static const float s_PointRadius;
     static const float s_LocalGridSpacing;
 
-    ModelType m_ModelType;
-
-    PolyLine2D m_TemporaryPolyLine;
-    PolyLine2D m_CurvePolyLine;
-
-    PolyLine3D m_PathPolyline;
-
-    Bezier m_Bezier;
-
     int m_BezierDegree;
+    bool m_BezierClosed;
 
     int m_CurveResolution;
     int m_ExtrudeResolution;
@@ -42,11 +34,21 @@ private:
 
     int m_SelectedPointIndex;
 
+    ModelType m_ModelType;
+
+    PolyLine2D m_TemporaryPolyLine;
+    PolyLine2D m_BezierPolyLine;
+
+    PolyLine3D m_PathPolyLine;
+
+    Bezier m_Bezier;
+
+    std::vector<Vector2> m_ControlPoints;
     std::vector<Vector2> m_BezierPoints;
 
     void DrawGrid();
     void DrawCurve();
-    void DrawControlPolygon();
+    void DrawBezierPolygon();
     void DrawControlPoints();
     void DrawInformation();
 
@@ -60,6 +62,7 @@ private:
 
     void MovePoint(int index, const Vector2& screenPosition);
 
+    void UpdatePoints();
     void RegenerateCurve();
     void RegenerateModel();
 

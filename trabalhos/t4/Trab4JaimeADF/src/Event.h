@@ -9,6 +9,7 @@ enum class EventType
     KeyPress,
     KeyRelease,
     MouseMove,
+    MouseScroll,
     MouseButtonPress,
     MouseButtonRelease
 };
@@ -17,6 +18,7 @@ struct MouseData
 {
     int Button;
     Vector2 Position;
+    Vector2 Scroll;
 };
 
 struct KeyboardData
@@ -42,6 +44,7 @@ struct Event
 
     static Event CreateWindowResizeEvent(std::size_t width, std::size_t height);
     static Event CreateMouseMoveEvent(const Vector2& position);
+    static Event CreateMouseScrollEvent(const Vector2& direction, const Vector2& position);
     static Event CreateMouseButtonPressEvent(int button, const Vector2& position);
     static Event CreateMouseButtonReleaseEvent(int button, const Vector2& position);
     static Event CreateKeyPressEvent(int key);

@@ -17,6 +17,9 @@ public:
     void SetPosition(const Vector3& position);
     const Vector3& GetPosition() const;
 
+    void SetZoom(float zoom);
+    float GetZoom() const;
+
     Vector3 GetFront() const;
     Vector3 GetUp() const;
     Vector3 GetRight() const;
@@ -30,6 +33,7 @@ private:
     float m_Pitch;
 
     Vector3 m_Position;
+    float m_Zoom;
 
     Vector3 m_Front;
     Vector3 m_Up;

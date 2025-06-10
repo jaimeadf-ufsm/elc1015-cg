@@ -38,4 +38,6 @@ struct Vector3
 
     Vector3& operator*=(float scalar);
     Vector3& operator/=(float scalar);
+
+    bool operator==(const Vector3& other) const;
 };

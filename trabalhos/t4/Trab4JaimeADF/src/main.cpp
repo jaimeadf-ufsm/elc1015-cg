@@ -76,6 +76,14 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
          UI::Dispatch(Event::CreateMouseButtonReleaseEvent(button, Vector2(x, y)));
       }
    }
+
+   if (wheel != -2 && direction != -2)
+   {
+      if (wheel == 0)
+      {
+         UI::Dispatch(Event::CreateMouseScrollEvent(Vector2(0.0f, direction), Vector2(x, y)));
+      }
+   }
 }
 
 int main(void)

@@ -19,19 +19,24 @@ void GenerateSpring(PolyLine3D& polyline, int segments, float radius, float heig
     }
 }
 
-const float EditorPanel::s_PointRadius = 5.0f;
-const float EditorPanel::s_LocalGridSpacing = 0.075f;
+const float EditorPanel::s_PointRadius = 6.0f;
+const float EditorPanel::s_LocalGridSpacing = 0.15f;
 
 EditorPanel::EditorPanel()
 {
-    m_SelectedPointIndex = -1;
+    m_ModelType = ModelType::Revolution;
+
     m_BezierDegree = 3;
-    m_CurveResolution = 32;
-    m_ExtrudeResolution = 32;
+    m_BezierClosed = false;
+
+    m_CurveResolution = 16;
+    m_ExtrudeResolution = 16;
 
     m_SpringRadius = 0.25f;
     m_SpringHeight = 1.0f;
     m_SpringFrequency = 2.0f;
+
+    m_SelectedPointIndex = -1;
 
     SetSize(Vector2(Window::GetWidth() / 2.0f, Window::GetHeight()));
     SetPosition(Vector2());
@@ -85,44 +90,48 @@ void EditorPanel::Process(const Event& event)
     case EventType::KeyPress:
         switch (event.Keyboard.Key)
         {
-        case 'q':
+        case 'v':
             m_BezierDegree = m_BezierDegree + 1;
             break;
-        case 'Q':
+        case 'V':
             m_BezierDegree = std::max(1, m_BezierDegree - 1);
             break;
-        case 'e':
+        case 'c':
+        case 'C':
+            m_BezierClosed = !m_BezierClosed;
+            break;
+        case 'z':
             m_CurveResolution = m_CurveResolution + 1;
             break;
-        case 'E':
-            m_CurveResolution = std::max(2, m_CurveResolution - 1);
+        case 'Z':
+            m_CurveResolution = std::max(1, m_CurveResolution - 1);
             break;
-        case 'r':
+        case 'x':
             m_ExtrudeResolution = m_ExtrudeResolution + 1;
             break;
-        case 'R':
-            m_ExtrudeResolution = std::max(2, m_ExtrudeResolution - 1);
-            break;
-        case 'v':
-            m_SpringRadius += 0.01f;
-            break;
-        case 'V':
-            m_SpringRadius = std::max(0.01f, m_SpringRadius - 0.01f);
+        case 'X':
+            m_ExtrudeResolution = std::max(1, m_ExtrudeResolution - 1);
             break;
         case 'b':
-            m_SpringHeight += 0.01f;
+            m_SpringRadius += 0.01f;
             break;
         case 'B':
-            m_SpringHeight = std::max(0.01f, m_SpringHeight - 0.01f);
+            m_SpringRadius = std::max(0.01f, m_SpringRadius - 0.01f);
             break;
         case 'n':
-            m_SpringFrequency += 0.1f;
+            m_SpringHeight += 0.01f;
             break;
         case 'N':
-            m_SpringFrequency = std::max(0.1f, m_SpringFrequency - 0.1f);
+            m_SpringHeight = std::max(0.01f, m_SpringHeight - 0.01f);
             break;
         case 'm':
+            m_SpringFrequency += 0.1f;
+            break;
         case 'M':
+            m_SpringFrequency = std::max(0.1f, m_SpringFrequency - 0.1f);
+            break;
+        case 'g':
+        case 'G':
             if (m_ModelType == ModelType::Revolution)
             {
                 m_ModelType = ModelType::SpringSweep;
@@ -140,6 +149,7 @@ void EditorPanel::Process(const Event& event)
 
 void EditorPanel::Update()
 {
+    UpdatePoints();
     RegenerateCurve();
     RegenerateModel();
 }
@@ -149,7 +159,7 @@ void EditorPanel::Draw()
     Graphics::FillRectangle(0x1E1E1E, GetPosition(), GetSize());
     
     DrawGrid();
-    DrawControlPolygon();
+    DrawBezierPolygon();
     DrawCurve();
     DrawControlPoints();
     DrawInformation();
@@ -207,10 +217,10 @@ void EditorPanel::DrawGrid()
     Graphics::StrokeLine(0x3A3A5A, m_TemporaryPolyLine, 2.0f);
 }
 
-void EditorPanel::DrawControlPolygon()
+void EditorPanel::DrawBezierPolygon()
 {
     m_TemporaryPolyLine.Clear();
-
+    
     for (const Vector2& point : m_BezierPoints)
     {
         m_TemporaryPolyLine.InsertPoint(ConvertToScreenCoordinates(point).Round());
@@ -221,10 +231,14 @@ void EditorPanel::DrawControlPolygon()
 
 void EditorPanel::DrawControlPoints()
 {
-    for (const Vector2& point : m_BezierPoints)
+    for (std::size_t i = 0; i < m_ControlPoints.size(); ++i)
     {
-        Vector2 screenPoint = ConvertToScreenCoordinates(point);
+        const Vector2& point = m_ControlPoints[i];
+
+        Vector2 screenPoint = ConvertToScreenCoordinates(point).Round();
+
         Graphics::FillCircle(0xFFFFFF, screenPoint, s_PointRadius);
+        Graphics::DrawString(0xFFFFFF, screenPoint + Vector2(10, -10), std::to_string(i));
     }
 }
 
@@ -232,9 +246,9 @@ void EditorPanel::DrawCurve()
 {
     m_TemporaryPolyLine.Clear();
 
-    for (std::size_t i = 0; i < m_CurvePolyLine.GetSize(); ++i)
+    for (std::size_t i = 0; i < m_BezierPolyLine.GetSize(); ++i)
     {
-        Vector2 point = m_CurvePolyLine.GetPoint(i);
+        Vector2 point = m_BezierPolyLine.GetPoint(i);
         m_TemporaryPolyLine.InsertPoint(ConvertToScreenCoordinates(point).Round());
     }
 
@@ -245,8 +259,9 @@ void EditorPanel::DrawInformation()
 {
     std::stringstream curveStream;
     curveStream << "Degree: " << m_BezierDegree;
-    curveStream << "; Curve Resolution: " << m_CurveResolution;
-    curveStream << "; Extrude Resolution: " << m_ExtrudeResolution;
+    curveStream << "; Curve Res.: " << m_CurveResolution;
+    curveStream << "; Extrude Res.: " << m_ExtrudeResolution;
+    curveStream << "; Closed: " << (m_BezierClosed ? "Yes" : "No");
 
     std::stringstream modelStream;
     if (m_ModelType == ModelType::Revolution)
@@ -267,9 +282,9 @@ void EditorPanel::DrawInformation()
 
 int EditorPanel::LocatePointAt(const Vector2& screenPosition) const
 {
-    for (std::size_t i = 0; i < m_BezierPoints.size(); ++i)
+    for (std::size_t i = 0; i < m_ControlPoints.size(); ++i)
     {
-        Vector2 screenPoint = ConvertToScreenCoordinates(m_BezierPoints[i]);
+        Vector2 screenPoint = ConvertToScreenCoordinates(m_ControlPoints[i]);
 
         if (IsPointInCircle(screenPosition, screenPoint, s_PointRadius))
         {
@@ -292,12 +307,12 @@ void EditorPanel::DeselectPoint()
 
 void EditorPanel::CreatePoint(const Vector2& screenPosition)
 {
-    m_BezierPoints.emplace_back(ConvertToLocalCoordinates(screenPosition));
+    m_ControlPoints.emplace_back(ConvertToLocalCoordinates(screenPosition));
 }
 
 void EditorPanel::DeletePoint(int index)
 {
-    m_BezierPoints.erase(m_BezierPoints.begin() + index);
+    m_ControlPoints.erase(m_ControlPoints.begin() + index);
 
     if (m_SelectedPointIndex == index)
     {
@@ -307,12 +322,53 @@ void EditorPanel::DeletePoint(int index)
 
 void EditorPanel::MovePoint(int index, const Vector2& screenPosition)
 {
-    m_BezierPoints[index] = ConvertToLocalCoordinates(screenPosition);
+    m_ControlPoints[index] = ConvertToLocalCoordinates(screenPosition);
+}
+
+void EditorPanel::UpdatePoints()
+{
+    m_BezierPoints.clear();
+
+    if (m_ControlPoints.empty())
+    {
+        return;
+    }
+
+    if (m_BezierClosed)
+    {
+        if (m_ControlPoints.size() < static_cast<std::size_t>(m_BezierDegree))
+        {
+            return;
+        }
+
+        std::size_t patches = m_ControlPoints.size() / m_BezierDegree;
+        std::size_t n = patches * m_BezierDegree;
+
+        for (std::size_t i = 0; i <= n; ++i)
+        {
+            m_BezierPoints.push_back(m_ControlPoints[i % n]);
+        }
+    }
+    else
+    {
+        if (m_ControlPoints.size() < static_cast<std::size_t>(m_BezierDegree + 1))
+        {
+            return;
+        }
+
+        std::size_t patches = (m_ControlPoints.size() - 1) / m_BezierDegree;
+        std::size_t n = patches * m_BezierDegree + 1;
+
+        for (std::size_t i = 0; i < n; ++i)
+        {
+            m_BezierPoints.push_back(m_ControlPoints[i]);
+        }
+    }
 }
 
 void EditorPanel::RegenerateCurve()
 {
-    m_CurvePolyLine.Clear();
+    m_BezierPolyLine.Clear();
 
     int patches = (static_cast<int>(m_BezierPoints.size()) - 1) / m_BezierDegree;
 
@@ -335,28 +391,28 @@ void EditorPanel::RegenerateCurve()
 
         Vector2 point = m_Bezier.Evaluate(start, end, t);
 
-        m_CurvePolyLine.InsertPoint(point);
+        m_BezierPolyLine.InsertPoint(point);
     }
 }
 
 void EditorPanel::RegenerateModel()
 {
-    m_PathPolyline.Clear();
+    m_PathPolyLine.Clear();
 
     if (m_ModelType == ModelType::Revolution)
     {
-        Mesh::GenerateRevolution(GlobalContext::GetMesh(), m_CurvePolyLine, m_ExtrudeResolution);
+        Mesh::GenerateRevolution(GlobalContext::GetMesh(), m_BezierPolyLine, m_ExtrudeResolution);
     }
     else
     {
-        GenerateSpring(m_PathPolyline, m_ExtrudeResolution, m_SpringRadius, m_SpringHeight, m_SpringFrequency);
-        Mesh::GenerateSweep(GlobalContext::GetMesh(), m_CurvePolyLine, m_PathPolyline);
+        GenerateSpring(m_PathPolyLine, m_ExtrudeResolution, m_SpringRadius, m_SpringHeight, m_SpringFrequency);
+        Mesh::GenerateSweep(GlobalContext::GetMesh(), m_BezierPolyLine, m_PathPolyLine);
     }
 }
 
 float EditorPanel::ComputeScale() const
 {
-    return GetSize().X;
+    return GetSize().X / 2.0f;
 }
 
 Vector2 EditorPanel::ConvertToLocalCoordinates(const Vector2& point) const

@@ -130,3 +130,8 @@ Vector2& Vector2::operator/=(float scalar)
     Y /= scalar;
     return *this;
 }
+
+bool Vector2::operator==(const Vector2& other) const
+{
+    return X == other.X && Y == other.Y;
+}

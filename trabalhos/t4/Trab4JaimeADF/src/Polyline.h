@@ -9,29 +9,6 @@ template<typename T>
 class PolyLine
 {
 public:
-    T Evaluate(float t) const
-    {
-        if (m_Points.empty())
-        {
-            return T(0.0f, 0.0f);
-        }
-
-        if (t <= 0.0f)
-        {
-            return m_Points.front();
-        }
-        
-        if (t >= static_cast<float>(m_Points.size() - 1))
-        {
-            return m_Points.back();
-        }
-
-        std::size_t index = static_cast<std::size_t>(t);
-        float fraction = t - static_cast<float>(index);
-
-        return Lerp(m_Points[index], m_Points[index + 1], fraction);
-    }
-
     void InsertPoint(const T& point)
     {
         m_Points.push_back(point);

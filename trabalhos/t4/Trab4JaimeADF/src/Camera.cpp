@@ -3,7 +3,7 @@
 #include "Camera.h"
 #include "Math.h"
 
-Camera::Camera(float yaw, float pitch, const Vector3& position) : m_Yaw(yaw), m_Pitch(pitch), m_Position(position)
+Camera::Camera(float yaw, float pitch, const Vector3& position) : m_Yaw(yaw), m_Pitch(pitch), m_Position(position), m_Zoom(1.0f)
 {
     Refresh();
 }
@@ -44,6 +44,16 @@ float Camera::GetPitch() const
     return m_Pitch;
 }
 
+void Camera::SetZoom(float zoom)
+{
+    m_Zoom = Clamp(zoom, 0.1f, 10.0f);
+}
+
+float Camera::GetZoom() const
+{
+    return m_Zoom;
+}
+
 Vector3 Camera::GetFront() const
 {
     return m_Front;
@@ -69,6 +79,7 @@ void Camera::Reset()
     m_Yaw = -MATH_PI / 2.0f + 0.05f;
     m_Pitch = 0.0f;
     m_Position = Vector3(0.0f, 0.0f, 0.0f);
+    m_Zoom = 1.0f;
     Refresh();
 }
 

@@ -148,3 +148,8 @@ Vector4& Vector4::operator/=(float scalar)
     W /= scalar;
     return *this;
 }
+
+bool Vector4::operator==(const Vector4& other) const
+{
+    return X == other.X && Y == other.Y && Z == other.Z && W == other.W;
+}

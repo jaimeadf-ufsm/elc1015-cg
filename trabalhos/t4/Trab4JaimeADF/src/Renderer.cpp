@@ -70,7 +70,7 @@ void Renderer::Render(const Mesh& mesh, const Shader& shader)
             continue;
         }
         
-        if (m_FaceCulling && crossZ > 0.0f)
+        if (m_FaceCulling && crossZ < 0.0f)
         {
             continue;
         }
@@ -97,9 +97,10 @@ void Renderer::Render(const Mesh& mesh, const Shader& shader)
                 if (barycentric.X < 0.0f || barycentric.Y < 0.0f || barycentric.Z < 0.0f)
                 {
                     continue;
-                }                float z = barycentric.X * p0.Z + barycentric.Y * p1.Z + barycentric.Z * p2.Z;
+                }
+                
+                float z = barycentric.X * p0.Z + barycentric.Y * p1.Z + barycentric.Z * p2.Z;
 
-                // More robust depth testing
                 if (z < -1.0f || z > 1.0f || !std::isfinite(z))
                 {
                     continue;

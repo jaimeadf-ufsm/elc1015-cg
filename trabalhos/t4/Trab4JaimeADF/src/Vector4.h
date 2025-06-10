@@ -43,4 +43,6 @@ struct Vector4
 
     Vector4& operator*=(float scalar);
     Vector4& operator/=(float scalar);
+
+    bool operator==(const Vector4& other) const;
 };

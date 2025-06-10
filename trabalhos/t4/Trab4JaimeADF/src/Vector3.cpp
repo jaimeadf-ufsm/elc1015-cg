@@ -136,3 +136,8 @@ Vector3& Vector3::operator/=(float scalar)
     Z /= scalar;
     return *this;
 }
+
+bool Vector3::operator==(const Vector3& other) const
+{
+    return X == other.X && Y == other.Y && Z == other.Z;
+}

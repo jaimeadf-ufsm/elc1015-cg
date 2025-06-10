@@ -26,6 +26,20 @@ Event Event::CreateMouseMoveEvent(const Vector2& position)
     return event;
 }
 
+Event Event::CreateMouseScrollEvent(const Vector2& direction, const Vector2& position)
+{
+    Event event = {
+        .Type = EventType::MouseScroll,
+        .Mouse = {
+            .Button = -1,
+            .Position = position,
+            .Scroll = direction
+        }
+    };
+
+    return event;
+}
+
 Event Event::CreateMouseButtonPressEvent(int button, const Vector2& position)
 {
     Event event = {
