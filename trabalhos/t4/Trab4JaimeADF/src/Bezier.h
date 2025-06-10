@@ -1,3 +1,8 @@
+/**
+ * @file Bezier.h
+ * @brief Bezier curve evaluation class with binomial coefficient caching
+ */
+
 #pragma once
 
 #include <iterator>
@@ -5,6 +10,10 @@
 #include <cmath>
 #include <cstdint>
 
+/**
+ * @class Bezier
+ * @brief Provides Bezier curve evaluation functionality with optimized binomial coefficient computation
+ */
 class Bezier
 {
 private:

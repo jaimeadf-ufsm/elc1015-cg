@@ -1,3 +1,8 @@
+/**
+ * @file Mouse.h
+ * @brief Mouse input management and position tracking
+ */
+
 #pragma once
 
 #include "Vector2.h"
@@ -6,6 +11,10 @@
 #define MOUSE_BUTTON_MIDDLE 1
 #define MOUSE_BUTTON_RIGHT 2
 
+/**
+ * @class Mouse
+ * @brief Static class for managing mouse position and input
+ */
 class Mouse
 {
 public:

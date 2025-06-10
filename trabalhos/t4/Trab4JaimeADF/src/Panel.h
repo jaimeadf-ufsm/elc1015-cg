@@ -1,3 +1,8 @@
+/**
+ * @file Panel.h
+ * @brief Base class for UI panels with event handling and rendering
+ */
+
 #pragma once
 
 #include <cmath>
@@ -11,6 +16,10 @@
 #include "Graphics.h"
 #include "GlobalContext.h"
 
+/**
+ * @class Panel
+ * @brief Abstract base class for UI panels with position, size, and event handling
+ */
 class Panel
 {
 public:

@@ -1,3 +1,8 @@
+/**
+ * @file Shader.h
+ * @brief Base shader class and vertex/fragment data structures
+ */
+
 #pragma once
 
 #include <vector>
@@ -6,6 +11,10 @@
 #include "Matrix4x4.h"
 #include "Color.h"
 
+/**
+ * @struct Vertex
+ * @brief Vertex data structure with position, UV coordinates, and normal
+ */
 struct Vertex
 {
     Vector3 Position;
@@ -13,6 +22,10 @@ struct Vertex
     Vector3 Normal;
 };
 
+/**
+ * @struct VertexInput
+ * @brief Input data structure for vertex shader processing
+ */
 struct VertexInput
 {
     Vector3 Position;
@@ -20,6 +33,10 @@ struct VertexInput
     Vector3 Normal;
 };
 
+/**
+ * @struct VertexOutput
+ * @brief Output data structure from vertex shader processing
+ */
 struct VertexOutput
 {
     Vector4 ClipPosition;
@@ -28,6 +45,10 @@ struct VertexOutput
     Vector3 Normal;
 };
 
+/**
+ * @struct FragmentInput
+ * @brief Input data structure for fragment shader processing
+ */
 struct FragmentInput
 {
     Vector3 Barycentric;
@@ -38,11 +59,19 @@ struct FragmentInput
     Vector3 Normal;
 };
 
+/**
+ * @struct FragmentOutput
+ * @brief Output data structure from fragment shader processing
+ */
 struct FragmentOutput
 {
     Vector4 Color;
 };
 
+/**
+ * @class Shader
+ * @brief Abstract base class for shader programs with vertex and fragment processing
+ */
 class Shader
 {
 public:

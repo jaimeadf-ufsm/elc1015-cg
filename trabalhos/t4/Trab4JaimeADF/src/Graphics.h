@@ -1,3 +1,8 @@
+/**
+ * @file Graphics.h
+ * @brief High-level graphics drawing utilities and primitives
+ */
+
 #pragma once
 
 #include <string>
@@ -7,6 +12,10 @@
 #include "PolyLine.h"
 #include "Image.h"
 
+/**
+ * @class Graphics
+ * @brief Utility class providing high-level 2D drawing operations
+ */
 class Graphics {
 public:
     static void StrokeLine(const ColorRGB& color, const PolyLine2D& polyline, float width = 1.0f);

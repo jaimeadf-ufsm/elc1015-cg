@@ -1,9 +1,18 @@
+/**
+ * @file Vector3.h
+ * @brief 3D vector class with mathematical operations
+ */
+
 #pragma once
 
 #include "Vector2.h"
 
 struct ColorRGB;
 
+/**
+ * @struct Vector3
+ * @brief 3D vector structure with X, Y, and Z components and mathematical operations
+ */
 struct Vector3
 {
     float X;

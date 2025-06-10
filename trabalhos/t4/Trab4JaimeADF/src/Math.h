@@ -1,3 +1,8 @@
+/**
+ * @file Math.h
+ * @brief Mathematical utilities and helper functions
+ */
+
 #pragma once
 
 #include <cmath>

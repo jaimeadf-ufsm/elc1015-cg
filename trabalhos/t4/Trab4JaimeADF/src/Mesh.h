@@ -1,3 +1,8 @@
+/**
+ * @file Mesh.h
+ * @brief 3D mesh class for geometry storage and generation
+ */
+
 #pragma once
 
 #include <vector>
@@ -7,6 +12,10 @@
 #include "Polyline.h"
 #include "Shader.h"
 
+/**
+ * @class Mesh
+ * @brief Container for 3D mesh data with vertex and index arrays
+ */
 class Mesh
 {
 public:

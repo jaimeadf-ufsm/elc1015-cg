@@ -1,9 +1,18 @@
+/**
+ * @file Image.h
+ * @brief Image data structure for pixel manipulation and storage
+ */
+
 #pragma once
 
 #include <vector>
 
 #include "Color.h"
 
+/**
+ * @struct Image
+ * @brief 2D image container with pixel manipulation capabilities
+ */
 struct Image
 {
     Image();

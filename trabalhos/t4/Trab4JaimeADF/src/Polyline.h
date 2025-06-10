@@ -1,3 +1,8 @@
+/**
+ * @file Polyline.h
+ * @brief Template class for polylines (sequences of connected points)
+ */
+
 #pragma once
 
 #include <vector>
@@ -5,6 +10,10 @@
 #include "Vector2.h"
 #include "Vector3.h"
 
+/**
+ * @class PolyLine
+ * @brief Template class for managing sequences of connected points
+ */
 template<typename T>
 class PolyLine
 {

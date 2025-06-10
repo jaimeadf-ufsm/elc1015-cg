@@ -1,9 +1,18 @@
+/**
+ * @file Matrix4x4.h
+ * @brief 4x4 matrix class for 3D transformations and linear algebra operations
+ */
+
 #pragma once
 
 #include <array>
 #include "Vector3.h"
 #include "Vector4.h"
 
+/**
+ * @struct Matrix4x4
+ * @brief 4x4 matrix structure for 3D transformations and mathematical operations
+ */
 struct Matrix4x4
 {
     std::array<std::array<float, 4>, 4> Elements;

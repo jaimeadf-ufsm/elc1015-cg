@@ -1,7 +1,16 @@
+/**
+ * @file Window.h
+ * @brief Window management class for dimensions and properties
+ */
+
 #pragma once
 
 #include <cstddef>
 
+/**
+ * @class Window
+ * @brief Static class for managing window dimensions and properties
+ */
 class Window
 {
 public:

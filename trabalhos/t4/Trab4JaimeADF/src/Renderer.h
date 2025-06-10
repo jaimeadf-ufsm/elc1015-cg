@@ -1,3 +1,8 @@
+/**
+ * @file Renderer.h
+ * @brief Software 3D renderer with framebuffer and depth buffer
+ */
+
 #pragma once
 
 #include "Image.h"
@@ -5,6 +10,10 @@
 #include "Shader.h"
 #include "Matrix4x4.h"
 
+/**
+ * @class Renderer
+ * @brief Software-based 3D renderer with rasterization and depth testing
+ */
 class Renderer
 {
 public:

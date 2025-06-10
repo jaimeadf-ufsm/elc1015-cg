@@ -1,8 +1,17 @@
+/**
+ * @file EditorPanel.h
+ * @brief Editor panel for creating and editing Bezier curves and 3D models
+ */
+
 #pragma once
 
 #include "Panel.h"
 #include "Bezier.h"
 
+/**
+ * @class EditorPanel
+ * @brief Interactive panel for editing Bezier curves and generating 3D models
+ */
 class EditorPanel : public Panel
 {
 public:
@@ -13,6 +22,10 @@ public:
     void Draw() override;
 
 private:
+    /**
+     * @enum ModelType
+     * @brief Type of 3D model generation method
+     */
     enum class ModelType
     {
         Revolution,

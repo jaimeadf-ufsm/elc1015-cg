@@ -1,5 +1,14 @@
+/**
+ * @file Time.h
+ * @brief Time management class for delta time tracking
+ */
+
 #pragma once
 
+/**
+ * @class Time
+ * @brief Static class for managing frame time and delta time calculations
+ */
 class Time
 {
 public:

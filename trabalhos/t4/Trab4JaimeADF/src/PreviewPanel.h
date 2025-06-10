@@ -1,3 +1,8 @@
+/**
+ * @file PreviewPanel.h
+ * @brief 3D preview panel for rendering and displaying models
+ */
+
 #pragma once
 
 #include "Panel.h"
@@ -5,6 +10,10 @@
 #include "Camera.h"
 #include "ModelShader.h"
 
+/**
+ * @class PreviewPanel
+ * @brief Interactive 3D preview panel with camera controls and rendering options
+ */
 class PreviewPanel : public Panel
 {
 public:
@@ -15,26 +24,39 @@ public:
     void Draw() override;
 
 private:
+    /**
+     * @enum ProjectionType
+     * @brief Type of projection for 3D rendering
+     */
     enum class ProjectionType
     {
         Perspective,
-        Orthographic
-    };
+        Orthographic    };
 
+    /**
+     * @enum ShaderType
+     * @brief Type of shader for rendering
+     */
     enum class ShaderType
     {
         Wireframe,
         Flat,
-        Phong
-    };
+        Phong    };
 
+    /**
+     * @enum NormalMode
+     * @brief Mode for displaying surface normals
+     */
     enum class NormalMode
     {
         None,
         Vertex,
-        Face
-    };
+        Face    };
     
+    /**
+     * @enum Target
+     * @brief Target for user interaction and manipulation
+     */
     enum class Target
     {
         ModelPosition,

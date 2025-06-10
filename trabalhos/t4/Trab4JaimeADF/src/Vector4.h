@@ -1,3 +1,8 @@
+/**
+ * @file Vector4.h
+ * @brief 4D vector class with mathematical operations and homogeneous coordinates
+ */
+
 #pragma once
 
 #include "Vector2.h"
@@ -5,6 +10,10 @@
 
 struct ColorRGBA;
 
+/**
+ * @struct Vector4
+ * @brief 4D vector structure with X, Y, Z, and W components for homogeneous coordinates
+ */
 struct Vector4
 {
     float X;

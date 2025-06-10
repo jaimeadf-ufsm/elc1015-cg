@@ -1,7 +1,16 @@
+/**
+ * @file Keyboard.h
+ * @brief Keyboard input management and key state tracking
+ */
+
 #pragma once
 
 #include <array>
 
+/**
+ * @class Keyboard
+ * @brief Static class for managing keyboard input states
+ */
 class Keyboard
 {
 public:

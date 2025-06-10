@@ -1,3 +1,8 @@
+/**
+ * @file UI.h
+ * @brief User interface management system for panels
+ */
+
 #pragma once
 
 #include <vector>
@@ -5,6 +10,10 @@
 
 #include "Panel.h"
 
+/**
+ * @class UI
+ * @brief Static class for managing and coordinating multiple UI panels
+ */
 class UI
 {
 public:

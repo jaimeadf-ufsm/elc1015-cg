@@ -1,3 +1,8 @@
+/**
+ * @file Sampler.h
+ * @brief Texture sampling class for UV coordinate-based color sampling
+ */
+
 #pragma once
 
 #include <memory>
@@ -6,6 +11,10 @@
 #include "Vector2.h"
 #include "Image.h"
 
+/**
+ * @enum SamplingSource
+ * @brief Source type for texture sampling
+ */
 enum class SamplingSource
 {
     Coordinates,
@@ -13,6 +22,10 @@ enum class SamplingSource
     Image
 };
 
+/**
+ * @class Sampler
+ * @brief Texture sampler for UV-based color sampling from various sources
+ */
 class Sampler
 {
 public:

@@ -1,3 +1,8 @@
+/**
+ * @file gl_canvas2d.h
+ * @brief 2D canvas library for OpenGL-based graphics rendering
+ */
+
 #ifndef __CANVAS_2D__H__
 #define __CANVAS_2D__H__
 
@@ -16,6 +21,10 @@
 
 #define Y_CANVAS_CRESCE_PARA_CIMA 1
 
+/**
+ * @class CV
+ * @brief Canvas2D class providing 2D drawing primitives and utilities
+ */
 class CV //classe Canvas2D
 {
 public:

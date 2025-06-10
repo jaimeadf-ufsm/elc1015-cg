@@ -1,8 +1,17 @@
+/**
+ * @file ModelShader.h
+ * @brief Base shader class for 3D model rendering with transformations
+ */
+
 #pragma once
 
 #include "Shader.h"
 #include "Sampler.h"
 
+/**
+ * @class ModelShader
+ * @brief Base shader class for 3D models with MVP matrices and texture support
+ */
 class ModelShader : public Shader
 {
 public:

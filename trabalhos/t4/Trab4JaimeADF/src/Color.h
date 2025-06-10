@@ -1,8 +1,17 @@
+/**
+ * @file Color.h
+ * @brief Color structures for RGB and RGBA color representation
+ */
+
 #pragma once
 
 struct Vector3;
 struct Vector4;
 
+/**
+ * @struct ColorRGB
+ * @brief RGB color representation with floating-point components
+ */
 struct ColorRGB
 {
     float R;
@@ -16,6 +25,10 @@ struct ColorRGB
     ColorRGB(const Vector3& vector);
 };
 
+/**
+ * @struct ColorRGBA
+ * @brief RGBA color representation with floating-point components and alpha channel
+ */
 struct ColorRGBA
 {
     float R;

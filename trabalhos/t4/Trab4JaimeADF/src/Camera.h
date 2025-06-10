@@ -1,8 +1,17 @@
+/**
+ * @file Camera.h
+ * @brief 3D camera class for view transformation and navigation
+ */
+
 #pragma once
 
 #include "Matrix4x4.h"
 #include "Math.h"
 
+/**
+ * @class Camera
+ * @brief 3D camera with position, orientation, and view matrix generation
+ */
 class Camera
 {
 public:

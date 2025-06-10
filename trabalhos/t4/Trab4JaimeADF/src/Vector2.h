@@ -1,5 +1,14 @@
+/**
+ * @file Vector2.h
+ * @brief 2D vector class with mathematical operations
+ */
+
 #pragma once
 
+/**
+ * @struct Vector2
+ * @brief 2D vector structure with X and Y components and mathematical operations
+ */
 struct Vector2
 {
     float X;
