@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Canvas 2D" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../__bin/Debug/canvas2d" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../" />
+				<Option object_output="../__obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="../__bin/Release/canvas2d" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../" />
+				<Option object_output="../__obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O3 -Wall" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+			<Add option="-std=c++11" />
+			<Add directory="../include" />
+		</Compiler>
+		<Linker>
+			<Add library="../lib/libfreeglut32.a" />
+			<Add library="../lib/libopengl32.a"/>
+			<Add library="../lib/libglu32.a"/>
+		</Linker>
+
+		<Unit filename="src/BMP.cpp" />
+        <Unit filename="src/BMP.h" />
+        <Unit filename="src/Bezier.cpp" />
+        <Unit filename="src/Bezier.h" />
+        <Unit filename="src/Camera.cpp" />
+        <Unit filename="src/Camera.h" />
+        <Unit filename="src/Color.cpp" />
+        <Unit filename="src/Color.h" />
+        <Unit filename="src/EditorPanel.cpp" />
+        <Unit filename="src/EditorPanel.h" />
+        <Unit filename="src/Event.cpp" />
+        <Unit filename="src/Event.h" />
+        <Unit filename="src/FlatShader.cpp" />
+        <Unit filename="src/FlatShader.h" />
+        <Unit filename="src/GlobalContext.cpp" />
+        <Unit filename="src/GlobalContext.h" />
+        <Unit filename="src/Graphics.cpp" />
+        <Unit filename="src/Graphics.h" />
+        <Unit filename="src/Image.cpp" />
+        <Unit filename="src/Image.h" />
+        <Unit filename="src/Keyboard.cpp" />
+        <Unit filename="src/Keyboard.h" />
+        <Unit filename="src/Math.cpp" />
+        <Unit filename="src/Math.h" />
+        <Unit filename="src/Matrix4x4.cpp" />
+        <Unit filename="src/Matrix4x4.h" />
+        <Unit filename="src/Mesh.cpp" />
+        <Unit filename="src/Mesh.h" />
+        <Unit filename="src/ModelShader.cpp" />
+        <Unit filename="src/ModelShader.h" />
+        <Unit filename="src/Mouse.cpp" />
+        <Unit filename="src/Mouse.h" />
+        <Unit filename="src/Panel.cpp" />
+        <Unit filename="src/Panel.h" />
+        <Unit filename="src/PhongShader.cpp" />
+        <Unit filename="src/PhongShader.h" />
+        <Unit filename="src/Polyline.h" />
+        <Unit filename="src/PreviewPanel.cpp" />
+        <Unit filename="src/PreviewPanel.h" />
+        <Unit filename="src/Renderer.cpp" />
+        <Unit filename="src/Renderer.h" />
+        <Unit filename="src/Sampler.cpp" />
+        <Unit filename="src/Sampler.h" />
+        <Unit filename="src/Shader.cpp" />
+        <Unit filename="src/Shader.h" />
+        <Unit filename="src/Time.cpp" />
+        <Unit filename="src/Time.h" />
+        <Unit filename="src/UI.cpp" />
+        <Unit filename="src/UI.h" />
+        <Unit filename="src/Vector2.cpp" />
+        <Unit filename="src/Vector2.h" />
+        <Unit filename="src/Vector3.cpp" />
+        <Unit filename="src/Vector3.h" />
+        <Unit filename="src/Vector4.cpp" />
+        <Unit filename="src/Vector4.h" />
+        <Unit filename="src/Window.cpp" />
+        <Unit filename="src/Window.h" />
+        <Unit filename="src/WireframeShader.cpp" />
+        <Unit filename="src/WireframeShader.h" />
+        <Unit filename="src/gl_canvas2d.cpp" />
+        <Unit filename="src/gl_canvas2d.h" />
+        <Unit filename="src/main.cpp" />
+
+	</Project>
+</CodeBlocks_project_file>
