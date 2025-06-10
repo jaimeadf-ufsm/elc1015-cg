@@ -3,6 +3,7 @@
 #include <fstream>
 #include <cstdint>
 #include <vector>
+#include <cstring>
 
 Image BMP::Load(const std::string& filename)
 {
@@ -15,21 +16,24 @@ Image BMP::Load(const std::string& filename)
 
     char fileHeader[14];
     file.read(fileHeader, 14);
-    
-    if (fileHeader[0] != 'B' || fileHeader[1] != 'M') {
+      if (fileHeader[0] != 'B' || fileHeader[1] != 'M') {
         file.close();
         return image;
     }
     
-    uint32_t dataOffset = *reinterpret_cast<uint32_t*>(&fileHeader[10]);
-    
-    char dibHeader[40];
+    uint32_t dataOffset;
+    memcpy(&dataOffset, &fileHeader[10], sizeof(uint32_t));
+      char dibHeader[40];
     file.read(dibHeader, 40);
     
-    int32_t width = *reinterpret_cast<int32_t*>(&dibHeader[4]);
-    int32_t height = *reinterpret_cast<int32_t*>(&dibHeader[8]);
-    uint16_t bitsPerPixel = *reinterpret_cast<uint16_t*>(&dibHeader[14]);
-    uint32_t compression = *reinterpret_cast<uint32_t*>(&dibHeader[16]);
+    int32_t width, height;
+    uint16_t bitsPerPixel;
+    uint32_t compression;
+    
+    memcpy(&width, &dibHeader[4], sizeof(int32_t));
+    memcpy(&height, &dibHeader[8], sizeof(int32_t));
+    memcpy(&bitsPerPixel, &dibHeader[14], sizeof(uint16_t));
+    memcpy(&compression, &dibHeader[16], sizeof(uint32_t));
     
     if (bitsPerPixel != 24 || compression != 0) {
         file.close();
