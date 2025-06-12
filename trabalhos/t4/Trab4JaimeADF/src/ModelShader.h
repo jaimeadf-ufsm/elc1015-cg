@@ -15,8 +15,7 @@
 class ModelShader : public Shader
 {
 public:
-    Matrix4x4 ProjectionMatrix;
-    Matrix4x4 ViewMatrix;
+    Matrix4x4 ViewProjectionMatrix;
     Matrix4x4 ModelMatrix;
 
     Sampler Texture;

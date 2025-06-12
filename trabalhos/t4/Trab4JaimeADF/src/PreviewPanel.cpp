@@ -391,8 +391,7 @@ void PreviewPanel::Draw()
 void PreviewPanel::RenderLight()
 {
     FlatShader lightShader;
-    lightShader.ProjectionMatrix = m_ProjectionMatrix;
-    lightShader.ViewMatrix = m_ViewMatrix;
+    lightShader.ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
     lightShader.ModelMatrix = Matrix4x4::Translate(m_LightPosition) * Matrix4x4::Scale(Vector3(0.1f, 0.1f, 0.1f));
     lightShader.Texture = Sampler::CreateColorSampler(ColorRGB(1.0f, 1.0f, 1.0f));
 
@@ -406,8 +405,7 @@ void PreviewPanel::RenderModel()
     case ShaderType::Wireframe:
     {
         WireframeShader wireframeShader;
-        wireframeShader.ProjectionMatrix = m_ProjectionMatrix;
-        wireframeShader.ViewMatrix = m_ViewMatrix;
+        wireframeShader.ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
         wireframeShader.ModelMatrix = m_ModelMatrix;
         wireframeShader.Texture = m_Texture;
         m_Renderer.Render(GlobalContext::GetMesh(), wireframeShader);
@@ -416,8 +414,7 @@ void PreviewPanel::RenderModel()
     case ShaderType::Flat:
     {
         FlatShader flatShader;
-        flatShader.ProjectionMatrix = m_ProjectionMatrix;
-        flatShader.ViewMatrix = m_ViewMatrix;
+        flatShader.ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
         flatShader.ModelMatrix = m_ModelMatrix;
         flatShader.Texture = m_Texture;
         m_Renderer.Render(GlobalContext::GetMesh(), flatShader);
@@ -425,8 +422,7 @@ void PreviewPanel::RenderModel()
     break;    case ShaderType::Phong:
     {
         PhongShader phongShader;
-        phongShader.ProjectionMatrix = m_ProjectionMatrix;
-        phongShader.ViewMatrix = m_ViewMatrix;
+        phongShader.ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
         phongShader.ModelMatrix = m_ModelMatrix;
         phongShader.LightPosition = m_LightPosition;
         phongShader.CameraPosition = m_Camera.GetPosition();
@@ -459,8 +455,7 @@ void PreviewPanel::RenderVertexNormals()
     Matrix4x4 scale = Matrix4x4::Scale(Vector3(0.01f, 0.01, 0.01f));
 
     FlatShader shader;
-    shader.ProjectionMatrix = m_ProjectionMatrix;
-    shader.ViewMatrix = m_ViewMatrix;
+    shader.ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
     shader.Texture = Sampler::CreateCoordinatesSampler();
 
     for (const auto &vertex : mesh.Vertices)
@@ -502,8 +497,7 @@ void PreviewPanel::RenderFaceNormals()
     Matrix4x4 scale = Matrix4x4::Scale(Vector3(0.01f, 0.01, 0.01f));
 
     FlatShader shader;
-    shader.ProjectionMatrix = m_ProjectionMatrix;
-    shader.ViewMatrix = m_ViewMatrix;
+    shader.ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
     shader.Texture = Sampler::CreateCoordinatesSampler();
 
     for (std::size_t i = 0; i < mesh.Indices.size(); i += 3)
