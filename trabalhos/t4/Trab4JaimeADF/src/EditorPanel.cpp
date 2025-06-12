@@ -393,14 +393,14 @@ void EditorPanel::RegenerateCurve()
         return;
     }
 
-    float step = patches / static_cast<float>(m_CurveResolution);
+    double step = patches / static_cast<double>(m_CurveResolution);
 
     for (int i = 0; i <= m_CurveResolution; ++i)
     {
-        float v = i * step;
+        double v = i * step;
         int patch = static_cast<int>(v);
 
-        float t = std::min(v - patch, 1.0f);
+        double t = v - patch;
 
         auto start = m_BezierPoints.begin() + patch * m_BezierDegree;
         auto end = start + m_BezierDegree + 1;

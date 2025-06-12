@@ -36,9 +36,11 @@ public:
     Bezier();
 
     template<typename T>
-    typename std::iterator_traits<T>::value_type Evaluate(T begin, T end, float t)
+    typename std::iterator_traits<T>::value_type Evaluate(T begin, T end, double t)
     {
         using ValueType = typename std::iterator_traits<T>::value_type;
+
+        t = std::max(0.0, std::min(1.0, t));
 
         ValueType result = ValueType();
         T it = begin;
