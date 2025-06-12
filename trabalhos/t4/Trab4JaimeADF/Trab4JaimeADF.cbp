@@ -42,7 +42,7 @@
 			<Add library="../lib/libglu32.a"/>
 		</Linker>
 
-		<Unit filename="src/BMP.cpp" />
+        <Unit filename="src/BMP.cpp" />
         <Unit filename="src/BMP.h" />
         <Unit filename="src/Bezier.cpp" />
         <Unit filename="src/Bezier.h" />
@@ -64,6 +64,8 @@
         <Unit filename="src/Image.h" />
         <Unit filename="src/Keyboard.cpp" />
         <Unit filename="src/Keyboard.h" />
+        <Unit filename="src/Material.cpp" />
+        <Unit filename="src/Material.h" />
         <Unit filename="src/Math.cpp" />
         <Unit filename="src/Math.h" />
         <Unit filename="src/Matrix4x4.cpp" />
