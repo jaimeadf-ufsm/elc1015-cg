@@ -9,6 +9,7 @@
 #include "Renderer.h"
 #include "Camera.h"
 #include "ModelShader.h"
+#include "Material.h"
 
 /**
  * @class PreviewPanel
@@ -35,17 +36,6 @@ private:
     };
 
     /**
-     * @enum ShaderType
-     * @brief Type of shader for rendering
-     */
-    enum class ShaderType
-    {
-        Wireframe,
-        Flat,
-        Phong
-    };
-
-    /**
      * @enum NormalMode
      * @brief Mode for displaying surface normals
      */
@@ -56,6 +46,28 @@ private:
         Face
     };
 
+    /**
+     * @enum ShaderType
+     * @brief Type of shader for rendering
+     */
+    enum class ShaderType
+    {
+        Wireframe,
+        Flat,
+        Phong
+    };
+    
+    /**
+     * @enum MaterialType
+     * @brief Type of material for Phong shading
+     */
+    enum class MaterialType
+    {
+        Rubber,
+        Plastic,
+        Metal
+    };
+    
     /**
      * @enum Target
      * @brief Target for user interaction and manipulation
@@ -81,10 +93,10 @@ private:
 
     Vector3 m_ModelPosition;
     Vector3 m_ModelRotation;
-
     ProjectionType m_ProjectionType;
-    ShaderType m_ShaderType;
     NormalMode m_NormalMode;
+    ShaderType m_ShaderType;
+    MaterialType m_MaterialType;
     Target m_Target;
 
     Sampler m_Texture;

@@ -13,11 +13,12 @@
 // * [x] Adição de mais de um patch por meio da criação de vários pontos em sequência (até 1 ponto).
 // * [x] Remoção de faces ocultas sem preenchimento utilizando back-face culling (até 2 pontos).
 // * [x] Preenchimento do objeto com z-buffer e com scanline usando iluminação por pixel (até 5 pontos).
-// * [x] Cena com vários modelos (esferas, flechas e objeto).
-// * [x] Exibição de vetores normais de cada vértice.
 // * [x] Câmera que pode andar, rotacionar ou aproximar o espaço.
 // * [x] Textura com imagens BMP.
 // * [x] Translação da luz para alterar a fonte da iluminação por pixel.
+// * [x] Diferentes tipos de materiais para iluminar o objeto (borracha, plástico e metal)
+// * [x] Cena com vários modelos (esferas, flechas e o objeto).
+// * [x] Exibição de vetores normais de cada vértice.
 // * [x] Responsividade para qualquer resolução.
 
 #include <GL/glut.h>

@@ -27,11 +27,12 @@ A interface é dividida em dois painéis principais:
 * [x] Adição de mais de um patch por meio da criação de vários pontos em sequência (até 1 ponto).
 * [x] Remoção de faces ocultas sem preenchimento utilizando back-face culling (até 2 pontos).
 * [x] Preenchimento do objeto com z-buffer e com scanline usando iluminação por pixel (até 5 pontos).
-* [x] Cena com vários modelos (esferas, flechas e objeto).
-* [x] Exibição de vetores normais de cada vértice.
 * [x] Câmera que pode andar, rotacionar ou aproximar o espaço.
 * [x] Textura com imagens BMP.
 * [x] Translação da luz para alterar a fonte da iluminação por pixel.
+* [x] Diferentes tipos de materiais para iluminar o objeto (borracha, plástico e metal)
+* [x] Cena com vários modelos (esferas, flechas e o objeto).
+* [x] Exibição de vetores normais de cada vértice.
 * [x] Responsividade para qualquer resolução.
 
 ## Quickstart
@@ -49,7 +50,7 @@ A interface é dividida em dois painéis principais:
 * `x` / `X`: aumenta / diminui os **segmentos do caminho** (circunferência ou mola).
 * `v` / `V`: aumenta / diminui o **grau da curva**.
 * `c`: alterna entre **curva aberta e fechada**.
-* `y`: imprime os pontos de controle.
+* `+`: imprime os pontos de controle.
 
 #### **Configurações da Mola (Sweep):**
 
@@ -95,6 +96,7 @@ A interface é dividida em dois painéis principais:
 
 #### **Texturas e Cores:**
 
+* `y`: alterna entre **borracha**, **plástico** ou **metal**.
 * `1`–`4`: aplica **cor sólida** ao objeto (**branca**, **vermelha**, **verde**, **azul**).
 * `5`–`9`: aplica **textura de imagem** ao objeto (carregadas de **textures/X.bmp**).
 

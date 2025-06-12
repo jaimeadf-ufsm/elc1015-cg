@@ -9,15 +9,16 @@
 #include "PhongShader.h"
 #include "GlobalContext.h"
 #include "BMP.h"
+#include "Material.h"
 
 PreviewPanel::PreviewPanel() : Panel()
 {
     Mesh::GenerateSphere(m_SphereMesh, 32, 32);
     Mesh::GenerateArrow(m_ArrowMesh, 8);
-
     m_ProjectionType = ProjectionType::Perspective;
     m_ShaderType = ShaderType::Wireframe;
     m_NormalMode = NormalMode::Hidden;
+    m_MaterialType = MaterialType::Rubber;
     m_Target = Target::ModelPosition;
     m_MouseDragging = false;
 
@@ -154,10 +155,23 @@ void PreviewPanel::Process(const Event &event)
                 m_Target = Target::ModelPosition;
                 break;
             }
-            break;
-        case 'e':
+            break;        case 'e':
         case 'E':
             m_Renderer.SetFaceCulling(!m_Renderer.IsFaceCulling());
+            break;        case 'y':
+        case 'Y':
+            switch (m_MaterialType)
+            {
+            case MaterialType::Rubber:
+                m_MaterialType = MaterialType::Plastic;
+                break;
+            case MaterialType::Plastic:
+                m_MaterialType = MaterialType::Metal;
+                break;
+            case MaterialType::Metal:
+                m_MaterialType = MaterialType::Rubber;
+                break;
+            }
             break;
         case '1':
             m_Texture = Sampler::CreateColorSampler(ColorRGB(1.0f, 1.0f, 1.0f));
@@ -408,15 +422,29 @@ void PreviewPanel::RenderModel()
         flatShader.Texture = m_Texture;
         m_Renderer.Render(GlobalContext::GetMesh(), flatShader);
     }
-    break;
-    case ShaderType::Phong:
+    break;    case ShaderType::Phong:
     {
         PhongShader phongShader;
         phongShader.ProjectionMatrix = m_ProjectionMatrix;
         phongShader.ViewMatrix = m_ViewMatrix;
         phongShader.ModelMatrix = m_ModelMatrix;
         phongShader.LightPosition = m_LightPosition;
+        phongShader.CameraPosition = m_Camera.GetPosition();
         phongShader.Texture = m_Texture;
+
+        switch (m_MaterialType)
+        {
+        case MaterialType::Rubber:
+            phongShader.Material = Material::CreateRubber();
+            break;
+        case MaterialType::Plastic:
+            phongShader.Material = Material::CreatePlastic();
+            break;
+        case MaterialType::Metal:
+            phongShader.Material = Material::CreateMetal();
+            break;
+        }
+        
         m_Renderer.Render(GlobalContext::GetMesh(), phongShader);
     }
     break;
@@ -550,36 +578,51 @@ void PreviewPanel::DrawInformation()
         break;
     }
 
-    optionsLine2 << "; Shader: ";
-
-    switch (m_ShaderType)
-    {
-    case ShaderType::Wireframe:
-        optionsLine2 << "Wireframe";
-        break;
-    case ShaderType::Flat:
-        optionsLine2 << "Flat";
-        break;
-    case ShaderType::Phong:
-        optionsLine2 << "Phong";
-        break;
-    }
-
     optionsLine2 << "; Face Culling: ";
     optionsLine2 << (m_Renderer.IsFaceCulling() ? "yes" : "no");
 
-    optionsLine1 << "Normals: ";
+    optionsLine2 << "; Normals: ";
 
     switch (m_NormalMode)
     {
     case NormalMode::Hidden:
-        optionsLine1 << "Hidden";
+        optionsLine2 << "Hidden";
         break;
     case NormalMode::Vertex:
-        optionsLine1 << "Vertex";
+        optionsLine2 << "Vertex";
         break;
     case NormalMode::Face:
-        optionsLine1 << "Face";
+        optionsLine2 << "Face";
+        break;
+    }
+
+    optionsLine1 << "Shader: ";
+
+    switch (m_ShaderType)
+    {
+    case ShaderType::Wireframe:
+        optionsLine1 << "Wireframe";
+        break;
+    case ShaderType::Flat:
+        optionsLine1 << "Flat";
+        break;
+    case ShaderType::Phong:
+        optionsLine1 << "Phong";
+        break;
+    }
+
+    optionsLine1 << "; Material: ";
+
+    switch (m_MaterialType)
+    {
+    case MaterialType::Rubber:
+        optionsLine1 << "Rubber";
+        break;
+    case MaterialType::Plastic:
+        optionsLine1 << "Plastic";
+        break;
+    case MaterialType::Metal:
+        optionsLine1 << "Metal";
         break;
     }
 

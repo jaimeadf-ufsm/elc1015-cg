@@ -4,6 +4,7 @@
  */
 
 #include "ModelShader.h"
+#include "Material.h"
 
 /**
  * @class PhongShader
@@ -13,6 +14,8 @@ class PhongShader : public ModelShader
 {
 public:
     Vector3 LightPosition;
+    Vector3 CameraPosition;
+    Material Material;
 
     FragmentOutput ProcessFragment(const FragmentInput& input) const override;
 };

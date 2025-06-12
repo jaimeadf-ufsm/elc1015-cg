@@ -151,8 +151,7 @@ void EditorPanel::Process(const Event& event)
                 m_ModelType = ModelType::Revolution;
             }
             break;
-        case 'y':
-        case 'Y':
+        case '+':
             for (const Vector2& point : m_ControlPoints)
             {
                 std::cout << "Vector2(" << std::fixed << std::setprecision(2) << point.X << ", " << point.Y << ")," << std::endl;
