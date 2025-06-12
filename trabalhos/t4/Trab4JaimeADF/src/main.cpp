@@ -16,7 +16,8 @@
 // * [x] Câmera que pode andar, rotacionar ou aproximar o espaço.
 // * [x] Textura com imagens BMP.
 // * [x] Translação da luz para alterar a fonte da iluminação por pixel.
-// * [x] Diferentes tipos de materiais para iluminar o objeto (borracha, plástico e metal)
+// * [x] Diferentes tipos de materiais para iluminar o objeto (borracha, plástico e metal).
+// * [x] Refração e difusão.
 // * [x] Cena com vários modelos (esferas, flechas e o objeto).
 // * [x] Exibição de vetores normais de cada vértice.
 // * [x] Responsividade para qualquer resolução.
