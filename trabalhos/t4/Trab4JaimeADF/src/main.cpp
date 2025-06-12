@@ -115,6 +115,6 @@ int main(void)
    UI::RegisterPanel(std::make_shared<PreviewPanel>());
    UI::RegisterPanel(std::make_shared<EditorPanel>());
    
-   CV::init(&screenWidth, &screenHeight, "T3 (Jaime Antonio Daniel Filho)");
+   CV::init(&screenWidth, &screenHeight, "T4 (Jaime Antonio Daniel Filho)");
    CV::run();
 }

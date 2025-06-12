@@ -2,7 +2,7 @@
 
 Aplicativo para modelagem e renderização de objetos 3D com curvas de Bézier, utilizando técnicas de revolução ou sweep helicoidal. Toda a renderização é feita via software (CPU), com geração de imagem pixel a pixel.
 
-A interface é dividida em dois painéis principais:
+A interface é dividida em dois paineis principais:
 
 * **Editor (à esquerda):** criação e configuração da curva de Bézier e do tipo de extrusão.
 * **Visualizador (à direita):** renderização do objeto 3D final com opções de visualização e controle de câmera.
@@ -95,7 +95,7 @@ A interface é dividida em dois painéis principais:
 * `w`, `a`, `s`, `d`: movimenta a **câmera**.
 * `i`, `j`, `k`, `l`, `u`, `o`: movimenta o **alvo selecionado**.
 
-#### **Texturas e Cores:**
+#### **Materiais, Texturas e Cores:**
 
 * `y`: alterna entre **borracha**, **plástico** ou **metal**.
 * `1`–`4`: aplica **cor sólida** ao objeto (**branca**, **vermelha**, **verde**, **azul**).
