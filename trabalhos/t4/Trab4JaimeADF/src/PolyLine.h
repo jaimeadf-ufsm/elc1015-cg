@@ -1,5 +1,5 @@
 /**
- * @file Polyline.h
+ * @file PolyLine.h
  * @brief Template class for polylines (sequences of connected points)
  */
 
