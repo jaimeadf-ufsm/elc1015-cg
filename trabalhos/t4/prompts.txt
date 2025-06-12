@@ -1,0 +1,57 @@
+Go through every header file (.h) and every implementation file (.cpp) in the `src` directory of this project and add the following comments. Do the same for the corresponding `.cpp` files: copy the comments from the `.h` files for declarations, or create new ones for static functions or functions that only exist in the `.cpp`.
+
+### For every file:
+
+At the top of each file, insert:
+
+```
+/**
+ * @file <filename>
+ * @brief <Short summary of the file’s purpose>
+ *
+ * <Optional longer description, explaining the file's role in the project, major components, or usage notes.>
+ */
+```
+
+### For every class or struct in the file:
+
+Add:
+
+```
+/**
+ * @brief <Short summary of what the class/struct represents or does>
+ *
+ * <Optional detailed description, including major methods or responsibilities>
+ */
+ ```
+
+### For every enum in the file:
+
+Add:
+```
+/**
+ * @brief <Short explanation of the purpose of the enum>
+ *
+ * <Optional details, such as usage scenarios or meaning of grouped values>
+ */
+ ```
+
+### For every method or function in the file:
+
+Add a Doxygen-style docstring above the declaration or definition with the following format:
+
+```
+/**
+ * @brief <Short summary of what the function does>
+ * @param <name> <Description of the parameter>
+ * @return <Description of what the function returns>
+ *
+ * <Optional details: side effects, performance considerations, examples>
+ */
+```
+
+Important Guidelines:
+
+- Do not document implementation details.
+- Add documentation for each class, struct, enum, method, and function - even if multiple exist in the same file.
+- Read and process one file at a time. Do not process the next file until the current one is fully documented.
