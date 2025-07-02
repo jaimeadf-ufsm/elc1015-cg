@@ -11,9 +11,9 @@
 class Body
 {
 public:
-    Transform Transform;
     std::shared_ptr<::Model> Model;
 
+    Transform Transform;
     Vector3 AngularVelocity;
 
     Body() {}

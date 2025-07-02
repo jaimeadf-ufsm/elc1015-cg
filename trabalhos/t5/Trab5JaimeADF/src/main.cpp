@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include <ctime>
 
+#include "Mathematics.h"
 #include "Camera.h"
 #include "Light.h"
 #include "Model.h"
@@ -23,13 +24,15 @@
 // Constants
 const int SCREEN_WIDTH = 1024;
 const int SCREEN_HEIGHT = 768;
-const int NUM_ASTEROIDS = 500;
+const int NUM_ASTEROIDS = 1000;
 const float ASTEROID_INNER_RADIUS = 15.0f;
 const float ASTEROID_OUTER_RADIUS = 100.0f;
 
 // Global objects
 Camera camera(Vector3(0, 0, 20));
 Light sunLight(GL_LIGHT0);
+
+Body sun;
 std::vector<Body> asteroids;
 std::vector<std::shared_ptr<Model>> asteroidModels;
 
@@ -93,11 +96,14 @@ void InitializeOpenGL()
 void InitializeModels()
 {
     // Create textures
-    auto sunTexture = std::make_shared<Texture>(Texture::CreateCheckerboard(256, 256, Vector3(1.0f, 0.8f, 0.2f), Vector3(1.0f, 0.5f, 0.0f), 16));
+    auto sunTexture = std::make_shared<Texture>();
+    sunTexture->LoadFromBMP("Trab5JaimeADF/assets/textures/sun.bmp");
 
-    auto asteroidTexture1 = std::make_shared<Texture>(Texture::CreateCheckerboard(128, 128, Vector3(0.6f, 0.6f, 0.6f), Vector3(0.4f, 0.4f, 0.4f), 8));
+    auto asteroidTexture1 = std::make_shared<Texture>();
+    asteroidTexture1->LoadCheckerboard(128, 128, Vector3(0.6f, 0.6f, 0.6f), Vector3(0.4f, 0.4f, 0.4f), 8);
 
-    auto asteroidTexture2 = std::make_shared<Texture>(Texture::CreateCheckerboard(128, 128, Vector3(0.5f, 0.3f, 0.2f), Vector3(0.3f, 0.2f, 0.1f), 6));
+    auto asteroidTexture2 = std::make_shared<Texture>();
+    asteroidTexture2->LoadCheckerboard(128, 128, Vector3(0.5f, 0.3f, 0.2f), Vector3(0.3f, 0.2f, 0.1f), 6);
 
     // Create materials
     auto sunMaterial = CreateMaterial(
@@ -141,6 +147,9 @@ void InitializeModels()
     sunModel->RegisterLOD(10.0f, sunMeshHigh);
     sunModel->RegisterLOD(25.0f, sunMeshMed);
     sunModel->RegisterLOD(1000.0f, sunMeshLow);
+
+    sun.Model = sunModel;
+    sun.Transform.Position = Vector3(0, 0, 0);
 
     // Create asteroid models
     // Sphere asteroid model
@@ -244,22 +253,23 @@ void RenderSun()
 {
     glPushMatrix();
 
-    // Disable lighting for the sun so it appears to glow
-    //  glDisable(GL_LIGHTING);
+    // // Disable lighting for the sun so it appears to glow
+    // //  glDisable(GL_LIGHTING);
 
-    // Set a bright color for the sun
-    glColor3f(1.0f, 0.8f, 0.3f);
+    // // Set a bright color for the sun
+    // glColor3f(1.0f, 0.8f, 0.3f);
 
-    // Calculate distance from camera to sun for LOD
-    Vector3 distance = Vector3(0, 0, 0) - camera.Position;
-    float distanceLength = distance.Length();
+    // // Calculate distance from camera to sun for LOD
+    // Vector3 distance = Vector3(0, 0, 0) - camera.Position;
+    // float distanceLength = distance.Length();
 
-    sunModel->Render(distanceLength);
+    // sunModel->Render(distanceLength);
 
     // Re-enable lighting for other objects
     //  glEnable(GL_LIGHTING);
+    sun.Render(camera.Position);
 
-    glPopMatrix();
+    // glPopMatrix();
 }
 
 void RenderAsteroids()
