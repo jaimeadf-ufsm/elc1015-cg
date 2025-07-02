@@ -18,53 +18,85 @@ public:
     std::vector<Vertex> Vertices;
     std::vector<int> Indices;
 
-    Mesh CreateCube(float size)
+    void Render() const
+    {
+        glBegin(GL_TRIANGLES);
+        for (size_t i = 0; i < Indices.size(); i += 3)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                const Vertex& vertex = Vertices[Indices[i + j]];
+                glNormal3f(vertex.Normal.X, vertex.Normal.Y, vertex.Normal.Z);
+                glTexCoord2f(vertex.TexCoord.X, vertex.TexCoord.Y);
+                glVertex3f(vertex.Position.X, vertex.Position.Y, vertex.Position.Z);
+            }
+        }
+        glEnd();
+    }
+
+    static Mesh CreateCube(float size)
     {
         Mesh mesh;
 
         float halfSize = size / 2.0f;
 
         mesh.Vertices = {
-            { { -halfSize, -halfSize, -halfSize }, { 0, 0, -1 }, { 0, 0 } },
-            { { halfSize, -halfSize, -halfSize }, { 0, 0, -1 }, { 1, 0 } },
-            { { halfSize, halfSize, -halfSize }, { 0, 0, -1 }, { 1, 1 } },
-            { { -halfSize, halfSize, -halfSize }, { 0, 0, -1 }, { 0, 1 } },
+            // Front face
             { { -halfSize, -halfSize, halfSize }, { 0, 0, 1 }, { 0, 0 } },
             { { halfSize, -halfSize, halfSize }, { 0, 0, 1 }, { 1, 0 } },
             { { halfSize, halfSize, halfSize }, { 0, 0, 1 }, { 1, 1 } },
             { { -halfSize, halfSize, halfSize }, { 0, 0, 1 }, { 0, 1 } },
+
+            // Back face
+            { { halfSize, -halfSize, -halfSize }, { 0, 0, -1 }, { 0, 0 } },
+            { { -halfSize, -halfSize, -halfSize }, { 0, 0, -1 }, { 1, 0 } },
+            { { -halfSize, halfSize, -halfSize }, { 0, 0, -1 }, { 1, 1 } },
+            { { halfSize, halfSize, -halfSize }, { 0, 0, -1 }, { 0, 1 } },
+
+            // Left face
+            { { -halfSize, -halfSize, -halfSize }, { -1, 0, 0 }, { 0, 0 } },
+            { { -halfSize, -halfSize, halfSize }, { -1, 0, 0 }, { 1, 0 } },
+            { { -halfSize, halfSize, halfSize }, { -1, 0, 0 }, { 1, 1 } },
+            { { -halfSize, halfSize, -halfSize }, { -1, 0, 0 }, { 0, 1 } },
+
+            // Right face
+            { { halfSize, -halfSize, halfSize }, { 1, 0, 0 }, { 0, 0 } },
+            { { halfSize, -halfSize, -halfSize }, { 1, 0, 0 }, { 1, 0 } },
+            { { halfSize, halfSize, -halfSize }, { 1, 0, 0 }, { 1, 1 } },
+            { { halfSize, halfSize, halfSize }, { 1, 0, 0 }, { 0, 1 } },
+
+            // Top face
+            { { -halfSize, halfSize, halfSize }, { 0, 1, 0 }, { 0, 0 } },
+            { { halfSize, halfSize, halfSize }, { 0, 1, 0 }, { 1, 0 } },
+            { { halfSize, halfSize, -halfSize }, { 0, 1, 0 }, { 1, 1 } },
+            { { -halfSize, halfSize, -halfSize }, { 0, 1, 0 }, { 0, 1 } },
+
+            // Bottom face
+            { { -halfSize, -halfSize, -halfSize }, { 0, -1, 0 }, { 0, 0 } },
+            { { halfSize, -halfSize, -halfSize }, { 0, -1, 0 }, { 1, 0 } },
+            { { halfSize, -halfSize, halfSize }, { 0, -1, 0 }, { 1, 1 } },
+            { { -halfSize, -halfSize, halfSize }, { 0, -1, 0 }, { 0, 1 } }
         };
 
         mesh.Indices = {
             // Front face
-            0, 1, 2,
-            2, 3, 0,
-
+            0, 1, 2, 2, 3, 0,
             // Back face
-            4, 6, 5,
-            6, 4, 7,
-
+            4, 5, 6, 6, 7, 4,
             // Left face
-            0, 3, 4,
-            4, 7, 3,
-
+            8, 9, 10, 10, 11, 8,
             // Right face
-            1, 5, 6,
-            6, 2, 1,
-
+            12, 13, 14, 14, 15, 12,
             // Top face
-            3, 2, 6,
-            6, 7, 3,
-
+            16, 17, 18, 18, 19, 16,
             // Bottom face
-            0, 4, 5,
-            5, 1, 0
+            20, 21, 22, 22, 23, 20
         };
 
         return mesh;
     }
 
-    Mesh CreateSphere(float radius, int subdivisions)
+    static Mesh CreateSphere(float radius, int subdivisions)
     {
         Mesh mesh;
 

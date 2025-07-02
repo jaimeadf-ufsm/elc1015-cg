@@ -30,3 +30,6 @@ public:
         lastTime = currentTime;
     }
 };
+
+// Static member definition
+float Time::DeltaTime = 0.0f;

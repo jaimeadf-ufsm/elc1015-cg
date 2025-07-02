@@ -31,6 +31,48 @@ struct Vector3
     {
         return &X;
     }
+
+    Vector3 operator+(const Vector3& other) const
+    {
+        return Vector3(X + other.X, Y + other.Y, Z + other.Z);
+    }
+
+    Vector3 operator-(const Vector3& other) const
+    {
+        return Vector3(X - other.X, Y - other.Y, Z - other.Z);
+    }
+
+    Vector3 operator*(float scalar) const
+    {
+        return Vector3(X * scalar, Y * scalar, Z * scalar);
+    }
+
+    float Length() const
+    {
+        return sqrtf(X * X + Y * Y + Z * Z);
+    }
+
+    Vector3 Normalize() const
+    {
+        float len = Length();
+        if (len > 0.0f)
+            return Vector3(X / len, Y / len, Z / len);
+        return Vector3(0, 0, 0);
+    }
+
+    float Dot(const Vector3& other) const
+    {
+        return X * other.X + Y * other.Y + Z * other.Z;
+    }
+
+    Vector3 Cross(const Vector3& other) const
+    {
+        return Vector3(
+            Y * other.Z - Z * other.Y,
+            Z * other.X - X * other.Z,
+            X * other.Y - Y * other.X
+        );
+    }
 };
 
 struct Vector2
