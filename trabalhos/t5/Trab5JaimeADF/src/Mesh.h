@@ -1,6 +1,10 @@
 #pragma once
 
 #include <vector>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <iostream>
 #include <GL/glut.h>
 
 #include "Vector.h"
@@ -37,13 +41,11 @@ public:
         glEnd();
     }
 
-    static Mesh CreateCube(float size)
+    void LoadCube(float size)
     {
-        Mesh mesh;
-
         float halfSize = size / 2.0f;
 
-        mesh.Vertices = {
+        Vertices = {
             // Front face
             { { -halfSize, -halfSize, halfSize }, { 0, 0, 1 }, { 0, 0 } },
             { { halfSize, -halfSize, halfSize }, { 0, 0, 1 }, { 1, 0 } },
@@ -81,7 +83,7 @@ public:
             { { -halfSize, -halfSize, halfSize }, { 0, -1, 0 }, { 0, 1 } }
         };
 
-        mesh.Indices = {
+        Indices = {
             // Front face
             0, 1, 2, 2, 3, 0,
             // Back face
@@ -95,14 +97,10 @@ public:
             // Bottom face
             20, 21, 22, 22, 23, 20
         };
-
-        return mesh;
     }
 
-    static Mesh CreateSphere(float radius, int subdivisions)
+    void LoadSphere(float radius, int subdivisions)
     {
-        Mesh mesh;
-
         int latitudeCount = subdivisions;
         int longitudeCount = subdivisions * 2;
 
@@ -125,7 +123,7 @@ public:
                 vertex.Normal = { x, y, z };
                 vertex.TexCoord = { u, 1.0f - v };
 
-                mesh.Vertices.emplace_back(vertex);
+                Vertices.emplace_back(vertex);
             }
         }
 
@@ -136,16 +134,133 @@ public:
                 int current = lat * (longitudeCount + 1) + lon;
                 int next = current + longitudeCount + 1;
 
-                mesh.Indices.push_back(current);
-                mesh.Indices.push_back(next);
-                mesh.Indices.push_back(current + 1);
+                Indices.push_back(current);
+                Indices.push_back(next);
+                Indices.push_back(current + 1);
 
-                mesh.Indices.push_back(current + 1);
-                mesh.Indices.push_back(next);
-                mesh.Indices.push_back(next + 1);
+                Indices.push_back(current + 1);
+                Indices.push_back(next);
+                Indices.push_back(next + 1);
             }
         }
+    }
 
-        return mesh;
+    void LoadFromOBJ(const std::string& filename)
+    {
+        std::vector<Vector3> positions;
+        std::vector<Vector2> texCoords;
+        std::vector<Vector3> normals;
+        
+        std::ifstream file(filename);
+
+        if (!file.is_open())
+        {
+            std::cerr << "Error: Could not open OBJ file: " << filename << std::endl;
+            return;
+        }
+        
+        std::string line;
+
+        while (std::getline(file, line))
+        {
+            std::istringstream iss(line);
+            std::string prefix;
+            iss >> prefix;
+            
+            if (prefix == "v")
+            {
+                Vector3 pos;
+                iss >> pos.X >> pos.Y >> pos.Z;
+                positions.push_back(pos);
+            }
+            else if (prefix == "vt")
+            {
+                Vector2 texCoord;
+                iss >> texCoord.X >> texCoord.Y;
+                texCoords.push_back(texCoord);
+            }
+            else if (prefix == "vn")
+            {
+                Vector3 normal;
+                iss >> normal.X >> normal.Y >> normal.Z;
+                normals.push_back(normal);
+            }
+            else if (prefix == "f")
+            {
+                std::string vertexStr;
+                std::vector<int> faceVertices;
+                
+                while (iss >> vertexStr)
+                {
+                    std::istringstream vertexStream(vertexStr);
+                    std::string token;
+                    
+                    std::vector<int> indices(3, -1);
+                    int index = 0;
+                    
+                    while (std::getline(vertexStream, token, '/') && index < 3)
+                    {
+                        if (!token.empty())
+                        {
+                            indices[index] = std::stoi(token) - 1;
+                        }
+
+                        index++;
+                    }
+                    
+                    Vertex vertex;
+                    
+                    if (indices[0] >= 0 && indices[0] < static_cast<int>(positions.size()))
+                    {
+                        vertex.Position = positions[indices[0]];
+                    }
+                    
+                    if (indices[1] >= 0 && indices[1] < static_cast<int>(texCoords.size()))
+                    {
+                        vertex.TexCoord = texCoords[indices[1]];
+                    }
+                    else
+                    {
+                        vertex.TexCoord = Vector2(0.0f, 0.0f);
+                    }
+                    
+                    if (indices[2] >= 0 && indices[2] < static_cast<int>(normals.size()))
+                    {
+                        vertex.Normal = normals[indices[2]];
+                    }
+                    else
+                    {
+                        vertex.Normal = Vector3(0.0f, 0.0f, 0.0f);
+                    }
+ 
+                    Vertices.push_back(vertex);
+                    int vertexIndex = static_cast<int>(Vertices.size() - 1);
+                    
+                    faceVertices.push_back(vertexIndex);
+                }
+                
+                if (faceVertices.size() >= 3)
+                {
+                    Indices.push_back(faceVertices[0]);
+                    Indices.push_back(faceVertices[1]);
+                    Indices.push_back(faceVertices[2]);
+                    
+                    if (faceVertices.size() == 4)
+                    {
+                        Indices.push_back(faceVertices[0]);
+                        Indices.push_back(faceVertices[2]);
+                        Indices.push_back(faceVertices[3]);
+                    }
+                }
+            }
+        }
+        
+        file.close();
+    }
+
+    void Clear()
+    {
+        Vertices.clear();
+        Indices.clear();
     }
 };

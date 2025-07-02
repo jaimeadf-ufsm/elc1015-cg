@@ -1,6 +1,10 @@
 #pragma once
 
 #include <GL/glut.h>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <iostream>
 #include "Vector.h"
 
 class Material
@@ -33,5 +37,60 @@ public:
         glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, Specular.ToArray());
         glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, Emission.ToArray());
         glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, Shininess);
+    }
+
+    bool LoadFromMTL(const std::string &filename)
+    {
+        std::ifstream file(filename);
+
+        if (!file.is_open())
+        {
+            std::cerr << "Error: Could not open MTL file: " << filename << std::endl;
+            return false;
+        }
+
+        std::string line;
+
+        while (std::getline(file, line))
+        {
+            std::istringstream iss(line);
+            std::string prefix;
+            iss >> prefix;
+
+            if (prefix == "Ka") // Ambient color
+            {
+                float r, g, b;
+                iss >> r >> g >> b;
+                Ambient = Vector4(r, g, b, 1.0f);
+            }
+            else if (prefix == "Kd") // Diffuse color
+            {
+                float r, g, b;
+                iss >> r >> g >> b;
+                Diffuse = Vector4(r, g, b, 1.0f);
+            }
+            else if (prefix == "Ks") // Specular color
+            {
+                float r, g, b;
+                iss >> r >> g >> b;
+                Specular = Vector4(r, g, b, 1.0f);
+            }
+            else if (prefix == "Ke") // Emission color
+            {
+                float r, g, b;
+                iss >> r >> g >> b;
+                Emission = Vector4(r, g, b, 1.0f);
+            }
+            else if (prefix == "Ns") // Shininess (specular exponent)
+            {
+                float shininess;
+                iss >> shininess;
+                Shininess = shininess;
+            }
+        }
+
+        file.close();
+
+        return true;
     }
 };

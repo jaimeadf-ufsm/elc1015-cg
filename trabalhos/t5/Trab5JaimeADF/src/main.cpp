@@ -28,18 +28,15 @@ const int NUM_ASTEROIDS = 1000;
 const float ASTEROID_INNER_RADIUS = 15.0f;
 const float ASTEROID_OUTER_RADIUS = 100.0f;
 
-// Global objects
+std::shared_ptr<Model> sunModel;
+std::vector<std::shared_ptr<Model>> asteroidModels;
+
 Camera camera(Vector3(0, 0, 20));
-Light sunLight(GL_LIGHT0);
+Light light(GL_LIGHT0);
 
 Body sun;
 std::vector<Body> asteroids;
-std::vector<std::shared_ptr<Model>> asteroidModels;
 
-// Sun object
-std::shared_ptr<Model> sunModel;
-
-// Input state
 bool keys[256] = {false};
 bool wireframeMode = false;
 int lastMouseX = SCREEN_WIDTH / 2;
@@ -52,8 +49,6 @@ void InitializeModels();
 void CreateAsteroids();
 void Update();
 void Render();
-void RenderSun();
-void RenderAsteroids();
 void HandleKeyboard(unsigned char key, int x, int y);
 void HandleKeyboardUp(unsigned char key, int x, int y);
 void HandleMouse(int x, int y);
@@ -61,118 +56,125 @@ void HandleMouseButton(int button, int state, int x, int y);
 void Reshape(int width, int height);
 void Idle();
 
-std::shared_ptr<Material> CreateMaterial(Vector4 ambient, Vector4 diffuse, Vector4 specular, float shininess)
-{
-    auto material = std::make_shared<Material>();
-    material->Ambient = ambient;
-    material->Diffuse = diffuse;
-    material->Specular = specular;
-    material->Emission = Vector4(0, 0, 0, 1);
-    material->Shininess = shininess;
-    return material;
-}
-
 void InitializeOpenGL()
 {
-    // Enable depth testing
     glEnable(GL_DEPTH_TEST);
 
-    // Enable lighting
     glEnable(GL_LIGHTING);
     glEnable(GL_NORMALIZE);
 
-    // Set clear color to black (space)
     glClearColor(0.0f, 0.0f, 0.1f, 1.0f);
 
-    // Set up lighting properties (position will be set in render loop)
-    sunLight.Ambient = Vector4(0.3f, 0.3f, 0.3f, 1.0f);
-    sunLight.Diffuse = Vector4(1.0f, 1.0f, 0.9f, 1.0f);
-    sunLight.Specular = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-
-    // Initialize random seed
     srand(static_cast<unsigned int>(time(nullptr)));
 }
 
 void InitializeModels()
 {
-    // Create textures
     auto sunTexture = std::make_shared<Texture>();
-    sunTexture->LoadFromBMP("Trab5JaimeADF/assets/textures/sun.bmp");
+    sunTexture->LoadFromBMP("Trab5JaimeADF/assets/models/sun/sun.bmp");
 
-    auto asteroidTexture1 = std::make_shared<Texture>();
-    asteroidTexture1->LoadCheckerboard(128, 128, Vector3(0.6f, 0.6f, 0.6f), Vector3(0.4f, 0.4f, 0.4f), 8);
+    auto asteroid2bTexture = std::make_shared<Texture>();
+    asteroid2bTexture->LoadFromBMP("Trab5JaimeADF/assets/models/asteroid_2b/asteroid_2b.bmp");
 
-    auto asteroidTexture2 = std::make_shared<Texture>();
-    asteroidTexture2->LoadCheckerboard(128, 128, Vector3(0.5f, 0.3f, 0.2f), Vector3(0.3f, 0.2f, 0.1f), 6);
+    auto asteroid2dTexture = std::make_shared<Texture>();
+    asteroid2dTexture->LoadFromBMP("Trab5JaimeADF/assets/models/asteroid_2d/asteroid_2d.bmp");
 
-    // Create materials
-    auto sunMaterial = CreateMaterial(
+    auto sunMaterial = std::make_shared<Material>(
         Vector4(1.0f, 0.8f, 0.3f, 1.0f), // Bright ambient
         Vector4(1.0f, 0.8f, 0.3f, 1.0f), // Bright diffuse
         Vector4(0.0f, 0.0f, 0.0f, 1.0f), // No specular (suns don't have shiny spots)
+        Vector4(1.0f, 0.8f, 0.3f, 1.0f), // Emission (glow)
         0.0f                             // No shininess
     );
-    // Make the sun emit light (glow)
-    sunMaterial->Emission = Vector4(1.0f, 0.8f, 0.3f, 1.0f);
 
-    auto asteroidMaterial1 = CreateMaterial(
-        Vector4(0.3f, 0.3f, 0.3f, 1.0f),
-        Vector4(0.6f, 0.6f, 0.6f, 1.0f),
-        Vector4(0.2f, 0.2f, 0.2f, 1.0f),
-        10.0f);
+    auto asteroid2bMaterial = std::make_shared<Material>();
+    asteroid2bMaterial->LoadFromMTL("Trab5JaimeADF/assets/models/asteroid_2b/asteroid_2b.mtl");
 
-    auto asteroidMaterial2 = CreateMaterial(
-        Vector4(0.2f, 0.1f, 0.05f, 1.0f),
-        Vector4(0.4f, 0.2f, 0.1f, 1.0f),
-        Vector4(0.1f, 0.1f, 0.1f, 1.0f),
-        5.0f);
+    auto asteroid2dMaterial = std::make_shared<Material>();
+    asteroid2dMaterial->LoadFromMTL("Trab5JaimeADF/assets/models/asteroid_2d/asteroid_2d.mtl");
 
-    // Create meshes
-    auto sunMeshHigh = std::make_shared<Mesh>(Mesh::CreateSphere(3.0f, 20));
-    auto sunMeshMed = std::make_shared<Mesh>(Mesh::CreateSphere(3.0f, 12));
-    auto sunMeshLow = std::make_shared<Mesh>(Mesh::CreateSphere(3.0f, 8));
+    auto sunMeshHigh = std::make_shared<Mesh>();
+    sunMeshHigh->LoadSphere(3.0f, 20);
+    auto sunMeshMed = std::make_shared<Mesh>();
+    sunMeshMed->LoadSphere(3.0f, 12);
+    auto sunMeshLow = std::make_shared<Mesh>();
+    sunMeshLow->LoadSphere(3.0f, 8);
 
-    auto sphereHighDetail = std::make_shared<Mesh>(Mesh::CreateSphere(1.0f, 12));
-    auto sphereMedDetail = std::make_shared<Mesh>(Mesh::CreateSphere(1.0f, 8));
-    auto sphereLowDetail = std::make_shared<Mesh>(Mesh::CreateSphere(1.0f, 6));
+    auto asteroid2bLod0 = std::make_shared<Mesh>();
+    asteroid2bLod0->LoadFromOBJ("Trab5JaimeADF/assets/models/asteroid_2b/lod0.obj");
+    auto asteroid2bLod1 = std::make_shared<Mesh>();
+    asteroid2bLod1->LoadFromOBJ("Trab5JaimeADF/assets/models/asteroid_2b/lod1.obj");
+    auto asteroid2bLod2 = std::make_shared<Mesh>();
+    asteroid2bLod2->LoadFromOBJ("Trab5JaimeADF/assets/models/asteroid_2b/lod2.obj");
+    auto asteroid2bLod3 = std::make_shared<Mesh>();
+    asteroid2bLod3->LoadFromOBJ("Trab5JaimeADF/assets/models/asteroid_2b/lod3.obj");
+    auto asteroid2bLod4 = std::make_shared<Mesh>();
+    asteroid2bLod4->LoadFromOBJ("Trab5JaimeADF/assets/models/asteroid_2b/lod4.obj");
+    auto asteroid2bLod5 = std::make_shared<Mesh>();
+    asteroid2bLod5->LoadFromOBJ("Trab5JaimeADF/assets/models/asteroid_2b/lod5.obj");
 
-    auto cubeHighDetail = std::make_shared<Mesh>(Mesh::CreateCube(1.8f));
-    auto cubeMedDetail = std::make_shared<Mesh>(Mesh::CreateCube(1.8f));
-    auto cubeLowDetail = std::make_shared<Mesh>(Mesh::CreateCube(1.8f));
+    auto asteroid2dLod0 = std::make_shared<Mesh>();
+    asteroid2dLod0->LoadFromOBJ("Trab5JaimeADF/assets/models/asteroid_2d/lod0.obj");
+    auto asteroid2dLod1 = std::make_shared<Mesh>();
+    asteroid2dLod1->LoadFromOBJ("Trab5JaimeADF/assets/models/asteroid_2d/lod1.obj");
+    auto asteroid2dLod2 = std::make_shared<Mesh>();
+    asteroid2dLod2->LoadFromOBJ("Trab5JaimeADF/assets/models/asteroid_2d/lod2.obj");
+    auto asteroid2dLod3 = std::make_shared<Mesh>();
+    asteroid2dLod3->LoadFromOBJ("Trab5JaimeADF/assets/models/asteroid_2d/lod3.obj");
+    auto asteroid2dLod4 = std::make_shared<Mesh>();
+    asteroid2dLod4->LoadFromOBJ("Trab5JaimeADF/assets/models/asteroid_2d/lod4.obj");
+    auto asteroid2dLod5 = std::make_shared<Mesh>();
+    asteroid2dLod5->LoadFromOBJ("Trab5JaimeADF/assets/models/asteroid_2d/lod5.obj");
+
+    // Fallback procedural sphere mesh
+    auto sphereMesh = std::make_shared<Mesh>();
+    sphereMesh->LoadSphere(1.0f, 8);
 
     // Create sun model
     sunModel = std::make_shared<Model>();
-    sunModel->ModelTexture = sunTexture;
-    sunModel->ModelMaterial = sunMaterial;
+    sunModel->Texture = sunTexture;
+    sunModel->Material = sunMaterial;
     sunModel->RegisterLOD(10.0f, sunMeshHigh);
     sunModel->RegisterLOD(25.0f, sunMeshMed);
     sunModel->RegisterLOD(1000.0f, sunMeshLow);
 
-    sun.Model = sunModel;
-    sun.Transform.Position = Vector3(0, 0, 0);
-
     // Create asteroid models
-    // Sphere asteroid model
-    auto sphereModel = std::make_shared<Model>();
-    sphereModel->ModelTexture = asteroidTexture1;
-    sphereModel->ModelMaterial = asteroidMaterial1;
-    sphereModel->RegisterLOD(5.0f, sphereHighDetail);
-    sphereModel->RegisterLOD(15.0f, sphereMedDetail);
-    sphereModel->RegisterLOD(1000.0f, sphereLowDetail);
-    asteroidModels.push_back(sphereModel);
+    auto asteroid2bModel = std::make_shared<Model>();
+    asteroid2bModel->Texture = asteroid2bTexture;
+    asteroid2bModel->Material = asteroid2bMaterial;
+    asteroid2bModel->RegisterLOD(5.0f, asteroid2bLod0);   // Closest - highest detail
+    asteroid2bModel->RegisterLOD(10.0f, asteroid2bLod1);  // Close
+    asteroid2bModel->RegisterLOD(20.0f, asteroid2bLod2);  // Medium
+    asteroid2bModel->RegisterLOD(35.0f, asteroid2bLod3);  // Far
+    asteroid2bModel->RegisterLOD(50.0f, asteroid2bLod4);  // Very far
+    asteroid2bModel->RegisterLOD(75.0f, asteroid2bLod5);  // Farthest
+    asteroid2bModel->RegisterLOD(5000.0f, sphereMesh);     // Fallback sphere for extreme distances
+    asteroidModels.push_back(asteroid2bModel);
 
-    // Cube asteroid model
-    auto cubeModel = std::make_shared<Model>();
-    cubeModel->ModelTexture = asteroidTexture2;
-    cubeModel->ModelMaterial = asteroidMaterial2;
-    cubeModel->RegisterLOD(5.0f, cubeHighDetail);
-    cubeModel->RegisterLOD(15.0f, cubeMedDetail);
-    cubeModel->RegisterLOD(1000.0f, cubeLowDetail);
-    asteroidModels.push_back(cubeModel);
+    auto asteroid2dModel = std::make_shared<Model>();
+    asteroid2dModel->Texture = asteroid2dTexture;
+    asteroid2dModel->Material = asteroid2dMaterial;
+    asteroid2dModel->RegisterLOD(5.0f, asteroid2dLod0);   // Closest - highest detail
+    asteroid2dModel->RegisterLOD(10.0f, asteroid2dLod1);  // Close
+    asteroid2dModel->RegisterLOD(20.0f, asteroid2dLod2);  // Medium
+    asteroid2dModel->RegisterLOD(35.0f, asteroid2dLod3);  // Far
+    asteroid2dModel->RegisterLOD(50.0f, asteroid2dLod4);  // Very far
+    asteroid2dModel->RegisterLOD(75.0f, asteroid2dLod5);  // Farthest
+    asteroid2dModel->RegisterLOD(5000.0f, sphereMesh);     // Fallback sphere for extreme distances
+    asteroidModels.push_back(asteroid2dModel);
 }
 
 void CreateAsteroids()
 {
+    light.Position = Vector4(0, 0, 0, 1.0f);
+
+    light.Ambient = Vector4(0.3f, 0.3f, 0.3f, 1.0f);
+    light.Diffuse = Vector4(1.0f, 1.0f, 0.9f, 1.0f);
+    light.Specular = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+
+    sun.Model = sunModel;
+    sun.Transform.Position = Vector3(0, 0, 0);
+
     for (int i = 0; i < NUM_ASTEROIDS; i++)
     {
         float theta = (rand() / (float)RAND_MAX) * 2.0f * M_PI;
@@ -189,14 +191,19 @@ void CreateAsteroids()
         position.Y = radius * cosf(phi);
         position.Z = radius * sinf(phi) * sinf(theta);
 
-        // Select random model
         int modelIndex = rand() % asteroidModels.size();
 
         asteroids.emplace_back();
 
         Body &asteroid = asteroids.back();
-        asteroid.Transform.Position = position;
         asteroid.Model = asteroidModels[modelIndex];
+        asteroid.Transform.Position = position;
+        asteroid.Transform.Scale = Vector3(0.1f + (rand() / (float)RAND_MAX) * 2.0f);
+        asteroid.AngularVelocity = Vector3(
+            (rand() / (float)RAND_MAX - 0.5f) * 50.0f,
+            (rand() / (float)RAND_MAX - 0.5f) * 50.0f,
+            (rand() / (float)RAND_MAX - 0.5f) * 50.0f
+        );
     }
 }
 
@@ -206,17 +213,17 @@ void Update()
 
     // Process continuous keyboard input
     if (keys['w'] || keys['W'])
-        camera.ProcessKeyboard('w', Time::DeltaTime);
+        camera.ProcessKeyboard('w');
     if (keys['s'] || keys['S'])
-        camera.ProcessKeyboard('s', Time::DeltaTime);
+        camera.ProcessKeyboard('s');
     if (keys['a'] || keys['A'])
-        camera.ProcessKeyboard('a', Time::DeltaTime);
+        camera.ProcessKeyboard('a');
     if (keys['d'] || keys['D'])
-        camera.ProcessKeyboard('d', Time::DeltaTime);
+        camera.ProcessKeyboard('d');
     if (keys['q'] || keys['Q'])
-        camera.ProcessKeyboard('q', Time::DeltaTime);
+        camera.ProcessKeyboard('q');
     if (keys['e'] || keys['E'])
-        camera.ProcessKeyboard('e', Time::DeltaTime);
+        camera.ProcessKeyboard('e');
 
     // Update asteroids
     for (auto &asteroid : asteroids)
@@ -232,52 +239,18 @@ void Render()
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    // Set camera
     camera.Apply();
 
-    // Set light position after camera transformation
-    // This ensures the light is positioned at the sun's location in world space
-    sunLight.SetPosition(Vector3(0, 0, 0));
-    sunLight.Apply();
+    light.Enable();
 
-    // Render sun
-    RenderSun();
-
-    // Render asteroids
-    RenderAsteroids();
-
-    glutSwapBuffers();
-}
-
-void RenderSun()
-{
-    glPushMatrix();
-
-    // // Disable lighting for the sun so it appears to glow
-    // //  glDisable(GL_LIGHTING);
-
-    // // Set a bright color for the sun
-    // glColor3f(1.0f, 0.8f, 0.3f);
-
-    // // Calculate distance from camera to sun for LOD
-    // Vector3 distance = Vector3(0, 0, 0) - camera.Position;
-    // float distanceLength = distance.Length();
-
-    // sunModel->Render(distanceLength);
-
-    // Re-enable lighting for other objects
-    //  glEnable(GL_LIGHTING);
     sun.Render(camera.Position);
 
-    // glPopMatrix();
-}
-
-void RenderAsteroids()
-{
     for (const auto &asteroid : asteroids)
     {
         asteroid.Render(camera.Position);
     }
+
+    glutSwapBuffers();
 }
 
 void HandleKeyboard(unsigned char key, int x, int y)

@@ -24,7 +24,13 @@ struct Vector3
     float Y;
     float Z;
 
-    Vector3(float x = 0.0f, float y = 0.0f, float z = 0.0f)
+    Vector3()
+        : X(0.0f), Y(0.0f), Z(0.0f) {}
+    
+    Vector3(float value)
+        : X(value), Y(value), Z(value) {}
+
+    Vector3(float x, float y, float z)
         : X(x), Y(y), Z(z) {}
 
     Vector3 operator+(const Vector3& other) const

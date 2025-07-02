@@ -9,8 +9,8 @@
 class Model
 {
 public:
-    std::shared_ptr<Texture> ModelTexture;
-    std::shared_ptr<Material> ModelMaterial;
+    std::shared_ptr<::Texture> Texture;
+    std::shared_ptr<::Material> Material;
     std::vector<std::pair<float, std::shared_ptr<Mesh>>> Meshes;
 
     void RegisterLOD(float distance, std::shared_ptr<Mesh> mesh)
@@ -34,15 +34,15 @@ public:
 
         std::shared_ptr<Mesh> mesh = FindAppropriateMesh(distance);
 
-        if (ModelMaterial)
+        if (Material)
         {
-            ModelMaterial->Apply();
+            Material->Apply();
         }
 
-        if (ModelTexture)
+        if (Texture)
         {
             glEnable(GL_TEXTURE_2D);
-            ModelTexture->Bind();
+            Texture->Bind();
         }
 
         if (mesh)
@@ -50,9 +50,9 @@ public:
             mesh->Render();
         }
 
-        if (ModelTexture)
+        if (Texture)
         {
-            ModelTexture->Unbind();
+            Texture->Unbind();
             glDisable(GL_TEXTURE_2D);
         }
     }

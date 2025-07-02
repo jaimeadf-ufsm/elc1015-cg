@@ -1,8 +1,9 @@
 #pragma once
 
 #include <GL/glut.h>
-#include "Vector.h"
 #include "Mathematics.h"
+#include "Vector.h"
+#include "Time.h"
 
 class Camera
 {
@@ -37,9 +38,9 @@ public:
         );
     }
 
-    void ProcessKeyboard(char key, float deltaTime)
+    void ProcessKeyboard(char key)
     {
-        float velocity = Speed * deltaTime;
+        float velocity = Speed * Time::DeltaTime;
         Vector3 forward = (Target - Position).Normalize();
         Vector3 right = forward.Cross(Up).Normalize();
 

@@ -21,17 +21,7 @@ public:
     {
     }
 
-    void SetPosition(Vector3 pos)
-    {
-        Position = Vector4(pos.X, pos.Y, pos.Z, 1.0f);
-    }
-
-    void SetDirectional(Vector3 direction)
-    {
-        Position = Vector4(direction.X, direction.Y, direction.Z, 0.0f);
-    }
-
-    void Apply()
+    void Enable()
     {
         glEnable(LightID);
         glLightfv(LightID, GL_POSITION, Position.ToArray());
