@@ -31,5 +31,4 @@ public:
     }
 };
 
-// Static member definition
 float Time::DeltaTime = 0.0f;

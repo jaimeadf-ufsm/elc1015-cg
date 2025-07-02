@@ -9,7 +9,9 @@ class Texture
 public:
     GLuint TextureID;
 
-    Texture() : TextureID(0) {}
+    Texture(GLuint textureID = 0) : TextureID(textureID)
+    {
+    }
 
     ~Texture()
     {
@@ -19,7 +21,17 @@ public:
         }
     }
 
-    void CreateCheckerboard(int width, int height, Vector3 color1, Vector3 color2, int checkSize = 8)
+    void Bind() const
+    {
+        glBindTexture(GL_TEXTURE_2D, TextureID);
+    }
+
+    void Unbind() const
+    {
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    static Texture CreateCheckerboard(int width, int height, Vector3 color1, Vector3 color2, int checkSize = 8)
     {
         std::vector<unsigned char> data(width * height * 3);
 
@@ -37,25 +49,21 @@ public:
             }
         }
 
-        glGenTextures(1, &TextureID);
-        glBindTexture(GL_TEXTURE_2D, TextureID);
+        GLuint textureID;
+
+        glGenTextures(1, &textureID);
+
+        glBindTexture(GL_TEXTURE_2D, textureID);
+
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data.data());
+
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    }
 
-    void Bind() const
-    {
-        glBindTexture(GL_TEXTURE_2D, TextureID);
-    }
-
-    void Unbind() const
-    {
         glBindTexture(GL_TEXTURE_2D, 0);
-    }
 
-private:
-    GLuint m_TextureID;
+        return Texture(textureID);
+    }
 };

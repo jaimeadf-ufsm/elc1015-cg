@@ -26,11 +26,6 @@ struct Vector3
 
     Vector3(float x = 0.0f, float y = 0.0f, float z = 0.0f)
         : X(x), Y(y), Z(z) {}
-    
-    const float* ToArray() const
-    {
-        return &X;
-    }
 
     Vector3 operator+(const Vector3& other) const
     {
@@ -45,6 +40,49 @@ struct Vector3
     Vector3 operator*(float scalar) const
     {
         return Vector3(X * scalar, Y * scalar, Z * scalar);
+    }
+
+    Vector3 operator/(float scalar) const
+    {
+        if (scalar != 0.0f)
+            return Vector3(X / scalar, Y / scalar, Z / scalar);
+
+        return Vector3(0, 0, 0);
+    }
+
+    Vector3& operator+=(const Vector3& other)
+    {
+        X += other.X;
+        Y += other.Y;
+        Z += other.Z;
+        return *this;
+    }
+
+    Vector3& operator-=(const Vector3& other)
+    {
+        X -= other.X;
+        Y -= other.Y;
+        Z -= other.Z;
+        return *this;
+    }
+
+    Vector3& operator*=(float scalar)
+    {
+        X *= scalar;
+        Y *= scalar;
+        Z *= scalar;
+        return *this;
+    }
+
+    Vector3& operator/=(float scalar)
+    {
+        if (scalar != 0.0f)
+        {
+            X /= scalar;
+            Y /= scalar;
+            Z /= scalar;
+        }
+        return *this;
     }
 
     float Length() const
@@ -72,6 +110,11 @@ struct Vector3
             Z * other.X - X * other.Z,
             X * other.Y - Y * other.X
         );
+    }
+    
+    const float* ToArray() const
+    {
+        return &X;
     }
 };
 

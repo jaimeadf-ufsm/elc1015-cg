@@ -21,16 +21,19 @@ public:
     void Render() const
     {
         glBegin(GL_TRIANGLES);
+
         for (size_t i = 0; i < Indices.size(); i += 3)
         {
-            for (int j = 0; j < 3; j++)
+            for (size_t j = 0; j < 3; j++)
             {
                 const Vertex& vertex = Vertices[Indices[i + j]];
+
                 glNormal3f(vertex.Normal.X, vertex.Normal.Y, vertex.Normal.Z);
                 glTexCoord2f(vertex.TexCoord.X, vertex.TexCoord.Y);
                 glVertex3f(vertex.Position.X, vertex.Position.Y, vertex.Position.Z);
             }
         }
+
         glEnd();
     }
 
@@ -122,7 +125,7 @@ public:
                 vertex.Normal = { x, y, z };
                 vertex.TexCoord = { u, 1.0f - v };
 
-                mesh.Vertices.push_back(vertex);
+                mesh.Vertices.emplace_back(vertex);
             }
         }
 

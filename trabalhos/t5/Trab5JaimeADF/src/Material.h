@@ -12,6 +12,20 @@ public:
     Vector4 Emission;
     float Shininess;
 
+    Material(
+        Vector4 ambient = Vector4(0.2f, 0.2f, 0.2f, 1.0f),
+        Vector4 diffuse = Vector4(0.8f, 0.8f, 0.8f, 1.0f),
+        Vector4 specular = Vector4(1.0f, 1.0f, 1.0f, 1.0f),
+        Vector4 emission = Vector4(0.0f, 0.0f, 0.0f, 1.0f),
+        float shininess = 32.0f)
+        : Ambient(ambient),
+          Diffuse(diffuse),
+          Specular(specular),
+          Emission(emission),
+          Shininess(shininess)
+    {
+    }
+
     void Apply() const
     {
         glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, Ambient.ToArray());

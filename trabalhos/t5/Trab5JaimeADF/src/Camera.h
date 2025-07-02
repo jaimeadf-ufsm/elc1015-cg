@@ -22,11 +22,19 @@ public:
         UpdateVectors();
     }
 
-    void LookAt()
+    void Apply()
     {
-        gluLookAt(Position.X, Position.Y, Position.Z,
-                  Target.X, Target.Y, Target.Z,
-                  Up.X, Up.Y, Up.Z);
+        gluLookAt(
+            Position.X,
+            Position.Y,
+            Position.Z,
+            Target.X,
+            Target.Y,
+            Target.Z,
+            Up.X,
+            Up.Y,
+            Up.Z
+        );
     }
 
     void ProcessKeyboard(char key, float deltaTime)

@@ -16,31 +16,24 @@ public:
     void RegisterLOD(float distance, std::shared_ptr<Mesh> mesh)
     {
         Meshes.push_back(std::make_pair(distance, mesh));
-        // Sort by distance to ensure proper LOD selection
-        std::sort(Meshes.begin(), Meshes.end(), 
-                  [](const std::pair<float, std::shared_ptr<Mesh>>& a, 
-                     const std::pair<float, std::shared_ptr<Mesh>>& b) { 
-                      return a.first < b.first; 
-                  });
+
+        std::sort(
+            Meshes.begin(),
+            Meshes.end(),
+            [](const std::pair<float, std::shared_ptr<Mesh>> &a, const std::pair<float, std::shared_ptr<Mesh>> &b)
+            {
+                return a.first < b.first;
+            }
+        );
     }
 
     void Render(float distance) const
     {
-        if (Meshes.empty()) return;
+        if (Meshes.empty())
+            return;
 
-        // Find appropriate LOD based on distance
-        std::shared_ptr<Mesh> selectedMesh = Meshes.back().second; // Default to lowest detail
-        
-        for (const auto& lod : Meshes)
-        {
-            if (distance <= lod.first)
-            {
-                selectedMesh = lod.second;
-                break;
-            }
-        }
+        std::shared_ptr<Mesh> mesh = FindAppropriateMesh(distance);
 
-        // Apply material and texture
         if (ModelMaterial)
         {
             ModelMaterial->Apply();
@@ -52,10 +45,9 @@ public:
             ModelTexture->Bind();
         }
 
-        // Render the selected mesh
-        if (selectedMesh)
+        if (mesh)
         {
-            selectedMesh->Render();
+            mesh->Render();
         }
 
         if (ModelTexture)
@@ -63,5 +55,18 @@ public:
             ModelTexture->Unbind();
             glDisable(GL_TEXTURE_2D);
         }
+    }
+
+    std::shared_ptr<Mesh> FindAppropriateMesh(float distance) const
+    {
+        for (const auto &lod : Meshes)
+        {
+            if (distance <= lod.first)
+            {
+                return lod.second;
+            }
+        }
+
+        return Meshes.back().second;
     }
 };
