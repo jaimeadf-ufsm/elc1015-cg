@@ -166,10 +166,14 @@ void CreateAsteroids()
 {
     for (int i = 0; i < NUM_ASTEROIDS; i++)
     {
-        // Generate random position in spherical coordinates
         float theta = (rand() / (float)RAND_MAX) * 2.0f * M_PI;
         float phi = (rand() / (float)RAND_MAX) * M_PI;
-        float radius = ASTEROID_INNER_RADIUS + (rand() / (float)RAND_MAX) * (ASTEROID_OUTER_RADIUS - ASTEROID_INNER_RADIUS);
+
+        float r_inner_cubed = ASTEROID_INNER_RADIUS * ASTEROID_INNER_RADIUS * ASTEROID_INNER_RADIUS;
+        float r_outer_cubed = ASTEROID_OUTER_RADIUS * ASTEROID_OUTER_RADIUS * ASTEROID_OUTER_RADIUS;
+        float random_volume = (rand() / (float)RAND_MAX);
+        float radius_cubed = r_inner_cubed + random_volume * (r_outer_cubed - r_inner_cubed);
+        float radius = powf(radius_cubed, 1.0f / 3.0f);
 
         Vector3 position;
         position.X = radius * sinf(phi) * cosf(theta);
