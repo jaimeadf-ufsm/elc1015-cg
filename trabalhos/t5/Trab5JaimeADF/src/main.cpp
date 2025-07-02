@@ -21,7 +21,6 @@
 #include "Body.h"
 #include "Time.h"
 
-// Constants
 const int SCREEN_WIDTH = 1024;
 const int SCREEN_HEIGHT = 768;
 const int NUM_ASTEROIDS = 1000;
@@ -39,8 +38,8 @@ std::vector<Body> asteroids;
 
 bool keys[256] = {false};
 bool wireframeMode = false;
-int lastMouseX = SCREEN_WIDTH / 2;
-int lastMouseY = SCREEN_HEIGHT / 2;
+int windowCenterX = SCREEN_WIDTH / 2;
+int windowCenterY = SCREEN_HEIGHT / 2;
 bool firstMouse = true;
 
 // Function prototypes
@@ -282,28 +281,29 @@ void HandleMouse(int x, int y)
 {
     if (firstMouse)
     {
-        lastMouseX = x;
-        lastMouseY = y;
         firstMouse = false;
+        glutWarpPointer(windowCenterX, windowCenterY);
+        return;
     }
 
-    float xOffset = x - lastMouseX;
-    float yOffset = lastMouseY - y; // Reversed since y-coordinates go from bottom to top
-
-    lastMouseX = x;
-    lastMouseY = y;
+    float xOffset = x - windowCenterX;
+    float yOffset = windowCenterY - y;
 
     camera.ProcessMouseMovement(xOffset, yOffset);
+    
+    glutWarpPointer(windowCenterX, windowCenterY);
 }
 
 void HandleMouseButton(int button, int state, int x, int y)
 {
-    // Handle mouse button events if needed
 }
 
 void Reshape(int width, int height)
 {
     glViewport(0, 0, width, height);
+
+    windowCenterX = width / 2;
+    windowCenterY = height / 2;
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
