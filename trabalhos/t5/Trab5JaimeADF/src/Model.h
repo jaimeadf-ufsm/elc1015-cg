@@ -1,3 +1,8 @@
+/**
+ * @file Model.h
+ * @brief Model class for managing 3D models with Level of Detail (LOD) system
+ */
+
 #pragma once
 
 #include <memory>
@@ -6,6 +11,10 @@
 #include "Texture.h"
 #include "Material.h"
 
+/**
+ * @class Model
+ * @brief Manages 3D models with LOD support, textures, and materials
+ */
 class Model
 {
 public:

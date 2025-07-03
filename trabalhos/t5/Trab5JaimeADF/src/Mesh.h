@@ -1,3 +1,8 @@
+/**
+ * @file Mesh.h
+ * @brief Mesh class for handling 3D geometry and vertex data
+ */
+
 #pragma once
 
 #include <vector>
@@ -9,6 +14,10 @@
 
 #include "Vector.h"
 
+/**
+ * @struct Vertex
+ * @brief Vertex structure containing position, normal, and texture coordinates
+ */
 struct Vertex
 {
     Vector3 Position;
@@ -16,6 +25,10 @@ struct Vertex
     Vector2 TexCoord;
 };
 
+/**
+ * @class Mesh
+ * @brief Manages 3D mesh data including vertices, indices, and geometry generation
+ */
 class Mesh
 {
 public:

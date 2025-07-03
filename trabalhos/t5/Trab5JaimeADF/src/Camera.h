@@ -1,3 +1,8 @@
+/**
+ * @file Camera.h
+ * @brief Camera class for 3D scene navigation and view control
+ */
+
 #pragma once
 
 #include <GL/glut.h>
@@ -5,6 +10,10 @@
 #include "Vector.h"
 #include "Time.h"
 
+/**
+ * @class Camera
+ * @brief Manages 3D camera position, orientation, and movement controls
+ */
 class Camera
 {
 public:
@@ -47,34 +56,20 @@ public:
         switch (key)
         {
             case 'w':
-            case 'W':
                 Position = Position + forward * velocity;
                 Target = Target + forward * velocity;
                 break;
             case 's':
-            case 'S':
                 Position = Position - forward * velocity;
                 Target = Target - forward * velocity;
                 break;
             case 'a':
-            case 'A':
                 Position = Position - right * velocity;
                 Target = Target - right * velocity;
                 break;
             case 'd':
-            case 'D':
                 Position = Position + right * velocity;
                 Target = Target + right * velocity;
-                break;
-            case 'q':
-            case 'Q':
-                Position = Position + Up * velocity;
-                Target = Target + Up * velocity;
-                break;
-            case 'e':
-            case 'E':
-                Position = Position - Up * velocity;
-                Target = Target - Up * velocity;
                 break;
         }
     }
@@ -87,7 +82,6 @@ public:
         Yaw += xOffset;
         Pitch += yOffset;
 
-        // Constrain pitch
         if (Pitch > 89.0f) Pitch = 89.0f;
         if (Pitch < -89.0f) Pitch = -89.0f;
 

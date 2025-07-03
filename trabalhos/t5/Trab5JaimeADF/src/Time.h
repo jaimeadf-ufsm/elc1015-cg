@@ -1,7 +1,16 @@
+/**
+ * @file Time.h
+ * @brief Time management class for calculating delta time between frames
+ */
+
 #pragma once
 
 #include <chrono>
 
+/**
+ * @class Time
+ * @brief Provides functionality for calculating the delta time between frames
+ */
 class Time
 {
 public:

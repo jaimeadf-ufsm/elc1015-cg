@@ -1,3 +1,8 @@
+/**
+ * @file Material.h
+ * @brief Material class for managing OpenGL material properties
+ */
+
 #pragma once
 
 #include <GL/glut.h>
@@ -7,6 +12,10 @@
 #include <iostream>
 #include "Vector.h"
 
+/**
+ * @class Material
+ * @brief Manages OpenGL material properties including ambient, diffuse, specular, and emission
+ */
 class Material
 {
 public:

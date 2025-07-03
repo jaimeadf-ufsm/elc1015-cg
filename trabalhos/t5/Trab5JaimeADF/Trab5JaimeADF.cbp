@@ -43,7 +43,18 @@
 			<Add library="../lib/libopengl32.a"/>
 			<Add library="../lib/libglu32.a"/>
 		</Linker>
-		<Unit filename="src/lookat.cpp" />
 
+		<Unit filename="src/Body.h" />
+        <Unit filename="src/Camera.h" />
+        <Unit filename="src/Light.h" />
+        <Unit filename="src/Material.h" />
+        <Unit filename="src/Mathematics.h" />
+        <Unit filename="src/Mesh.h" />
+        <Unit filename="src/Model.h" />
+        <Unit filename="src/Texture.h" />
+        <Unit filename="src/Time.h" />
+        <Unit filename="src/Transform.h" />
+        <Unit filename="src/Vector.h" />
+        <Unit filename="src/main.cpp" />
 	</Project>
 </CodeBlocks_project_file>

@@ -1,8 +1,17 @@
+/**
+ * @file Light.h
+ * @brief Light class for managing OpenGL lighting properties
+ */
+
 #pragma once
 
 #include <GL/glut.h>
 #include "Vector.h"
 
+/**
+ * @class Light
+ * @brief Manages OpenGL light sources with position, ambient, diffuse, and specular properties
+ */
 class Light
 {
 public:

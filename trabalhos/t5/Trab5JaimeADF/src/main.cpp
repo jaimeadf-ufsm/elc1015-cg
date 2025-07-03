@@ -1,8 +1,18 @@
-/**
- * Space Asteroid Demo
- * OpenGL 2.1 with FreeGLUT
- * Features: Free camera, LOD system, procedural textures, asteroid field
- */
+// Jaime Antonio Daniel Filho
+
+// ## Requisitos implementados
+
+// ### Requisitos básicos
+// * [x] Camêra com animação suave, utilizando delta time entre frames.
+// * [x] Asteroides modelados como formas simples (esferas)
+// * [x] Modo de visualização wireframe e com preenchimento.
+// * [x] Controle de FPS.
+
+// ### Requisitos extras
+// * [x] Nível de detalhe em função da distância: LOD (1 pt).
+// * [x] Carregamento de texturas BMP (1 pt).
+// * [x] Carregamento de modelos 3D usando o tipo OBJ (até 2pt).
+// * [x] Modelagem de asteroides elaborados (até 4pt).
 
 #include <GL/glut.h>
 #include <iostream>
@@ -23,7 +33,8 @@
 
 const int SCREEN_WIDTH = 1024;
 const int SCREEN_HEIGHT = 768;
-const int NUM_ASTEROIDS = 1000;
+
+const int ASTEROID_COUNT = 1000;
 const float ASTEROID_INNER_RADIUS = 15.0f;
 const float ASTEROID_OUTER_RADIUS = 100.0f;
 
@@ -45,10 +56,10 @@ bool firstMouse = true;
 // Function prototypes
 void InitializeOpenGL();
 void InitializeModels();
-void CreateAsteroids();
+void InitializeScene();
 void Update();
 void Render();
-void HandleKeyboard(unsigned char key, int x, int y);
+void HandleKeyboardDown(unsigned char key, int x, int y);
 void HandleKeyboardUp(unsigned char key, int x, int y);
 void HandleMouse(int x, int y);
 void HandleMouseButton(int button, int state, int x, int y);
@@ -163,7 +174,7 @@ void InitializeModels()
     asteroidModels.push_back(asteroid2dModel);
 }
 
-void CreateAsteroids()
+void InitializeScene()
 {
     light.Position = Vector4(0, 0, 0, 1.0f);
 
@@ -174,29 +185,15 @@ void CreateAsteroids()
     sun.Model = sunModel;
     sun.Transform.Position = Vector3(0, 0, 0);
 
-    for (int i = 0; i < NUM_ASTEROIDS; i++)
+    for (int i = 0; i < ASTEROID_COUNT; i++)
     {
-        float theta = (rand() / (float)RAND_MAX) * 2.0f * M_PI;
-        float phi = (rand() / (float)RAND_MAX) * M_PI;
-
-        float r_inner_cubed = ASTEROID_INNER_RADIUS * ASTEROID_INNER_RADIUS * ASTEROID_INNER_RADIUS;
-        float r_outer_cubed = ASTEROID_OUTER_RADIUS * ASTEROID_OUTER_RADIUS * ASTEROID_OUTER_RADIUS;
-        float random_volume = (rand() / (float)RAND_MAX);
-        float radius_cubed = r_inner_cubed + random_volume * (r_outer_cubed - r_inner_cubed);
-        float radius = powf(radius_cubed, 1.0f / 3.0f);
-
-        Vector3 position;
-        position.X = radius * sinf(phi) * cosf(theta);
-        position.Y = radius * cosf(phi);
-        position.Z = radius * sinf(phi) * sinf(theta);
-
         int modelIndex = rand() % asteroidModels.size();
 
         asteroids.emplace_back();
 
         Body &asteroid = asteroids.back();
         asteroid.Model = asteroidModels[modelIndex];
-        asteroid.Transform.Position = position;
+        asteroid.Transform.Position = RandomPointOnShell(ASTEROID_INNER_RADIUS, ASTEROID_OUTER_RADIUS);
         asteroid.Transform.Scale = Vector3(0.1f + (rand() / (float)RAND_MAX) * 2.0f);
         asteroid.AngularVelocity = Vector3(
             (rand() / (float)RAND_MAX - 0.5f) * 50.0f,
@@ -210,7 +207,6 @@ void Update()
 {
     Time::Update();
 
-    // Process continuous keyboard input
     if (keys['w'] || keys['W'])
         camera.ProcessKeyboard('w');
     if (keys['s'] || keys['S'])
@@ -219,12 +215,7 @@ void Update()
         camera.ProcessKeyboard('a');
     if (keys['d'] || keys['D'])
         camera.ProcessKeyboard('d');
-    if (keys['q'] || keys['Q'])
-        camera.ProcessKeyboard('q');
-    if (keys['e'] || keys['E'])
-        camera.ProcessKeyboard('e');
 
-    // Update asteroids
     for (auto &asteroid : asteroids)
     {
         asteroid.Update();
@@ -252,13 +243,13 @@ void Render()
     glutSwapBuffers();
 }
 
-void HandleKeyboard(unsigned char key, int x, int y)
+void HandleKeyboardDown(unsigned char key, int x, int y)
 {
     keys[key] = true;
 
     switch (key)
     {
-    case 27: // ESC
+    case 27:
         exit(0);
         break;
     case 'x':
@@ -294,10 +285,6 @@ void HandleMouse(int x, int y)
     glutWarpPointer(windowCenterX, windowCenterY);
 }
 
-void HandleMouseButton(int button, int state, int x, int y)
-{
-}
-
 void Reshape(int width, int height)
 {
     glViewport(0, 0, width, height);
@@ -320,41 +307,27 @@ void Idle()
 
 int main(int argc, char **argv)
 {
-    // Initialize GLUT
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
     glutInitWindowPosition(100, 100);
-    glutCreateWindow("Space Asteroid Demo - Use WASD+QE to move, Mouse to look, X for wireframe");
+    glutCreateWindow("T5 - Jaime Antonio Daniel Filho");
 
-    // Initialize OpenGL
     InitializeOpenGL();
 
-    // Initialize models and scene
     InitializeModels();
-    CreateAsteroids();
+    InitializeScene();
 
-    // Set up callbacks
     glutDisplayFunc(Render);
     glutReshapeFunc(Reshape);
-    glutKeyboardFunc(HandleKeyboard);
+    glutKeyboardFunc(HandleKeyboardDown);
     glutKeyboardUpFunc(HandleKeyboardUp);
     glutPassiveMotionFunc(HandleMouse);
     glutMotionFunc(HandleMouse);
-    glutMouseFunc(HandleMouseButton);
     glutIdleFunc(Idle);
 
-    // Hide cursor and warp to center
     glutSetCursor(GLUT_CURSOR_NONE);
 
-    std::cout << "Space Asteroid Demo Controls:" << std::endl;
-    std::cout << "WASD - Move camera horizontally" << std::endl;
-    std::cout << "QE - Move camera up/down" << std::endl;
-    std::cout << "Mouse - Look around" << std::endl;
-    std::cout << "X - Toggle wireframe mode" << std::endl;
-    std::cout << "ESC - Exit" << std::endl;
-
-    // Start main loop
     glutMainLoop();
 
     return 0;

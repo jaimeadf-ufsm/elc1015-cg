@@ -1,3 +1,8 @@
+/**
+ * @file Texture.h
+ * @brief Texture class for loading and managing OpenGL textures
+ */
+
 #pragma once
 
 #include <GL/glut.h>
@@ -7,6 +12,10 @@
 #include <cstring>
 #include "Vector.h"
 
+/**
+ * @class Texture
+ * @brief Handles texture loading, binding, and management for OpenGL rendering
+ */
 class Texture
 {
 public:

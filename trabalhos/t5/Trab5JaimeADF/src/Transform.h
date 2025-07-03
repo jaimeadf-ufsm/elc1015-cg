@@ -1,8 +1,17 @@
+/**
+ * @file Transform.h
+ * @brief Transform class for 3D object positioning, rotation, and scaling
+ */
+
 #pragma once
 
 #include <GL/glut.h>
 #include "Vector.h"
 
+/**
+ * @class Transform
+ * @brief Handles 3D transformation operations including position, rotation, and scale
+ */
 class Transform
 {
 public:

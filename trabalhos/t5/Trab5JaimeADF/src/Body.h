@@ -1,3 +1,8 @@
+/**
+ * @file Body.h
+ * @brief Body class for representing physical objects in 3D space
+ */
+
 #pragma once
 
 #include <GL/glut.h>
@@ -8,6 +13,10 @@
 #include "Model.h"
 #include "Time.h"
 
+/**
+ * @class Body
+ * @brief Represents a game object with transform, model, and angular velocity properties for asteroid and sun simulation
+ */
 class Body
 {
 public:

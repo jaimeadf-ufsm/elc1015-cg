@@ -1,7 +1,16 @@
+/**
+ * @file Vector.h
+ * @brief Vector classes for 2D, 3D, and 4D vector mathematics operations
+ */
+
 #pragma once
 
 #include "Mathematics.h"
 
+/**
+ * @struct Vector4
+ * @brief 4D vector with XYZW components 
+ */
 struct Vector4
 {
     float X;
@@ -18,6 +27,10 @@ struct Vector4
     }
 };
 
+/**
+ * @struct Vector3
+ * @brief 3D vector with XYZ components 
+ */
 struct Vector3
 {
     float X;
@@ -124,6 +137,10 @@ struct Vector3
     }
 };
 
+/**
+ * @struct Vector2
+ * @brief 2D vector with XY components for texture coordinates and 2D operations
+ */
 struct Vector2
 {
     float X;
