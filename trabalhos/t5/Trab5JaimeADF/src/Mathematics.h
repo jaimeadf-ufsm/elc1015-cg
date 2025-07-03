@@ -7,7 +7,12 @@
 
 #define _USE_MATH_DEFINES
 #include <cmath>
+#include <stdlib.h>
 #include "Vector.h"
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 Vector3 RandomPointOnShell(float innerR, float outerR)
 {
