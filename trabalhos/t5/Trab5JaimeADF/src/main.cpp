@@ -46,13 +46,14 @@ Light light(GL_LIGHT0);
 Body sun;
 std::vector<Body> asteroids;
 
+bool firstMouse = true;
 bool keys[256] = {false};
-bool wireframeMode = false;
+
 int windowCenterX = SCREEN_WIDTH / 2;
 int windowCenterY = SCREEN_HEIGHT / 2;
-bool firstMouse = true;
 
-// Function prototypes
+bool wireframeMode = false;
+
 void InitializeOpenGL();
 void InitializeModels();
 void InitializeScene();
@@ -89,11 +90,11 @@ void InitializeModels()
     asteroid2dTexture->LoadFromBMP("Trab5JaimeADF/assets/models/asteroid_2d/asteroid_2d.bmp");
 
     auto sunMaterial = std::make_shared<Material>(
-        Vector4(1.0f, 0.8f, 0.3f, 1.0f), // Bright ambient
-        Vector4(1.0f, 0.8f, 0.3f, 1.0f), // Bright diffuse
-        Vector4(0.0f, 0.0f, 0.0f, 1.0f), // No specular (suns don't have shiny spots)
-        Vector4(1.0f, 0.8f, 0.3f, 1.0f), // Emission (glow)
-        0.0f                             // No shininess
+        Vector4(1.0f, 0.8f, 0.3f, 1.0f),
+        Vector4(1.0f, 0.8f, 0.3f, 1.0f),
+        Vector4(0.0f, 0.0f, 0.0f, 1.0f),
+        Vector4(1.0f, 0.8f, 0.3f, 1.0f),
+        0.0f
     );
 
     auto asteroid2bMaterial = std::make_shared<Material>();
@@ -135,11 +136,9 @@ void InitializeModels()
     auto asteroid2dLod5 = std::make_shared<Mesh>();
     asteroid2dLod5->LoadFromOBJ("Trab5JaimeADF/assets/models/asteroid_2d/lod5.obj");
 
-    // Fallback procedural sphere mesh
     auto sphereMesh = std::make_shared<Mesh>();
     sphereMesh->LoadSphere(1.0f, 8);
 
-    // Create sun model
     sunModel = std::make_shared<Model>();
     sunModel->Texture = sunTexture;
     sunModel->Material = sunMaterial;
@@ -147,29 +146,28 @@ void InitializeModels()
     sunModel->RegisterLOD(25.0f, sunMeshMed);
     sunModel->RegisterLOD(1000.0f, sunMeshLow);
 
-    // Create asteroid models
     auto asteroid2bModel = std::make_shared<Model>();
     asteroid2bModel->Texture = asteroid2bTexture;
     asteroid2bModel->Material = asteroid2bMaterial;
-    asteroid2bModel->RegisterLOD(5.0f, asteroid2bLod0);   // Closest - highest detail
-    asteroid2bModel->RegisterLOD(10.0f, asteroid2bLod1);  // Close
-    asteroid2bModel->RegisterLOD(20.0f, asteroid2bLod2);  // Medium
-    asteroid2bModel->RegisterLOD(35.0f, asteroid2bLod3);  // Far
-    asteroid2bModel->RegisterLOD(50.0f, asteroid2bLod4);  // Very far
-    asteroid2bModel->RegisterLOD(75.0f, asteroid2bLod5);  // Farthest
-    asteroid2bModel->RegisterLOD(5000.0f, sphereMesh);     // Fallback sphere for extreme distances
+    asteroid2bModel->RegisterLOD(5.0f, asteroid2bLod0);
+    asteroid2bModel->RegisterLOD(10.0f, asteroid2bLod1);
+    asteroid2bModel->RegisterLOD(20.0f, asteroid2bLod2);
+    asteroid2bModel->RegisterLOD(35.0f, asteroid2bLod3);
+    asteroid2bModel->RegisterLOD(50.0f, asteroid2bLod4);
+    asteroid2bModel->RegisterLOD(75.0f, asteroid2bLod5);
+    asteroid2bModel->RegisterLOD(5000.0f, sphereMesh);
     asteroidModels.push_back(asteroid2bModel);
 
     auto asteroid2dModel = std::make_shared<Model>();
     asteroid2dModel->Texture = asteroid2dTexture;
     asteroid2dModel->Material = asteroid2dMaterial;
-    asteroid2dModel->RegisterLOD(5.0f, asteroid2dLod0);   // Closest - highest detail
-    asteroid2dModel->RegisterLOD(10.0f, asteroid2dLod1);  // Close
-    asteroid2dModel->RegisterLOD(20.0f, asteroid2dLod2);  // Medium
-    asteroid2dModel->RegisterLOD(35.0f, asteroid2dLod3);  // Far
-    asteroid2dModel->RegisterLOD(50.0f, asteroid2dLod4);  // Very far
-    asteroid2dModel->RegisterLOD(75.0f, asteroid2dLod5);  // Farthest
-    asteroid2dModel->RegisterLOD(5000.0f, sphereMesh);     // Fallback sphere for extreme distances
+    asteroid2dModel->RegisterLOD(5.0f, asteroid2dLod0);
+    asteroid2dModel->RegisterLOD(10.0f, asteroid2dLod1);
+    asteroid2dModel->RegisterLOD(20.0f, asteroid2dLod2);
+    asteroid2dModel->RegisterLOD(35.0f, asteroid2dLod3);
+    asteroid2dModel->RegisterLOD(50.0f, asteroid2dLod4);
+    asteroid2dModel->RegisterLOD(75.0f, asteroid2dLod5);
+    asteroid2dModel->RegisterLOD(5000.0f, sphereMesh);
     asteroidModels.push_back(asteroid2dModel);
 }
 
