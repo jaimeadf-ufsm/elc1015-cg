@@ -20,6 +20,9 @@ public:
     Vector3 Position;
     Vector3 Target;
     Vector3 Up;
+
+    Vector3 Right;
+    Vector3 Forward;
     
     float Yaw;
     float Pitch;
@@ -47,29 +50,67 @@ public:
         );
     }
 
+    void MoveForward()
+    {
+        MoveForward(Speed * Time::DeltaTime);
+    }
+
+    void MoveBackward()
+    {
+        MoveBackward(Speed * Time::DeltaTime);
+    }
+
+    void MoveRight()
+    {
+        MoveRight(Speed * Time::DeltaTime);
+    }
+
+    void MoveLeft()
+    {
+        MoveLeft(Speed * Time::DeltaTime);
+    }
+
+    void MoveForward(float distance)
+    {
+        Position = Position + Forward * distance;
+        Target = Target + Forward * distance;
+    }
+
+    void MoveBackward(float distance)
+    {
+        Position = Position - Forward * distance;
+        Target = Target - Forward * distance;
+    }
+
+    void MoveRight(float distance)
+    {
+        Position = Position + Right * distance;
+        Target = Target + Right * distance;
+    }
+
+    void MoveLeft(float distance)
+    {
+        Position = Position - Right * distance;
+        Target = Target - Right * distance;
+    }
+
     void ProcessKeyboard(char key)
     {
         float velocity = Speed * Time::DeltaTime;
-        Vector3 forward = (Target - Position).Normalize();
-        Vector3 right = forward.Cross(Up).Normalize();
 
         switch (key)
         {
             case 'w':
-                Position = Position + forward * velocity;
-                Target = Target + forward * velocity;
+                MoveForward(velocity);
                 break;
             case 's':
-                Position = Position - forward * velocity;
-                Target = Target - forward * velocity;
+                MoveBackward(velocity);
                 break;
             case 'a':
-                Position = Position - right * velocity;
-                Target = Target - right * velocity;
+                MoveLeft(velocity);
                 break;
             case 'd':
-                Position = Position + right * velocity;
-                Target = Target + right * velocity;
+                MoveRight(velocity);
                 break;
         }
     }
@@ -96,7 +137,9 @@ private:
         front.Y = sinf(Pitch * M_PI / 180.0f);
         front.Z = sinf(Yaw * M_PI / 180.0f) * cosf(Pitch * M_PI / 180.0f);
         
-        Vector3 forward = front.Normalize();
-        Target = Position + forward;
+        Forward = front.Normalize();
+        Target = Position + Forward;
+
+        Right = Forward.Cross(Up).Normalize();
     }
 };

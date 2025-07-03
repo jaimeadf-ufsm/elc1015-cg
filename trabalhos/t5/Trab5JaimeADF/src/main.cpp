@@ -204,6 +204,8 @@ void Update()
 {
     Time::Update();
 
+    // camera.MoveForward(5 * Time::DeltaTime);
+
     if (keys['w'] || keys['W'])
         camera.ProcessKeyboard('w');
     if (keys['s'] || keys['S'])
